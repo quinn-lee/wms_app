@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wms_app/db/hi_cache.dart';
 import 'package:wms_app/http/core/hi_error.dart';
 import 'package:wms_app/http/core/hi_net.dart';
+import 'package:wms_app/http/dao/login_dao.dart';
 import 'package:wms_app/http/request/test_request.dart';
 
 void main() {
@@ -60,18 +62,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _incrementCounter() async {
-    TestRequest request = TestRequest();
-    request.add("aa", "bb").add("dd", "cc").add("requestPrams", "ddd");
-    try {
-      var result = await HiNet.getInstance().fire(request);
-      print(result);
-    } on NeedAuth catch (e) {
-      print(e);
-    } on NeedLogin catch (e) {
-      print(e);
-    } on HiNetError catch (e) {
-      print(e);
-    }
+    // TestRequest request = TestRequest();
+    // request.add("aa", "bb").add("dd", "cc").add("requestPrams", "ddd");
+    // try {
+    //   var result = await HiNet.getInstance().fire(request);
+    //   print(result);
+    // } on NeedAuth catch (e) {
+    //   print(e);
+    // } on NeedLogin catch (e) {
+    //   print(e);
+    // } on HiNetError catch (e) {
+    //   print(e);
+    // }
+
+    LoginDao.login("wms_admin@julai.com", "1qaz2wsx");
 
     test_cache();
   }

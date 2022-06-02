@@ -3,13 +3,13 @@ enum HttpMethod { GET, POST, DELETE }
 // 基础请求
 abstract class BaseRequest {
   var pathParams; // path参数
-  var useHttps = true; // 默认使用https
+  var useHttps = false; // 默认不使用https
   Map<String, String> params = {}; // 查询参数
   Map<String, dynamic> header = {}; // 鉴权参数
 
   // 域名
   String authority() {
-    return "api.devio.org";
+    return "172.105.20.13:3006";
   }
 
   HttpMethod httpMethod();

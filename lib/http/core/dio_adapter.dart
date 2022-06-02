@@ -24,14 +24,7 @@ class DioAdapter extends HiNetAdapter {
             .delete(request.url(), data: request.params, options: options);
       }
     } on DioError catch (e) {
-      error = e;
-      response = e.response;
-    }
-
-    if (error != null) {
-      // 抛出HiNetError
-      throw HiNetError(response?.statusCode ?? -1, error.toString(),
-          data: buildRes(response, request));
+      throw HiNetError(-1, e.toString(), data: null);
     }
 
     return buildRes(response, request) as HiNetResponse<T>;

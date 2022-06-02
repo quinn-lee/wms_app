@@ -1,0 +1,45 @@
+// 登录
+import 'package:wms_app/db/hi_cache.dart';
+import 'package:wms_app/http/core/hi_net.dart';
+import 'package:wms_app/http/request/account_request.dart';
+import 'package:wms_app/http/request/base_request.dart';
+import 'package:wms_app/http/request/token_request.dart';
+
+class LoginDao {
+  static const TOKEN = "token";
+  static Future<Map> _getToken(String username, String password) async {
+    BaseRequest request = TokenRequest();
+    request
+        .add("client_id", "NSnc8CK3ceqozl8vlwi46A")
+        .add("client_secret",
+            "h-_hEIFPWZoVUZjWcNIKrzO208VC56P7KI41gMW1IAtED8r1RYx_b63i24EgjlOVg8ZQkqmqyUuQe57_arLYSQ")
+        .add("grant_type", "password")
+        .add("username", username)
+        .add("password", password);
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
+    if (result['access_token'] != null) {
+      //保存登录令牌
+      print(result['access_token']);
+      HiCache.getInstance().setString(TOKEN, result["access_token"]);
+      print(HiCache.getInstance().get(TOKEN));
+    }
+    return result;
+  }
+
+  static getCacheToken() {
+    return HiCache.getInstance().get(TOKEN);
+  }
+
+  static Future<Map> _getAccountInfo() async {
+    BaseRequest request = AccountRequest();
+    request.add("access_token", getCacheToken());
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
+    return result;
+  }
+
+  static login(String username, String password) {
+    _getToken(username, password).then((result) => _getAccountInfo());
+  }
+}

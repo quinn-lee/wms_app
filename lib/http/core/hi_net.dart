@@ -25,14 +25,15 @@ class HiNet {
       error = e;
       printLog(e);
     }
-
+    print(response);
     if (response == null) {
       printLog(error);
     }
 
     var result = response?.data;
-    printLog(result);
+    print(result);
     int? status = response?.statusCode;
+    print(status);
     switch (status) {
       case 200:
         return result;
