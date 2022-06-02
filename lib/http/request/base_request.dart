@@ -1,3 +1,5 @@
+import 'package:wms_app/http/dao/login_dao.dart';
+
 enum HttpMethod { GET, POST, DELETE }
 
 // 基础请求
@@ -33,6 +35,10 @@ abstract class BaseRequest {
       uri = Uri.https(authority(), pathStr, params);
     } else {
       uri = Uri.http(authority(), pathStr, params);
+    }
+    if (needLogin()) {
+      // 给需要登录的接口设置access_token
+      add(LoginDao.TOKEN, LoginDao.getCacheToken());
     }
     print('url:${uri.toString()}');
     return uri.toString();

@@ -30,6 +30,7 @@ class HiNet {
       printLog(error);
     }
 
+    // TODO
     var result = response?.data;
     print(result);
     int? status = response?.statusCode;
@@ -37,6 +38,8 @@ class HiNet {
     switch (status) {
       case 200:
         return result;
+      case 400:
+        return result; //登录获取接口如果登录失败会返回400
       case 401:
         throw NeedLogin();
       case 403:

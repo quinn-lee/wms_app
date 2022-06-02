@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //   print(e);
     // }
 
-    LoginDao.login("wms_admin@julai.com", "1qaz2wsx");
+    LoginDao.login("wms_admin@julai.com", "1qaz2wsx1");
 
     test_cache();
   }
