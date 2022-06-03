@@ -58,7 +58,13 @@ class _LoginInputState extends State<LoginInput> {
             ),
             _input()
           ],
-        )
+        ),
+        Padding(
+            padding: EdgeInsets.only(left: !widget.lineStretch ? 15 : 0),
+            child: const Divider(
+              height: 1,
+              thickness: 0.5,
+            ))
       ],
     );
   }
