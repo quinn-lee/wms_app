@@ -1,11 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wms_app/db/hi_cache.dart';
-import 'package:wms_app/http/core/hi_error.dart';
-import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/dao/login_dao.dart';
-import 'package:wms_app/http/request/test_request.dart';
 import 'package:wms_app/page/login_page.dart';
+import 'package:wms_app/util/color.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,7 +26,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: white,
       ),
       home: const LoginPage(),
     );

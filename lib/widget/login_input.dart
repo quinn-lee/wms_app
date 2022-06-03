@@ -78,7 +78,7 @@ class _LoginInputState extends State<LoginInput> {
       decoration: InputDecoration(
           contentPadding: const EdgeInsets.only(left: 20, right: 20),
           border: InputBorder.none,
-          hintText: widget.hint ?? '',
+          hintText: widget.hint,
           hintStyle: const TextStyle(fontSize: 15, color: Colors.grey)),
     ));
   }
