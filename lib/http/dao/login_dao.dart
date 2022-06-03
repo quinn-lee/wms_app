@@ -7,7 +7,7 @@ import 'package:wms_app/http/request/token_request.dart';
 
 class LoginDao {
   static const TOKEN = "access_token";
-  static Future<Map> _getToken(String username, String password) async {
+  static Future<Map> getToken(String username, String password) async {
     BaseRequest request = TokenRequest();
     request
         .add("client_id", "NSnc8CK3ceqozl8vlwi46A")
@@ -18,9 +18,9 @@ class LoginDao {
         .add("password", password);
     var result = await HiNet.getInstance().fire(request);
     print(result);
-    if (result['access_token'] != null) {
+    if (result[TOKEN] != null) {
       //保存登录令牌
-      HiCache.getInstance().setString(TOKEN, result["access_token"]);
+      HiCache.getInstance().setString(TOKEN, result[TOKEN]);
     } else {
       //登录失败
       HiCache.getInstance().setString(TOKEN, "");
@@ -32,15 +32,11 @@ class LoginDao {
     return HiCache.getInstance().get(TOKEN);
   }
 
-  static Future<Map> _getAccountInfo() async {
+  static Future<Map> getAccountInfo(token) async {
     BaseRequest request = AccountRequest();
-    // request.add("access_token", getCacheToken());
+    request.add("access_token", token);
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;
-  }
-
-  static login(String username, String password) {
-    _getToken(username, password).then((result) => _getAccountInfo());
   }
 }

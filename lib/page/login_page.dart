@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:wms_app/http/core/hi_error.dart';
+import 'package:wms_app/http/dao/login_dao.dart';
 import 'package:wms_app/widget/appbar.dart';
+import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/login_input.dart';
 
 import 'package:wms_app/util/string_util.dart';
@@ -20,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBar("登录", "", (() {
+        appBar: appBar("Login", "", (() {
           print("right button click.");
         })),
         body: Container(
@@ -47,6 +50,14 @@ class _LoginPageState extends State<LoginPage> {
                     protect = focus;
                   });
                 },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                child: LoginButton(
+                  'Login',
+                  enable: loginEnable,
+                  onPressed: send,
+                ),
               )
             ],
           ),
@@ -63,5 +74,21 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       loginEnable = enable;
     });
+  }
+
+  void send() async {
+    dynamic result;
+    try {
+      result = await LoginDao.getToken(userName!, password!);
+      if (result[LoginDao.TOKEN] != null) {
+        print("login successful");
+        print(result[LoginDao.TOKEN]);
+        await LoginDao.getAccountInfo(result[LoginDao.TOKEN]);
+      } else {
+        print("login fail");
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

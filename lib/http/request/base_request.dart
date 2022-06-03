@@ -38,7 +38,11 @@ abstract class BaseRequest {
     }
     if (needLogin()) {
       // 给需要登录的接口设置access_token
-      add(LoginDao.TOKEN, LoginDao.getCacheToken());
+      if (LoginDao.getCacheToken() != null) {
+        add(LoginDao.TOKEN, LoginDao.getCacheToken());
+      } else {
+        print("TODO");
+      }
     }
     print('url:${uri.toString()}');
     return uri.toString();

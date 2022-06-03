@@ -72,9 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // } on HiNetError catch (e) {
     //   print(e);
     // }
-
-    LoginDao.login("wms_admin@julai.com", "1qaz2wsx1");
-
     test_cache();
   }
 
