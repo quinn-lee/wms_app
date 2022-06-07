@@ -12,9 +12,9 @@ class NeedAuth extends HiNetError {
 
 // 网络异常统一格式类
 class HiNetError implements Exception {
-  late final int code;
-  late final String message;
-  late final dynamic data;
+  final int code;
+  final String message;
+  final dynamic data;
 
   HiNetError(this.code, this.message, {this.data});
 }

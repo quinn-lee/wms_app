@@ -35,12 +35,12 @@ class DioAdapter extends HiNetAdapter {
   }
 
   // 构建HiNetResponse
-  HiNetResponse buildRes(Response response, BaseRequest request) {
+  HiNetResponse buildRes(Response? response, BaseRequest request) {
     return HiNetResponse(
-        data: response.data,
+        data: response?.data,
         request: request,
-        statusCode: response.statusCode,
-        statusMessage: response.statusMessage,
+        statusCode: response?.statusCode,
+        statusMessage: response?.statusMessage,
         extra: response);
   }
 }

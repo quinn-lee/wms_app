@@ -1,7 +1,7 @@
 // 自定义顶部appBar
 import 'package:flutter/material.dart';
 
-appBar(String title, String righttitle, VoidCallback rightButtonClick) {
+appBar(String title, String righttitle, VoidCallback? rightButtonClick) {
   return AppBar(
     // 让title居左
     centerTitle: false,

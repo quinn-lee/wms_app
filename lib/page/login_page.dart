@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wms_app/http/core/hi_error.dart';
+
 import 'package:wms_app/http/dao/login_dao.dart';
+import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/login_button.dart';
@@ -84,6 +85,7 @@ class _LoginPageState extends State<LoginPage> {
       if (result[LoginDao.TOKEN] != null) {
         print("login successful");
         showToast("Login Successful");
+        HiNavigator.getInstance().onJumpTo(RouteStatus.home);
         await LoginDao.getAccountInfo(result[LoginDao.TOKEN]);
       } else {
         print("login fail");
