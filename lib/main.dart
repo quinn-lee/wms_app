@@ -4,6 +4,7 @@ import 'package:wms_app/http/core/hi_error.dart';
 import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/dao/login_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
+import 'package:wms_app/navigator/bottom_navigator.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
@@ -90,7 +91,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
     if (routeStatus == RouteStatus.home) {
       //跳转首页时将栈中其它页面进行出栈，因为首页不可回退
       pages.clear();
-      page = pageWrap(const HomePage());
+      page = pageWrap(const BottomNavigator());
     } else if (routeStatus == RouteStatus.detail) {
       page = pageWrap(DetailPage(rParcel!));
     } else if (routeStatus == RouteStatus.login) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wms_app/navigator/bottom_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
 
@@ -28,7 +29,7 @@ enum RouteStatus { login, home, detail, unknown }
 RouteStatus getStatus(MaterialPage page) {
   if (page.child is LoginPage) {
     return RouteStatus.login;
-  } else if (page.child is HomePage) {
+  } else if (page.child is BottomNavigator) {
     return RouteStatus.home;
   } else if (page.child is DetailPage) {
     return RouteStatus.detail;
@@ -54,10 +55,19 @@ class HiNavigator extends _RouteJumpListener {
   List<RouteChangeListener> _listeners = [];
   RouteStatusInfo? _current;
 
+  //首页底部tab
+  RouteStatusInfo? _bottomTab;
+
   HiNavigator._();
 
   static HiNavigator getInstance() {
     return _instance ??= HiNavigator._();
+  }
+
+  // 首页底部tab切换监听
+  void onBottomTabChange(int index, Widget page) {
+    _bottomTab = RouteStatusInfo(RouteStatus.home, page);
+    _notify(_bottomTab!);
   }
 
   ///注册路由跳转逻辑
@@ -91,6 +101,10 @@ class HiNavigator extends _RouteJumpListener {
   }
 
   void _notify(RouteStatusInfo current) {
+    if (current.page is BottomNavigator && _bottomTab != null) {
+      //如果打开的是首页，则明确到首页具体的tab
+      current = _bottomTab!;
+    }
     print('hi_navigator:current:${current.page}');
     print('hi_navigator:pre:${_current?.page}');
     _listeners.forEach((listener) {
