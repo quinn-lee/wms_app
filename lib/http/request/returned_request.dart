@@ -3,7 +3,7 @@ import 'package:wms_app/http/request/base_request.dart';
 class ReturnedRequest extends BaseRequest {
   @override
   HttpMethod httpMethod() {
-    return HttpMethod.GET;
+    return HttpMethod.POST;
   }
 
   @override

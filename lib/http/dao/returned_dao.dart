@@ -14,12 +14,21 @@ class ReturnedDao {
   }
 
   // 获取待处理
-  static get({String? shpmtNumCont, int page = 1, int perPage = 10}) async {
+  static get(
+      {String? shpmtNumCont,
+      bool? takePhoto,
+      int page = 1,
+      int perPage = 10}) async {
     BaseRequest request = ReturnedRequest();
     request.add("page", page).add("per_page", perPage);
+    Map query = {};
     if (shpmtNumCont != null) {
-      request.add("q", {"shpmt_num_cont": shpmtNumCont});
+      query["shpmt_num_cont"] = shpmtNumCont;
     }
+    if (takePhoto != null) {
+      query["take_photo"] = takePhoto;
+    }
+    request.add("q", query);
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;

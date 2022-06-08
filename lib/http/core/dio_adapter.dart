@@ -14,9 +14,7 @@ class DioAdapter extends HiNetAdapter {
             receiveTimeout: 60 * 1000);
     dynamic error;
     try {
-      if (request.httpMethod() == HttpMethod.GET) {
-        response = await Dio().get(request.url(), options: options);
-      } else if (request.httpMethod() == HttpMethod.POST) {
+      if (request.httpMethod() == HttpMethod.POST) {
         response = await Dio()
             .post(request.url(), data: request.params, options: options);
       } else if (request.httpMethod() == HttpMethod.DELETE) {

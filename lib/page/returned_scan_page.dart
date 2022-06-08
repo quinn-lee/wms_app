@@ -56,6 +56,10 @@ class _ReturnedScanPageState extends State<ReturnedScanPage> {
         if (!hasFocus) {}
       },
     ));
+    widgets.add(const Divider(
+      height: 1,
+      color: Colors.white,
+    ));
     for (var element in resultShow.reversed) {
       widgets.add(ListTile(
         title: Text(element['show']),

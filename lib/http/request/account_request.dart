@@ -4,12 +4,12 @@ import 'package:wms_app/http/request/base_request.dart';
 class AccountRequest extends BaseRequest {
   @override
   HttpMethod httpMethod() {
-    return HttpMethod.GET;
+    return HttpMethod.POST;
   }
 
   @override
   bool needLogin() {
-    return true;
+    return false; // token获取到后 直接传值，此处改为false，防止异步时token还未获取到
   }
 
   @override

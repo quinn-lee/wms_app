@@ -9,6 +9,7 @@ class LoginDao {
   static const TOKEN = "access_token";
   static Future<Map> getToken(String username, String password) async {
     BaseRequest request = TokenRequest();
+    request.isLoginApi = true;
     request
         .add("client_id", "NSnc8CK3ceqozl8vlwi46A")
         .add("client_secret",

@@ -1,12 +1,13 @@
 import 'package:wms_app/http/dao/login_dao.dart';
 
-enum HttpMethod { GET, POST, DELETE }
+enum HttpMethod { POST, DELETE } // 框架原因，不支持get方法
 
 // 基础请求
 abstract class BaseRequest {
   var pathParams; // path参数
   var useHttps = false; // 默认不使用https
-  Map<String, String> params = {}; // 查询参数
+  var isLoginApi = false; // 登录获取token接口特殊处理，需要把参数放到url后
+  Map<String, dynamic> params = {}; // 查询参数
   Map<String, dynamic> header = {}; // 鉴权参数
 
   // 域名
@@ -32,9 +33,19 @@ abstract class BaseRequest {
 
     // http和https切换
     if (useHttps) {
-      uri = Uri.https(authority(), pathStr, params);
+      if (isLoginApi) {
+        uri = Uri.https(
+            authority(), pathStr, params); //这样会把参数拼接到url中, 非string参数会有问题
+      } else {
+        uri = Uri.https(authority(), pathStr);
+      }
     } else {
-      uri = Uri.http(authority(), pathStr, params);
+      if (isLoginApi) {
+        uri = Uri.http(
+            authority(), pathStr, params); //这样会把参数拼接到url中, 非string参数会有问题
+      } else {
+        uri = Uri.http(authority(), pathStr);
+      }
     }
     if (needLogin()) {
       // 给需要登录的接口设置access_token
@@ -53,13 +64,13 @@ abstract class BaseRequest {
 
   // 添加参数
   BaseRequest add(String k, Object v) {
-    params[k] = v.toString();
+    params[k] = v;
     return this;
   }
 
   // 添加鉴权参数
   BaseRequest addHeader(String k, Object v) {
-    header[k] = v.toString();
+    header[k] = v;
     return this;
   }
 }

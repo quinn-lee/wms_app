@@ -26,7 +26,7 @@ class _ReturnedPageState extends State<ReturnedPage>
         print("Returned: onPause");
       }
     });
-    ReturnedDao.get();
+    ReturnedDao.get(shpmtNumCont: "", takePhoto: true);
   }
 
   @override
