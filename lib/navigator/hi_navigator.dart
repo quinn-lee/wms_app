@@ -4,6 +4,7 @@ import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
 
 import 'package:wms_app/page/login_page.dart';
+import 'package:wms_app/page/returned_scan_page.dart';
 
 typedef RouteChangeListener(RouteStatusInfo current, RouteStatusInfo? pre);
 
@@ -23,7 +24,7 @@ int getPageIndex(List<MaterialPage> pages, RouteStatus routeStatus) {
 }
 
 // 自定义路由封装，路由状态
-enum RouteStatus { login, home, detail, unknown }
+enum RouteStatus { login, home, detail, unknown, returnedScan }
 
 // 获取page 对应的RouteStatus
 RouteStatus getStatus(MaterialPage page) {
@@ -33,6 +34,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.home;
   } else if (page.child is DetailPage) {
     return RouteStatus.detail;
+  } else if (page.child is ReturnedScanPage) {
+    return RouteStatus.returnedScan;
   } else {
     return RouteStatus.unknown;
   }

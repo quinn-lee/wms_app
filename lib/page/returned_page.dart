@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/widget/home_appbar.dart';
 
 class ReturnedPage extends StatefulWidget {
   const ReturnedPage({Key? key}) : super(key: key);
@@ -24,6 +26,7 @@ class _ReturnedPageState extends State<ReturnedPage>
         print("Returned: onPause");
       }
     });
+    ReturnedDao.get();
   }
 
   @override
@@ -35,11 +38,21 @@ class _ReturnedPageState extends State<ReturnedPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Container(
-        child: Text('退运包裹'),
-      ),
-    );
+        appBar: homeAppBar("Returned"),
+        body: Container(
+          child: ListView(
+            children: [
+              ListTile(
+                leading: Icon(Icons.scanner),
+                title: const Text("Register Returned Parcels"),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan);
+                },
+              )
+            ],
+          ),
+        ));
   }
 
   @override
