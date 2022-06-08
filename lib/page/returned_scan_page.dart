@@ -15,6 +15,7 @@ class _ReturnedScanPageState extends State<ReturnedScanPage> {
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
   String? num;
+  List<Map> resultShow = [];
 
   @override
   void initState() {
@@ -26,29 +27,46 @@ class _ReturnedScanPageState extends State<ReturnedScanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBar("Returned Scan", "", () {}),
-        body: Container(
-          child: ListView(
-            children: [
-              ScanInput(
-                "Barcode",
-                "Scan Reterned parcel's barcode",
-                focusNode,
-                textEditingController,
-                onChanged: (text) {
-                  num = text;
-                  print("num: $num");
-                },
-                onSubmitted: (text) {
-                  _send();
-                },
-                focusChanged: (bool hasFocus) {
-                  if (!hasFocus) {}
-                },
-              ),
-            ],
-          ),
-        ));
+      appBar: appBar("Returned Scan", "", () {}),
+      body: Container(
+        child: ListView(
+          children: _buildWidget(),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildWidget() {
+    List<Widget> widgets = [];
+    widgets.add(ScanInput(
+      "Barcode",
+      "Scan Reterned parcel's barcode",
+      focusNode,
+      textEditingController,
+      onChanged: (text) {
+        num = text;
+        print("num: $num");
+      },
+      onSubmitted: (text) {
+        _send();
+      },
+      focusChanged: (bool hasFocus) {
+        if (!hasFocus) {}
+      },
+    ));
+    for (var element in resultShow.reversed) {
+      widgets.add(ListTile(
+        title: Text(element['show']),
+        tileColor: element['status']
+            ? const Color(0xFFdff0f8)
+            : const Color(0xFFf2dede),
+      ));
+      widgets.add(const Divider(
+        height: 1,
+        color: Colors.white,
+      ));
+    }
+    return widgets;
   }
 
   void _send() async {
@@ -56,17 +74,28 @@ class _ReturnedScanPageState extends State<ReturnedScanPage> {
     try {
       if (num != null && num != "") {
         result = await ReturnedDao.scan(num!);
-        print(result);
         if (result["status"] == "succ") {
-          print("Scan successful");
+          setState(() {
+            var now = DateTime.now();
+            resultShow.add({
+              "status": true,
+              "show":
+                  "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num"
+            });
+          });
           showToast("Scan Successful");
         } else {
-          print("Scan fail");
+          setState(() {
+            resultShow
+                .add({"status": false, "show": result['reason'].join(",")});
+          });
           showWarnToast(result['reason'].join(","));
         }
       }
     } catch (e) {
-      print(e);
+      setState(() {
+        resultShow.add({"status": false, "show": e.toString()});
+      });
       showWarnToast(e.toString());
     }
     textEditingController.clear();

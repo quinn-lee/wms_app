@@ -43,6 +43,7 @@ class _ScanInputState extends State<ScanInput> {
   @override
   void dispose() {
     widget.focusNode.dispose();
+    widget.textEditingController.dispose();
     super.dispose();
   }
 
