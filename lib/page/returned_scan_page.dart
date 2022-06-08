@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/util/toast.dart';
@@ -16,6 +17,7 @@ class _ReturnedScanPageState extends State<ReturnedScanPage> {
   FocusNode focusNode = FocusNode();
   String? num;
   List<Map> resultShow = [];
+  AudioCache player = AudioCache();
 
   @override
   void initState() {
@@ -83,12 +85,14 @@ class _ReturnedScanPageState extends State<ReturnedScanPage> {
                   "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num"
             });
           });
+          player.play('sounds/success01.mp3');
           showToast("Scan Successful");
         } else {
           setState(() {
             resultShow
                 .add({"status": false, "show": result['reason'].join(",")});
           });
+          player.play('sounds/alert.mp3');
           showWarnToast(result['reason'].join(","));
         }
       }
@@ -96,6 +100,7 @@ class _ReturnedScanPageState extends State<ReturnedScanPage> {
       setState(() {
         resultShow.add({"status": false, "show": e.toString()});
       });
+      player.play('sounds/alert.mp3');
       showWarnToast(e.toString());
     }
     textEditingController.clear();
