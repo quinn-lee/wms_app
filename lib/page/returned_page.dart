@@ -26,7 +26,6 @@ class _ReturnedPageState extends State<ReturnedPage>
         print("Returned: onPause");
       }
     });
-    ReturnedDao.get(shpmtNumCont: "", takePhoto: true);
   }
 
   @override
@@ -55,7 +54,8 @@ class _ReturnedPageState extends State<ReturnedPage>
                 title: const Text("Photo"),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto);
+                  HiNavigator.getInstance()
+                      .onJumpTo(RouteStatus.returnedNeedPhoto);
                 },
               ),
             ],

@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
@@ -12,7 +13,7 @@ class ReturnedScanPage extends StatefulWidget {
   State<ReturnedScanPage> createState() => _ReturnedScanPageState();
 }
 
-class _ReturnedScanPageState extends State<ReturnedScanPage> {
+class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
   String? num;

@@ -1,16 +1,20 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:wms_app/core/hi_state.dart';
+import 'package:wms_app/model/returned_parcel.dart';
 
 class ReturnedPhotoPage extends StatefulWidget {
-  const ReturnedPhotoPage({Key? key}) : super(key: key);
+  final ReturnedParcel returnedParcel;
+  const ReturnedPhotoPage(this.returnedParcel, {Key? key}) : super(key: key);
 
   @override
   State<ReturnedPhotoPage> createState() => _ReturnedPhotoPageState();
 }
 
-class _ReturnedPhotoPageState extends State<ReturnedPhotoPage> {
+class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   List<File> _images = [];
 
   Future getImage(bool isTakePhoto) async {
@@ -22,6 +26,11 @@ class _ReturnedPhotoPageState extends State<ReturnedPhotoPage> {
         _images.add(File(image.path));
       });
     }
+    // for (var img in _images) {
+    //   final bytes = img.readAsBytesSync();
+    //   print(base64.encode(bytes));
+    //   print(img.path.split("/").last);
+    // }
   }
 
   @override

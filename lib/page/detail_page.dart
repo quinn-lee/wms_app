@@ -15,7 +15,6 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        body:
-            Container(child: Text('详情页, parcel: ${widget.rParcel.parcelId}')));
+        body: Container(child: Text('详情页, parcel: ${widget.rParcel.id}')));
   }
 }

@@ -9,6 +9,7 @@ import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
 import 'package:wms_app/page/login_page.dart';
+import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 import 'package:wms_app/util/color.dart';
@@ -55,6 +56,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
 
   RouteStatus _routeStatus = RouteStatus.home;
   ReturnedParcel? rParcel;
+  ReturnedParcel? needPhotoParcel;
   List<MaterialPage> pages = [];
 
   //为Navigator设置一个key，必要的时候可以通过navigatorKey.currentState来获取到NavigatorState对象
@@ -65,6 +67,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       _routeStatus = routeStatus;
       if (routeStatus == RouteStatus.detail) {
         rParcel = args!['rparcel'];
+      } else if (routeStatus == RouteStatus.returnedPhoto) {
+        needPhotoParcel = args!['needPhotoParce'];
       }
       notifyListeners();
     });
@@ -100,8 +104,10 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(const LoginPage());
     } else if (routeStatus == RouteStatus.returnedScan) {
       page = pageWrap(const ReturnedScanPage());
+    } else if (routeStatus == RouteStatus.returnedNeedPhoto) {
+      page = pageWrap(const ReturnedNeedPhotoPage());
     } else if (routeStatus == RouteStatus.returnedPhoto) {
-      page = pageWrap(const ReturnedPhotoPage());
+      page = pageWrap(ReturnedPhotoPage(needPhotoParcel!));
     }
     //重新创建一个数组，否则pages因引用没有改变路由不会生效
     tempPages = [...tempPages, page];

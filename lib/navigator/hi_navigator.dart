@@ -4,6 +4,7 @@ import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
 
 import 'package:wms_app/page/login_page.dart';
+import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 
@@ -25,7 +26,15 @@ int getPageIndex(List<MaterialPage> pages, RouteStatus routeStatus) {
 }
 
 // 自定义路由封装，路由状态
-enum RouteStatus { login, home, detail, unknown, returnedScan, returnedPhoto }
+enum RouteStatus {
+  login,
+  home,
+  detail,
+  unknown,
+  returnedScan,
+  returnedPhoto,
+  returnedNeedPhoto
+}
 
 // 获取page 对应的RouteStatus
 RouteStatus getStatus(MaterialPage page) {
@@ -39,6 +48,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.returnedScan;
   } else if (page.child is ReturnedPhotoPage) {
     return RouteStatus.returnedPhoto;
+  } else if (page.child is ReturnedNeedPhotoPage) {
+    return RouteStatus.returnedNeedPhoto;
   } else {
     return RouteStatus.unknown;
   }
