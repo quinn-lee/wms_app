@@ -5,6 +5,7 @@ import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
+import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
 class ReturnedNeedPhotoPage extends StatefulWidget {
@@ -45,13 +46,15 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("Need Photo", "", () {}),
-      body: Container(
-        child: ListView(
-          children: _buildWidget(),
-        ),
-      ),
-    );
+        appBar: appBar("Need Photo", "", () {}),
+        body: LoadingContainer(
+          isLoading: _isLoading,
+          child: Container(
+            child: ListView(
+              children: _buildWidget(),
+            ),
+          ),
+        ));
   }
 
   List<Widget> _buildWidget() {
@@ -100,15 +103,14 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
           await ReturnedDao.get(shpmtNumCont: shpmtNumCont, takePhoto: true);
       print('loadData():$result');
       if (result['status'] == "succ") {
-        if (result['data'].length > 0) {
-          setState(() {
-            parcelList.clear();
-            for (var item in result['data']) {
-              parcelList.add(ReturnedParcel.fromJson(item));
-            }
-            _isLoading = false;
-          });
-        } else {
+        setState(() {
+          parcelList.clear();
+          for (var item in result['data']) {
+            parcelList.add(ReturnedParcel.fromJson(item));
+          }
+          _isLoading = false;
+        });
+        if (result['data'].length == 0) {
           showWarnToast("No Returned Parcel Need To Photoed");
         }
       } else {
