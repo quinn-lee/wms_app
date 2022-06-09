@@ -9,6 +9,7 @@ import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
 import 'package:wms_app/page/login_page.dart';
+import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
@@ -99,6 +100,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(const LoginPage());
     } else if (routeStatus == RouteStatus.returnedScan) {
       page = pageWrap(const ReturnedScanPage());
+    } else if (routeStatus == RouteStatus.returnedPhoto) {
+      page = pageWrap(const ReturnedPhotoPage());
     }
     //重新创建一个数组，否则pages因引用没有改变路由不会生效
     tempPages = [...tempPages, page];

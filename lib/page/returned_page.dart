@@ -43,13 +43,21 @@ class _ReturnedPageState extends State<ReturnedPage>
           child: ListView(
             children: [
               ListTile(
-                leading: Icon(Icons.scanner),
+                leading: const Icon(Icons.scanner),
                 title: const Text("Register Returned Parcels"),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan);
                 },
-              )
+              ),
+              ListTile(
+                leading: const Icon(Icons.scanner),
+                title: const Text("Photo"),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto);
+                },
+              ),
             ],
           ),
         ));

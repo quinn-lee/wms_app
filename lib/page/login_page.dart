@@ -81,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void send() async {
     dynamic result;
+    loginEnable = false; //不能重复点击登录
     try {
       result = await LoginDao.getToken(userName!, password!);
       if (result[LoginDao.TOKEN] != null) {
