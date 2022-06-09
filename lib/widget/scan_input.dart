@@ -11,6 +11,7 @@ class ScanInput extends StatefulWidget {
   final bool obscureText;
   final TextInputType? keyboardType;
   final FocusNode focusNode;
+  final bool autofocus;
   final TextEditingController textEditingController;
 
   const ScanInput(
@@ -21,6 +22,7 @@ class ScanInput extends StatefulWidget {
       this.onSubmitted,
       this.lineStretch = false,
       this.obscureText = false,
+      this.autofocus = true,
       this.keyboardType})
       : super(key: key);
 
@@ -82,7 +84,7 @@ class _ScanInputState extends State<ScanInput> {
       onSubmitted: widget.onSubmitted,
       obscureText: widget.obscureText,
       keyboardType: widget.keyboardType,
-      autofocus: !widget.obscureText,
+      autofocus: widget.autofocus,
       cursorColor: primary,
       controller: widget.textEditingController,
       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w300),

@@ -48,6 +48,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
     return Scaffold(
         appBar: appBar("Need Photo", "", () {}),
         body: LoadingContainer(
+          cover: true,
           isLoading: _isLoading,
           child: Container(
             child: ListView(

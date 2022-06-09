@@ -51,7 +51,7 @@ class _ReturnedPageState extends State<ReturnedPage>
               ),
               ListTile(
                 leading: const Icon(Icons.scanner),
-                title: const Text("Photo"),
+                title: const Text("Need Photo Parcels"),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   HiNavigator.getInstance()
