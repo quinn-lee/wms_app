@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/model/returned_parcel.dart';
+import 'package:wms_app/widget/login_button.dart';
 
 class ReturnedPhotoPage extends StatefulWidget {
   final ReturnedParcel returnedParcel;
@@ -16,6 +17,7 @@ class ReturnedPhotoPage extends StatefulWidget {
 
 class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   List<File> _images = [];
+  bool submitEnable = false;
 
   Future getImage(bool isTakePhoto) async {
     Navigator.pop(context);
@@ -24,6 +26,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
     if (image != null) {
       setState(() {
         _images.add(File(image.path));
+        submitEnable = true;
       });
     }
     // for (var img in _images) {
@@ -45,13 +48,41 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
           child: const Icon(Icons.arrow_back),
         ),
       ),
-      body: Center(
-        child: Wrap(
-          spacing: 5,
-          runSpacing: 5,
-          children: _genImages(),
+      body: Container(
+          child: ListView(children: [
+        ListTile(
+          title: const Text("Batch Num: "),
+          subtitle: Text("${widget.returnedParcel.batch_num}"),
         ),
-      ),
+        ListTile(
+          title: const Text("Order Num: "),
+          subtitle: Text("${widget.returnedParcel.order_num}"),
+        ),
+        ListTile(
+          title: const Text("Shipment Num: "),
+          subtitle: Text("${widget.returnedParcel.shpmt_num}"),
+        ),
+        ListTile(
+          title: const Text("Pictures: "),
+          subtitle:
+              _images.isEmpty ? const Text("No Pictures") : const Text(""),
+        ),
+        Center(
+          child: Wrap(
+            spacing: 5,
+            runSpacing: 5,
+            children: _genImages(),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+          child: LoginButton(
+            'Upload',
+            enable: submitEnable,
+            onPressed: upload,
+          ),
+        )
+      ])),
       floatingActionButton: FloatingActionButton(
         onPressed: _pickImage,
         tooltip: 'Select Pictures',
@@ -66,7 +97,10 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
         builder: (context) => Container(
             height: 160,
             child: Column(
-              children: <Widget>[_item('Photo', true), _item('Select', false)],
+              children: <Widget>[
+                _item('Photo', true),
+                _item('Select Pictures', false)
+              ],
             )));
   }
 
@@ -96,6 +130,9 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
                 onTap: () {
                   setState(() {
                     _images.remove(file);
+                    if (_images.isEmpty) {
+                      submitEnable = false;
+                    }
                   });
                 },
                 child: ClipOval(
@@ -115,4 +152,6 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
       );
     }).toList();
   }
+
+  void upload() {}
 }
