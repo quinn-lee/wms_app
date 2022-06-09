@@ -51,11 +51,20 @@ class _ReturnedPageState extends State<ReturnedPage>
               ),
               ListTile(
                 leading: const Icon(Icons.scanner),
-                title: const Text("Need Photo Parcels"),
+                title: const Text("Need Pictures Parcels"),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   HiNavigator.getInstance()
                       .onJumpTo(RouteStatus.returnedNeedPhoto);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.scanner),
+                title: const Text("Need To Be Processed Parcels"),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  HiNavigator.getInstance()
+                      .onJumpTo(RouteStatus.returnedNeedProcess);
                 },
               ),
             ],

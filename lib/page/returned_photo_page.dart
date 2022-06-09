@@ -38,7 +38,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Photo'),
+        title: const Text('Upload Pictures'),
         leading: GestureDetector(
           onTap: () {
             Navigator.pop(context);

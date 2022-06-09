@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
-class ReturnedNeedPhotoPage extends StatefulWidget {
-  const ReturnedNeedPhotoPage({Key? key}) : super(key: key);
+class ReturnedNeedProcessPage extends StatefulWidget {
+  const ReturnedNeedProcessPage({Key? key}) : super(key: key);
 
   @override
-  State<ReturnedNeedPhotoPage> createState() => _ReturnedNeedPhotoPageState();
+  State<ReturnedNeedProcessPage> createState() =>
+      _ReturnedNeedProcessPageState();
 }
 
-class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+class _ReturnedNeedProcessPageState extends State<ReturnedNeedProcessPage> {
   List<ReturnedParcel> parcelList = [];
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
@@ -34,11 +34,11 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
       print("current: ${current.page}");
       print("pre: ${pre.page}");
       if (widget == current.page || current.page is ReturnedNeedPhotoPage) {
-        print("打开了待拍照列表: onResume");
+        print("打开了待处理列表: onResume");
         textEditingController.clear(); // 清除搜索栏
         loadData(); // 重新加载数据
       } else if (widget == pre?.page || pre?.page is ReturnedNeedPhotoPage) {
-        print("待拍照列表: onPause");
+        print("待处理列表: onPause");
       }
     });
     loadData();
@@ -47,7 +47,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBar("Need Pictures Parcels", "", () {}),
+        appBar: appBar("Need To Be Processed Parcels", "", () {}),
         body: LoadingContainer(
           cover: true,
           isLoading: _isLoading,
@@ -102,7 +102,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
   void loadData({shpmtNumCont = ""}) async {
     try {
       var result = await ReturnedDao.get(
-          shpmtNumCont: shpmtNumCont, status: "in_process_photo");
+          shpmtNumCont: shpmtNumCont, status: "in_process");
       print('loadData():$result');
       if (result['status'] == "succ") {
         setState(() {
@@ -113,7 +113,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
           _isLoading = false;
         });
         if (result['data'].length == 0) {
-          showWarnToast("No Returned Parcel Need To Be Photoed");
+          showWarnToast("No Returned Parcel Need To Be Processed");
         }
       } else {
         print(result['reason']);

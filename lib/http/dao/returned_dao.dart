@@ -17,7 +17,7 @@ class ReturnedDao {
   // 获取待处理
   static get(
       {String? shpmtNumCont,
-      bool? takePhoto,
+      String? status,
       int page = 1,
       int perPage = 10}) async {
     BaseRequest request = ReturnedRequest();
@@ -26,8 +26,8 @@ class ReturnedDao {
     if (shpmtNumCont != null) {
       query["shpmt_num_cont"] = shpmtNumCont;
     }
-    if (takePhoto != null) {
-      query["take_photo"] = takePhoto;
+    if (status != null) {
+      query["status"] = status;
     }
     request.add("q", query);
     var result = await HiNet.getInstance().fire(request);
@@ -38,7 +38,7 @@ class ReturnedDao {
   // 上传图片
   static uploadPictures(int id, List attachment) async {
     BaseRequest request = UploadPictureRequest();
-    request.pathParams = "$id/update";
+    request.pathParams = "$id/take_photo";
     request.add("attachment", attachment);
     var result = await HiNet.getInstance().fire(request);
     print(result);
