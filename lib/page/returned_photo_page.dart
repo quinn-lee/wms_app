@@ -4,7 +4,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wms_app/core/hi_state.dart';
+import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
+import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/login_button.dart';
 
 class ReturnedPhotoPage extends StatefulWidget {
@@ -29,11 +32,6 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
         submitEnable = true;
       });
     }
-    // for (var img in _images) {
-    //   final bytes = img.readAsBytesSync();
-    //   print(base64.encode(bytes));
-    //   print(img.path.split("/").last);
-    // }
   }
 
   @override
@@ -153,5 +151,34 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
     }).toList();
   }
 
-  void upload() {}
+  void upload() async {
+    setState(() {
+      submitEnable = false; // 防止重复提交
+    });
+    List attachments = [];
+    int index = 1;
+    for (var img in _images) {
+      final bytes = img.readAsBytesSync();
+      // print(base64.encode(bytes));
+      attachments.add({
+        "i": index++,
+        "filename": img.path.split("/").last,
+        "content": base64.encode(bytes),
+      });
+    }
+    print(attachments);
+    try {
+      var result = await ReturnedDao.uploadPictures(
+          widget.returnedParcel.id, attachments);
+      if (result['status'] == "succ") {
+        showToast("Upload Pictures Successful");
+      } else {
+        showWarnToast(result['reason'].join(","));
+      }
+    } catch (e) {
+      print(e);
+      showWarnToast(e.toString());
+    }
+    HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNeedPhoto);
+  }
 }

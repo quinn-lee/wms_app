@@ -2,6 +2,7 @@ import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/request/base_request.dart';
 import 'package:wms_app/http/request/receive_request.dart';
 import 'package:wms_app/http/request/returned_request.dart';
+import 'package:wms_app/http/request/upload_picture_request.dart';
 
 class ReturnedDao {
   // 扫描
@@ -29,6 +30,16 @@ class ReturnedDao {
       query["take_photo"] = takePhoto;
     }
     request.add("q", query);
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
+    return result;
+  }
+
+  // 上传图片
+  static uploadPictures(int id, List attachment) async {
+    BaseRequest request = UploadPictureRequest();
+    request.pathParams = "$id/update";
+    request.add("attachment", attachment);
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;
