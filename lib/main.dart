@@ -47,6 +47,7 @@ class _MyAppState extends HiState<MyApp> {
           return MaterialApp(
             home: widget,
             theme: ThemeData(primarySwatch: white),
+            debugShowCheckedModeBanner: false,
           );
         });
   }

@@ -91,7 +91,8 @@ class _LoginPageState extends HiState<LoginPage> {
         print("login successful");
         showToast("Login Successful");
         HiNavigator.getInstance().onJumpTo(RouteStatus.home);
-        await LoginDao.getAccountInfo(result[LoginDao.TOKEN]);
+        // 暂时不需要获取用户信息
+        // await LoginDao.getAccountInfo(result[LoginDao.TOKEN]);
       } else {
         print("login fail");
         showWarnToast(result['error']);
