@@ -158,17 +158,18 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
     });
     List attachments = [];
     int index = 1;
-    for (var img in _images) {
-      final bytes = img.readAsBytesSync();
-      // print(bytes.lengthInBytes);
-      attachments.add({
-        "i": index++,
-        "filename": img.path.split("/").last,
-        "content": base64.encode(bytes),
-      });
-    }
-    print(attachments);
     try {
+      for (var img in _images) {
+        final bytes = img.readAsBytesSync();
+        // print(bytes.lengthInBytes);
+        attachments.add({
+          "i": index++,
+          "filename": img.path.split("/").last,
+          "content": base64.encode(bytes),
+        });
+      }
+      // print(attachments);
+
       var result = await ReturnedDao.uploadPictures(
           widget.returnedParcel.id, attachments);
       if (result['status'] == "succ") {
