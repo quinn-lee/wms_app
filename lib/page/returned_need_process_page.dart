@@ -87,7 +87,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
     for (var element in parcelList) {
       widgets.add(ListTile(
         title: Text("${element.shpmt_num}, ${element.order_num}"),
-        subtitle: Text("${element.batch_num}"),
+        subtitle: Text("customer's disposal: ${element.disposal}"),
         trailing: _tools(element),
       ));
       widgets.add(const Divider(
@@ -252,6 +252,9 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
 
   void _handle(String select, ReturnedParcel rParcel) async {
     if (select == "reshelf" || select == "reshelf_as_spare") {
+      rParcel.disposal = select;
+      HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNeedReshelf,
+          args: {"needReshelParcel": rParcel});
     } else {
       try {
         var result = await ReturnedDao.finish(rParcel.id, select);

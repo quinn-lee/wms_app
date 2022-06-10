@@ -8,6 +8,7 @@ import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_need_process_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
+import 'package:wms_app/page/returned_shelf_page.dart';
 
 typedef RouteChangeListener(RouteStatusInfo current, RouteStatusInfo? pre);
 
@@ -35,7 +36,8 @@ enum RouteStatus {
   returnedScan,
   returnedPhoto,
   returnedNeedPhoto,
-  returnedNeedProcess
+  returnedNeedProcess,
+  returnedNeedReshelf
 }
 
 // 获取page 对应的RouteStatus
@@ -54,6 +56,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.returnedNeedPhoto;
   } else if (page.child is ReturnedNeedProcessPage) {
     return RouteStatus.returnedNeedProcess;
+  } else if (page.child is ReturnedShelfPage) {
+    return RouteStatus.returnedNeedReshelf;
   } else {
     return RouteStatus.unknown;
   }
