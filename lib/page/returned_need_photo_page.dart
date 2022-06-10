@@ -26,6 +26,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
 
   @override
   void initState() {
+    bool resumeFlag = false;
     super.initState();
     textEditingController.addListener(() {
       print("controller: ${textEditingController.text}");
@@ -37,11 +38,20 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
         print("打开了待拍照列表: onResume");
         textEditingController.clear(); // 清除搜索栏
         loadData(); // 重新加载数据
+        resumeFlag = true;
       } else if (widget == pre?.page || pre?.page is ReturnedNeedPhotoPage) {
         print("待拍照列表: onPause");
       }
     });
-    loadData();
+    if (!resumeFlag) {
+      loadData();
+    }
+  }
+
+  @override
+  void dispose() {
+    HiNavigator.getInstance().removeListener(listener);
+    super.dispose();
   }
 
   @override

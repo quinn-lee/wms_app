@@ -29,6 +29,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
 
   @override
   void initState() {
+    bool resumeFlag = false;
     super.initState();
     textEditingController.addListener(() {
       print("controller: ${textEditingController.text}");
@@ -36,15 +37,24 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
     HiNavigator.getInstance().addListener(listener = (current, pre) {
       print("current: ${current.page}");
       print("pre: ${pre.page}");
-      if (widget == current.page || current.page is ReturnedNeedPhotoPage) {
+      if (widget == current.page || current.page is ReturnedNeedProcessPage) {
         print("打开了待处理列表: onResume");
         textEditingController.clear(); // 清除搜索栏
         loadData(); // 重新加载数据
-      } else if (widget == pre?.page || pre?.page is ReturnedNeedPhotoPage) {
+        resumeFlag = true;
+      } else if (widget == pre?.page || pre?.page is ReturnedNeedProcessPage) {
         print("待处理列表: onPause");
       }
     });
-    loadData();
+    if (!resumeFlag) {
+      loadData();
+    }
+  }
+
+  @override
+  void dispose() {
+    HiNavigator.getInstance().removeListener(listener);
+    super.dispose();
   }
 
   @override
