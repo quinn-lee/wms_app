@@ -51,7 +51,7 @@ class _ReturnedPageState extends HiState<ReturnedPage>
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.scanner),
+                leading: const Icon(Icons.photo_camera),
                 title: const Text("Need Pictures Parcels"),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
@@ -60,7 +60,7 @@ class _ReturnedPageState extends HiState<ReturnedPage>
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.scanner),
+                leading: const Icon(Icons.list),
                 title: const Text("Need To Be Processed Parcels"),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {

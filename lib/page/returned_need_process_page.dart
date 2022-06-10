@@ -199,7 +199,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
   void loadData({shpmtNumCont = ""}) async {
     try {
       var result = await ReturnedDao.get(
-          shpmtNumCont: shpmtNumCont, status: "in_process_photo");
+          shpmtNumCont: shpmtNumCont, status: "in_process");
       print('loadData():$result');
       if (result['status'] == "succ") {
         setState(() {

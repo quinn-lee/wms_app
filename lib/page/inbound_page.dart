@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
+import 'package:wms_app/widget/home_appbar.dart';
 
 class InboundPage extends StatefulWidget {
   const InboundPage({Key? key}) : super(key: key);
@@ -12,9 +13,9 @@ class _InboundPageState extends HiState<InboundPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Container(
-        child: Text('入库'),
+      appBar: homeAppBar("Inbound"),
+      body: const Center(
+        child: Text('Waiting for development'),
       ),
     );
   }

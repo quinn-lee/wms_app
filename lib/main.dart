@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/db/hi_cache.dart';
 import 'package:wms_app/http/core/hi_error.dart';
 import 'package:wms_app/http/core/hi_net.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends HiState<MyApp> {
   final EtRouteDelegate _routeDelegate = EtRouteDelegate();
 
   @override
