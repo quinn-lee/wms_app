@@ -4,6 +4,7 @@ import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
+import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/loading_container.dart';
@@ -86,11 +87,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
       widgets.add(ListTile(
         title: Text("${element.shpmt_num}, ${element.order_num}"),
         subtitle: Text("${element.batch_num}"),
-        trailing: _tools(),
-        // onTap: () {
-        //   HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,
-        //       args: {"needPhotoParce": element});
-        // },
+        trailing: _tools(element.disposal),
       ));
       widgets.add(const Divider(
         height: 1,
@@ -100,38 +97,69 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
     return widgets;
   }
 
-  List<PopupMenuEntry<String>> _toolMenuItems(BuildContext context) {
-    List toolModels = ["a", "b"];
-    return toolModels.map<PopupMenuEntry<String>>((title) {
-      return PopupMenuItem<String>(
-        padding: const EdgeInsets.only(
-          left: 8,
-          right: 8,
-        ),
-        value: title,
-        child: Row(
-          children: [
-            const SizedBox(
-              width: 4,
-            ),
-            Text(
-              title,
-            )
-          ],
-        ),
-      );
-    }).toList();
-  }
+  // List<PopupMenuEntry<String>> _toolMenuItems(BuildContext context) {
+  //   List<ToolModel> toolOptions = [
+  //     ToolModel("Reshelf", "reshelf"),
+  //     ToolModel("Reshelf As Spare", "reshelf_as_spare"),
+  //     ToolModel("As Problem Skus", "problem_sku"),
+  //     ToolModel("Abandon", "abandon"),
+  //   ];
+  //   return toolOptions.map<PopupMenuEntry<String>>((option) {
+  //     return PopupMenuItem<String>(
+  //       padding: const EdgeInsets.only(
+  //         left: 8,
+  //         right: 8,
+  //       ),
+  //       value: option.value,
+  //       child: Row(
+  //         children: [
+  //           const SizedBox(
+  //             width: 4,
+  //           ),
+  //           Text(
+  //             option.title,
+  //           )
+  //         ],
+  //       ),
+  //     );
+  //   }).toList();
+  // }
 
-  Widget _tools() {
+  Widget _tools(customerSelect) {
+    List<ToolModel> toolOptions = [
+      ToolModel("Reshelf", "reshelf"),
+      ToolModel("Reshelf As Spare", "reshelf_as_spare"),
+      ToolModel("As Problem Skus", "problem_sku"),
+      ToolModel("Abandon", "abandon"),
+    ];
     return PopupMenuButton<String>(
-      itemBuilder: _toolMenuItems,
+      itemBuilder: (BuildContext context) {
+        return toolOptions.map<PopupMenuEntry<String>>((option) {
+          return PopupMenuItem<String>(
+            padding: const EdgeInsets.only(
+              left: 8,
+              right: 8,
+            ),
+            value: "${option.value}|$customerSelect",
+            child: Row(
+              children: [
+                const SizedBox(
+                  width: 4,
+                ),
+                Text(
+                  option.title,
+                )
+              ],
+            ),
+          );
+        }).toList();
+      },
       onSelected: (String value) {
         print(value);
       },
       icon: const Icon(
         Icons.more_horiz,
-        color: Colors.white,
+        color: primary,
       ),
     );
   }
@@ -176,4 +204,11 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class ToolModel {
+  String title;
+  String value;
+
+  ToolModel(this.title, this.value);
 }
