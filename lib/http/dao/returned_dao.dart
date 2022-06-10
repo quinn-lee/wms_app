@@ -1,5 +1,6 @@
 import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/request/base_request.dart';
+import 'package:wms_app/http/request/finish_returned_request.dart';
 import 'package:wms_app/http/request/receive_request.dart';
 import 'package:wms_app/http/request/returned_request.dart';
 import 'package:wms_app/http/request/upload_picture_request.dart';
@@ -40,6 +41,18 @@ class ReturnedDao {
     BaseRequest request = UploadPictureRequest();
     request.pathParams = "$id/take_photo";
     request.add("attachment", attachment);
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
+    return result;
+  }
+
+  static finish(int id, String disposalResult, {String? shelfNum}) async {
+    BaseRequest request = FinishReturnedReqeust();
+    request.pathParams = "$id/finish";
+    request.add("disposal_result", disposalResult);
+    if (shelfNum != null) {
+      request.add("shelf_num", shelfNum);
+    }
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;

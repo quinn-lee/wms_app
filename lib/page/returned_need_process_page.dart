@@ -18,7 +18,8 @@ class ReturnedNeedProcessPage extends StatefulWidget {
       _ReturnedNeedProcessPageState();
 }
 
-class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
+class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   List<ReturnedParcel> parcelList = [];
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
@@ -87,7 +88,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
       widgets.add(ListTile(
         title: Text("${element.shpmt_num}, ${element.order_num}"),
         subtitle: Text("${element.batch_num}"),
-        trailing: _tools(element.disposal),
+        trailing: _tools(element),
       ));
       widgets.add(const Divider(
         height: 1,
@@ -125,7 +126,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
   //   }).toList();
   // }
 
-  Widget _tools(customerSelect) {
+  Widget _tools(ReturnedParcel rParcel) {
     List<ToolModel> toolOptions = [
       ToolModel("Reshelf", "reshelf"),
       ToolModel("Reshelf As Spare", "reshelf_as_spare"),
@@ -140,7 +141,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
               left: 8,
               right: 8,
             ),
-            value: "${option.value}|$customerSelect",
+            value: option.value,
             child: Row(
               children: [
                 const SizedBox(
@@ -154,14 +155,45 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
           );
         }).toList();
       },
-      onSelected: (String value) {
-        print(value);
+      onSelected: (String select) {
+        // print(value);
+        // _alertDialog(value, "Warning");
+        _confirm(select, rParcel);
       },
       icon: const Icon(
         Icons.more_horiz,
         color: primary,
       ),
     );
+  }
+
+  _alertDialog(String message, String title, ReturnedParcel rParcel,
+      String select) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, "cancel");
+                  },
+                  child:
+                      const Text("Cancel", style: TextStyle(color: primary))),
+              TextButton(
+                  onPressed: () {
+                    _handle(select, rParcel);
+                    Navigator.pop(context, "ok");
+                  },
+                  child: const Text(
+                    "Confirm",
+                    style: TextStyle(color: primary),
+                  ))
+            ],
+          );
+        });
   }
 
   void loadData({shpmtNumCont = ""}) async {
@@ -204,6 +236,45 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
 
   @override
   bool get wantKeepAlive => true;
+
+  void _confirm(String select, ReturnedParcel rParcel) {
+    if (select != rParcel.disposal) {
+      _alertDialog(
+          "Your select($select) is not same as customer's choice(${rParcel.disposal}), Are You Sure?",
+          "Warning",
+          rParcel,
+          select);
+    } else {
+      _alertDialog("Your select is $select, Please Confirm!", "Warning",
+          rParcel, select);
+    }
+  }
+
+  void _handle(String select, ReturnedParcel rParcel) async {
+    if (select == "reshelf" || select == "reshelf_as_spare") {
+    } else {
+      try {
+        var result = await ReturnedDao.finish(rParcel.id, select);
+        print(result);
+        if (result['status'] == "succ") {
+          showToast("Disposal Successful ");
+          setState(() {
+            loadData(); // 重新加载数据
+          });
+        } else {
+          showWarnToast(result['reason'].join(","));
+          setState(() {
+            loadData(); // 重新加载数据
+          });
+        }
+      } catch (e) {
+        showWarnToast(e.toString());
+        setState(() {
+          loadData(); // 重新加载数据
+        });
+      }
+    }
+  }
 }
 
 class ToolModel {
