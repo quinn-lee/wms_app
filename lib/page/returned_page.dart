@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/widget/home_appbar.dart';
+import 'package:wms_app/core/hi_state.dart';
 
 class ReturnedPage extends StatefulWidget {
   const ReturnedPage({Key? key}) : super(key: key);
@@ -10,7 +11,7 @@ class ReturnedPage extends StatefulWidget {
   State<ReturnedPage> createState() => _ReturnedPageState();
 }
 
-class _ReturnedPageState extends State<ReturnedPage>
+class _ReturnedPageState extends HiState<ReturnedPage>
     with AutomaticKeepAliveClientMixin {
   var listener;
 

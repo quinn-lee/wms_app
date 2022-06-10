@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
@@ -16,7 +17,7 @@ class ReturnedNeedProcessPage extends StatefulWidget {
       _ReturnedNeedProcessPageState();
 }
 
-class _ReturnedNeedProcessPageState extends State<ReturnedNeedProcessPage> {
+class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage> {
   List<ReturnedParcel> parcelList = [];
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
@@ -85,11 +86,11 @@ class _ReturnedNeedProcessPageState extends State<ReturnedNeedProcessPage> {
       widgets.add(ListTile(
         title: Text("${element.shpmt_num}, ${element.order_num}"),
         subtitle: Text("${element.batch_num}"),
-        trailing: const Icon(Icons.add_a_photo),
-        onTap: () {
-          HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,
-              args: {"needPhotoParce": element});
-        },
+        trailing: _tools(),
+        // onTap: () {
+        //   HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,
+        //       args: {"needPhotoParce": element});
+        // },
       ));
       widgets.add(const Divider(
         height: 1,
@@ -99,10 +100,46 @@ class _ReturnedNeedProcessPageState extends State<ReturnedNeedProcessPage> {
     return widgets;
   }
 
+  List<PopupMenuEntry<String>> _toolMenuItems(BuildContext context) {
+    List toolModels = ["a", "b"];
+    return toolModels.map<PopupMenuEntry<String>>((title) {
+      return PopupMenuItem<String>(
+        padding: const EdgeInsets.only(
+          left: 8,
+          right: 8,
+        ),
+        value: title,
+        child: Row(
+          children: [
+            const SizedBox(
+              width: 4,
+            ),
+            Text(
+              title,
+            )
+          ],
+        ),
+      );
+    }).toList();
+  }
+
+  Widget _tools() {
+    return PopupMenuButton<String>(
+      itemBuilder: _toolMenuItems,
+      onSelected: (String value) {
+        print(value);
+      },
+      icon: const Icon(
+        Icons.more_horiz,
+        color: Colors.white,
+      ),
+    );
+  }
+
   void loadData({shpmtNumCont = ""}) async {
     try {
       var result = await ReturnedDao.get(
-          shpmtNumCont: shpmtNumCont, status: "in_process");
+          shpmtNumCont: shpmtNumCont, status: "in_process_photo");
       print('loadData():$result');
       if (result['status'] == "succ") {
         setState(() {
@@ -131,8 +168,10 @@ class _ReturnedNeedProcessPageState extends State<ReturnedNeedProcessPage> {
         parcelList.clear();
       });
     }
-    textEditingController.clear(); // 清除搜索栏
-    FocusScope.of(context).requestFocus(focusNode); //聚焦
+    if (mounted) {
+      textEditingController.clear(); // 清除搜索栏
+      FocusScope.of(context).requestFocus(focusNode); //聚焦
+    }
   }
 
   @override

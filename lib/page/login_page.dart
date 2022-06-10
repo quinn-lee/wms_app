@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wms_app/core/hi_state.dart';
 
 import 'package:wms_app/http/dao/login_dao.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
@@ -17,7 +18,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends HiState<LoginPage> {
   bool protect = false;
   bool loginEnable = false;
   String? userName;
