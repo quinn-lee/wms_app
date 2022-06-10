@@ -108,7 +108,9 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       player.play('sounds/alert.mp3');
       showWarnToast(e.toString());
     }
-    textEditingController.clear();
-    FocusScope.of(context).requestFocus(focusNode);
+    if (mounted) {
+      textEditingController.clear();
+      FocusScope.of(context).requestFocus(focusNode);
+    }
   }
 }

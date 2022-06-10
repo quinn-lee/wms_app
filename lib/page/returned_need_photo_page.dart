@@ -131,8 +131,10 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
         parcelList.clear();
       });
     }
-    textEditingController.clear(); // 清除搜索栏
-    FocusScope.of(context).requestFocus(focusNode); //聚焦
+    if (mounted) {
+      textEditingController.clear(); // 清除搜索栏
+      FocusScope.of(context).requestFocus(focusNode); //聚焦
+    }
   }
 
   @override

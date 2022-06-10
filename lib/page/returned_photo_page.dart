@@ -25,7 +25,8 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   Future getImage(bool isTakePhoto) async {
     Navigator.pop(context);
     var image = await ImagePicker().pickImage(
-        source: isTakePhoto ? ImageSource.camera : ImageSource.gallery);
+        source: isTakePhoto ? ImageSource.camera : ImageSource.gallery,
+        imageQuality: 10); // 图片压缩
     if (image != null) {
       setState(() {
         _images.add(File(image.path));
@@ -159,7 +160,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
     int index = 1;
     for (var img in _images) {
       final bytes = img.readAsBytesSync();
-      // print(base64.encode(bytes));
+      // print(bytes.lengthInBytes);
       attachments.add({
         "i": index++,
         "filename": img.path.split("/").last,
