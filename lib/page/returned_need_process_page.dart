@@ -186,20 +186,21 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
             title: Text(title),
             content: Text(message),
             actions: [
-              TextButton(
+              MaterialButton(
                   onPressed: () {
                     Navigator.pop(context, "cancel");
                   },
                   child:
                       const Text("Cancel", style: TextStyle(color: primary))),
-              TextButton(
+              MaterialButton(
                   onPressed: () {
                     _handle(select, rParcel);
                     Navigator.pop(context, "ok");
                   },
+                  color: primary,
                   child: const Text(
                     "Confirm",
-                    style: TextStyle(color: primary),
+                    style: TextStyle(color: Colors.white),
                   ))
             ],
           );
