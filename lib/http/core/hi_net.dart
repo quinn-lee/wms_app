@@ -36,7 +36,7 @@ class HiNet {
     var result = response?.data;
     print(result);
     int? status = response?.statusCode;
-    var hiError;
+    dynamic hiError;
     switch (status) {
       case 200:
         return result;

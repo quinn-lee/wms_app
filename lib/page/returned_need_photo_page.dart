@@ -22,7 +22,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
   FocusNode focusNode = FocusNode();
   String? num;
   bool _isLoading = true;
-  var listener;
+  dynamic listener;
 
   @override
   void initState() {

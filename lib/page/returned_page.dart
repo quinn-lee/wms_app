@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wms_app/http/dao/returned_dao.dart';
+// import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/widget/home_appbar.dart';
 import 'package:wms_app/core/hi_state.dart';
@@ -13,7 +13,7 @@ class ReturnedPage extends StatefulWidget {
 
 class _ReturnedPageState extends HiState<ReturnedPage>
     with AutomaticKeepAliveClientMixin {
-  var listener;
+  dynamic listener;
 
   @override
   void initState() {

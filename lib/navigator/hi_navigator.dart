@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wms_app/navigator/bottom_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
-import 'package:wms_app/page/home_page.dart';
+// import 'package:wms_app/page/home_page.dart';
 
 import 'package:wms_app/page/login_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
