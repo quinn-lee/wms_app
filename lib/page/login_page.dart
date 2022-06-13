@@ -10,6 +10,7 @@ import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/login_input.dart';
 
 import 'package:wms_app/util/string_util.dart';
+import 'package:wms_app/widget/login_logo.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -33,6 +34,7 @@ class _LoginPageState extends HiState<LoginPage> {
         body: Container(
           child: ListView(
             children: [
+              const LoginLogo(),
               LoginInput(
                 'Email',
                 'Please input email',
