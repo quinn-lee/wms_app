@@ -7,9 +7,9 @@ class LoginLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 10, bottom: 10),
-      decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(bottom: BorderSide(color: Colors.white))),
+      // decoration: const BoxDecoration(
+      //     color: Colors.white,
+      //     border: Border(bottom: BorderSide(color: Colors.white))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: const [
