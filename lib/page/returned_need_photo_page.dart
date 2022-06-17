@@ -109,10 +109,14 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
     return widgets;
   }
 
-  void loadData({shpmtNumCont = ""}) async {
+  void loadData({shpmtNumCont}) async {
     try {
-      var result = await ReturnedDao.get(
-          shpmtNumCont: shpmtNumCont, status: "in_process_photo");
+      dynamic result;
+      if (shpmtNumCont != null) {
+        result = await ReturnedDao.get(shpmtNumCont: shpmtNumCont);
+      } else {
+        result = await ReturnedDao.get(status: "in_process_photo");
+      }
       print('loadData():$result');
       if (result['status'] == "succ") {
         setState(() {
