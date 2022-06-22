@@ -3,12 +3,22 @@ import 'package:wms_app/http/request/base_request.dart';
 import 'package:wms_app/http/request/finish_returned_request.dart';
 import 'package:wms_app/http/request/receive_request.dart';
 import 'package:wms_app/http/request/returned_request.dart';
+import 'package:wms_app/http/request/returned_sku_request.dart';
 import 'package:wms_app/http/request/upload_picture_request.dart';
 
 class ReturnedDao {
   // 扫描
   static Future<Map> scan(String num) async {
     BaseRequest request = ReceiveRequest();
+    request.add("num", num);
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
+    return result;
+  }
+
+  // 获取sku信息
+  static getReturnedSkus(String num) async {
+    BaseRequest request = ReturnedSkuRequest();
     request.add("num", num);
     var result = await HiNet.getInstance().fire(request);
     print(result);

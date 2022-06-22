@@ -2,8 +2,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
+import 'package:wms_app/model/returned_sku.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
+import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
 class ReturnedScanPage extends StatefulWidget {
@@ -18,6 +20,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   FocusNode focusNode = FocusNode();
   String? num;
   List<Map> resultShow = [];
+  List<ReturnedSku> skuList = [];
+  bool canSubmit = false;
   AudioCache player = AudioCache();
 
   @override
@@ -51,7 +55,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         print("num: $num");
       },
       onSubmitted: (text) {
-        _send();
+        // _send();
+        _loadData();
       },
       focusChanged: (bool hasFocus) {
         if (!hasFocus) {}
@@ -61,6 +66,27 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       height: 1,
       color: Colors.white,
     ));
+    for (var element in skuList) {
+      widgets.add(ListTile(
+        title: Text("${element.skuCode}, ${element.barcode}"),
+        subtitle:
+            Text("name: ${element.foreignName}, quantity: ${element.quantity}"),
+      ));
+      widgets.add(const Divider(
+        height: 1,
+        color: Colors.white,
+      ));
+    }
+    if (skuList.isNotEmpty) {
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+        child: LoginButton(
+          'Submit',
+          enable: canSubmit,
+          onPressed: _send,
+        ),
+      ));
+    }
     for (var element in resultShow.reversed) {
       widgets.add(ListTile(
         title: Text(element['show']),
@@ -76,6 +102,54 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     return widgets;
   }
 
+  void _loadData() async {
+    try {
+      if (num != null && num != "") {
+        var result = await ReturnedDao.getReturnedSkus(num!);
+        print('loadData():$result');
+        if (result['status'] == "succ") {
+          setState(() {
+            skuList.clear();
+            for (var item in result['data']) {
+              skuList.add(ReturnedSku.fromJson(item));
+            }
+            canSubmit = true;
+          });
+          if (result['data'].length == 0) {
+            setState(() {
+              skuList.clear();
+              canSubmit = false;
+              resultShow
+                  .add({"status": false, "show": "$num, No Sku Info Found"});
+            });
+            showWarnToast("No Sku Info Found");
+          }
+        } else {
+          print(result['reason']);
+          showWarnToast(result['reason'].join(","));
+          setState(() {
+            resultShow
+                .add({"status": false, "show": result['reason'].join(",")});
+            skuList.clear();
+            canSubmit = false;
+          });
+        }
+      }
+    } catch (e) {
+      print(e);
+      showWarnToast(e.toString());
+      setState(() {
+        resultShow.add({"status": false, "show": e.toString()});
+        canSubmit = false;
+        skuList.clear();
+      });
+    }
+    if (mounted) {
+      textEditingController.clear();
+      FocusScope.of(context).requestFocus(focusNode);
+    }
+  }
+
   void _send() async {
     dynamic result;
     try {
@@ -89,6 +163,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
               "show":
                   "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num"
             });
+            skuList.clear();
+            canSubmit = false;
           });
           player.play('sounds/success01.mp3');
           showToast("Scan Successful");
@@ -96,6 +172,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
           setState(() {
             resultShow
                 .add({"status": false, "show": result['reason'].join(",")});
+            skuList.clear();
+            canSubmit = false;
           });
           player.play('sounds/alert.mp3');
           showWarnToast(result['reason'].join(","));
@@ -104,6 +182,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     } catch (e) {
       setState(() {
         resultShow.add({"status": false, "show": e.toString()});
+        skuList.clear();
+        canSubmit = false;
       });
       player.play('sounds/alert.mp3');
       showWarnToast(e.toString());
