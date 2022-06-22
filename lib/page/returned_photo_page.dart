@@ -51,15 +51,19 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
           child: ListView(children: [
         ListTile(
           title: const Text("Batch Num: "),
-          subtitle: Text("${widget.returnedParcel.batch_num}"),
+          subtitle: Text("${widget.returnedParcel.batchNum}"),
         ),
         ListTile(
           title: const Text("Order Num: "),
-          subtitle: Text("${widget.returnedParcel.order_num}"),
+          subtitle: Text("${widget.returnedParcel.orderNum}"),
         ),
         ListTile(
           title: const Text("Shipment Num: "),
-          subtitle: Text("${widget.returnedParcel.shpmt_num}"),
+          subtitle: Text("${widget.returnedParcel.shpmtNum}"),
+        ),
+        ListTile(
+          title: const Text("Photo Memo: "),
+          subtitle: Text("${widget.returnedParcel.photoMemo}"),
         ),
         ListTile(
           title: const Text("Pictures: "),

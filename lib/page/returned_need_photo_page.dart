@@ -93,8 +93,8 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
     ));
     for (var element in parcelList) {
       widgets.add(ListTile(
-        title: Text("${element.shpmt_num}, ${element.order_num}"),
-        subtitle: Text("${element.batch_num}"),
+        title: Text("${element.shpmtNum}, ${element.orderNum}"),
+        subtitle: Text("${element.batchNum}"),
         trailing: const Icon(Icons.add_a_photo),
         onTap: () {
           HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,

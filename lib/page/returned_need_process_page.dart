@@ -96,7 +96,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
     ));
     for (var element in parcelList) {
       widgets.add(ListTile(
-        title: Text("${element.shpmt_num}, ${element.order_num}"),
+        title: Text("${element.shpmtNum}, ${element.orderNum}"),
         subtitle: Text("customer's disposal: ${element.disposal}"),
         trailing: _tools(element),
       ));
