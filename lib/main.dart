@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/db/hi_cache.dart';
 import 'package:wms_app/http/core/hi_error.dart';
@@ -32,6 +35,15 @@ class _MyAppState extends HiState<MyApp> {
   final EtRouteDelegate _routeDelegate = EtRouteDelegate();
 
   @override
+  void initState() {
+    super.initState();
+    initXUpdate();
+    FlutterXUpdate.checkUpdate(
+      url: "http://172.105.20.13:3006/api/v1.0/apk/apk_update_info",
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<HiCache>(
         //进行初始化
@@ -49,6 +61,37 @@ class _MyAppState extends HiState<MyApp> {
             debugShowCheckedModeBanner: false,
           );
         });
+  }
+
+  //初始化XUpdate
+  void initXUpdate() {
+    FlutterXUpdate.init(
+            //是否输出日志
+            debug: true,
+            //是否使用post请求
+            isPost: false,
+            //post请求是否是上传json
+            isPostJson: false,
+            //请求响应超时时间
+            timeout: 25000,
+            //是否开启自动模式
+            isWifiOnly: false,
+            //是否开启自动模式
+            isAutoMode: false,
+            //需要设置的公共参数
+            supportSilentInstall: false,
+            //在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
+            enableRetry: false)
+        .then((value) {
+      print("初始化成功: $value");
+    }).catchError((error) {
+      print(error);
+    });
+
+    FlutterXUpdate.setErrorHandler(
+        onUpdateError: (Map<String, dynamic>? message) async {
+      print(message);
+    });
   }
 }
 
