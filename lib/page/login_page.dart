@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
+import 'package:wms_app/db/hi_cache.dart';
 
 import 'package:wms_app/http/dao/login_dao.dart';
 // import 'package:wms_app/http/dao/returned_dao.dart';
@@ -20,10 +21,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends HiState<LoginPage> {
+  final TextEditingController emailEditingController = TextEditingController();
+  final TextEditingController passwdEditingController = TextEditingController();
   bool protect = false;
   bool loginEnable = false;
   String? userName;
   String? password;
+
+  @override
+  void initState() {
+    super.initState();
+    // 登录时记住email
+    if (HiCache.getInstance().get("login_email") != null) {
+      userName = HiCache.getInstance().get("login_email");
+      emailEditingController.text = HiCache.getInstance().get("login_email");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +51,21 @@ class _LoginPageState extends HiState<LoginPage> {
               LoginInput(
                 'Email',
                 'Please input email',
+                emailEditingController,
                 onChanged: (text) {
                   userName = text;
                   checkInput();
+                },
+                focusChanged: (bool hasFocus) {
+                  if (!hasFocus) {
+                    checkInput();
+                  }
                 },
               ),
               LoginInput(
                 'Password',
                 'Please input password',
+                passwdEditingController,
                 obscureText: true,
                 onChanged: (text) {
                   password = text;

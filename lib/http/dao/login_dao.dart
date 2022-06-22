@@ -22,6 +22,8 @@ class LoginDao {
     if (result[TOKEN] != null) {
       //保存登录令牌
       HiCache.getInstance().setString(TOKEN, result[TOKEN]);
+      //保存登录邮箱
+      HiCache.getInstance().setString("login_email", username);
     } else {
       //登录失败
       HiCache.getInstance().setString(TOKEN, "");

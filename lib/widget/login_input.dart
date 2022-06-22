@@ -9,8 +9,9 @@ class LoginInput extends StatefulWidget {
   final bool lineStretch;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final TextEditingController textEditingController;
 
-  const LoginInput(this.title, this.hint,
+  const LoginInput(this.title, this.hint, this.textEditingController,
       {Key? key,
       this.onChanged,
       this.focusChanged,
@@ -39,6 +40,7 @@ class _LoginInputState extends State<LoginInput> {
   @override
   void dispose() {
     _focusNode.dispose();
+    widget.textEditingController.dispose();
     super.dispose();
   }
 
@@ -78,6 +80,7 @@ class _LoginInputState extends State<LoginInput> {
       keyboardType: widget.keyboardType,
       autofocus: !widget.obscureText,
       cursorColor: primary,
+      controller: widget.textEditingController,
       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
       //输入框的样式
       decoration: InputDecoration(
