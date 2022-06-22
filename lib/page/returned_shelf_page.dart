@@ -4,8 +4,10 @@ import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
+import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
 class ReturnedShelfPage extends StatefulWidget {
@@ -20,6 +22,7 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
   String? shelfNum;
+  bool canSubmit = false;
   AudioCache player = AudioCache();
 
   @override
@@ -51,19 +54,39 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
               textEditingController,
               onChanged: (text) {
                 shelfNum = text;
-                print("shelfNum: $shelfNum");
+                checkInput();
               },
-              onSubmitted: (text) {
-                _send();
-              },
+              // onSubmitted: (text) {
+              //   _send();
+              // },
               focusChanged: (bool hasFocus) {
                 if (!hasFocus) {}
               },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+              child: LoginButton(
+                'Submit',
+                enable: canSubmit,
+                onPressed: _send,
+              ),
             )
           ],
         ),
       ),
     );
+  }
+
+  void checkInput() {
+    bool enable;
+    if (isNotEmpty(shelfNum)) {
+      enable = true;
+    } else {
+      enable = false;
+    }
+    setState(() {
+      canSubmit = enable;
+    });
   }
 
   _send() async {
