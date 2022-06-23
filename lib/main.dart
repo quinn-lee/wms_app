@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:wms_app/core/hi_state.dart';
@@ -39,8 +37,10 @@ class _MyAppState extends HiState<MyApp> {
     super.initState();
     initXUpdate();
     FlutterXUpdate.checkUpdate(
-      url: "http://172.105.20.13:3006/api/v1.0/apk/apk_update_info",
-    );
+        url: "http://172.105.20.13:3006/api/v1.0/apk/apk_update_info",
+        themeColor: "#ffff9db5",
+        topImageRes: "white",
+        buttonTextColor: "#ffffffff");
   }
 
   @override

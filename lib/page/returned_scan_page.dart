@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_sku.dart';
+import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/login_button.dart';
@@ -23,6 +24,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   List<ReturnedSku> skuList = [];
   bool canSubmit = false;
   AudioCache player = AudioCache();
+  String batchNum = "";
+  String description = "";
 
   @override
   void initState() {
@@ -34,13 +37,20 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("Returned Scan", "", () {}),
-      body: Container(
-        child: ListView(
-          children: _buildWidget(),
+        appBar: appBar("Returned Scan", "", () {}),
+        body: Container(
+          child: ListView(
+            children: _buildWidget(),
+          ),
         ),
-      ),
-    );
+        floatingActionButton: FloatingActionButton(
+            onPressed: _cancel,
+            tooltip: 'cancel',
+            backgroundColor: primary,
+            child: const Text(
+              "Cancel",
+              style: TextStyle(color: Colors.white),
+            )));
   }
 
   List<Widget> _buildWidget() {
@@ -66,20 +76,32 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       height: 1,
       color: Colors.white,
     ));
-    for (var element in skuList) {
+    if (batchNum != "") {
       widgets.add(ListTile(
-        title: Text("${element.skuCode}, ${element.barcode}"),
-        subtitle:
-            Text("name: ${element.foreignName}, quantity: ${element.quantity}"),
+        title: Text(batchNum),
+        subtitle: Text(description),
+      ));
+    }
+    for (var element in skuList) {
+      widgets.add(Card(
+        child: Column(
+          children: [
+            ListTile(
+              title: Text("${element.skuCode}, ${element.barcode}"),
+              subtitle: Text(
+                  "name: ${element.foreignName}, quantity: ${element.quantity}"),
+            )
+          ],
+        ),
       ));
       widgets.add(const Divider(
         height: 1,
         color: Colors.white,
       ));
     }
-    if (skuList.isNotEmpty) {
+    if (batchNum != "") {
       widgets.add(Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+        padding: const EdgeInsets.all(20),
         child: LoginButton(
           'Submit',
           enable: canSubmit,
@@ -110,20 +132,24 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         if (result['status'] == "succ") {
           setState(() {
             skuList.clear();
-            for (var item in result['data']) {
+            batchNum = result['data']['batch_num'];
+            description = result['data']['description'];
+            for (var item in result['data']['skus']) {
               skuList.add(ReturnedSku.fromJson(item));
             }
             canSubmit = true;
           });
-          if (result['data'].length == 0) {
-            setState(() {
-              skuList.clear();
-              canSubmit = false;
-              resultShow
-                  .add({"status": false, "show": "$num, No Sku Info Found"});
-            });
-            showWarnToast("No Sku Info Found");
-          }
+          // if (result['data']['skus'].length == 0) {
+          //   setState(() {
+          //     skuList.clear();
+          //     batchNum = "";
+          //     description = "";
+          //     canSubmit = false;
+          //     resultShow
+          //         .add({"status": false, "show": "$num, No Sku Info Found"});
+          //   });
+          //   showWarnToast("No Sku Info Found");
+          // }
         } else {
           print(result['reason']);
           showWarnToast(result['reason'].join(","));
@@ -131,6 +157,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             resultShow
                 .add({"status": false, "show": result['reason'].join(",")});
             skuList.clear();
+            batchNum = "";
+            description = "";
             canSubmit = false;
           });
         }
@@ -141,6 +169,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       setState(() {
         resultShow.add({"status": false, "show": e.toString()});
         canSubmit = false;
+        batchNum = "";
+        description = "";
         skuList.clear();
       });
     }
@@ -148,6 +178,15 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       textEditingController.clear();
       FocusScope.of(context).requestFocus(focusNode);
     }
+  }
+
+  void _cancel() {
+    setState(() {
+      canSubmit = false;
+      batchNum = "";
+      description = "";
+      skuList.clear();
+    });
   }
 
   void _send() async {
@@ -164,6 +203,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
                   "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num"
             });
             skuList.clear();
+            batchNum = "";
+            description = "";
             canSubmit = false;
           });
           player.play('sounds/success01.mp3');
@@ -173,6 +214,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             resultShow
                 .add({"status": false, "show": result['reason'].join(",")});
             skuList.clear();
+            batchNum = "";
+            description = "";
             canSubmit = false;
           });
           player.play('sounds/alert.mp3');
@@ -183,6 +226,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       setState(() {
         resultShow.add({"status": false, "show": e.toString()});
         skuList.clear();
+        batchNum = "";
+        description = "";
         canSubmit = false;
       });
       player.play('sounds/alert.mp3');
