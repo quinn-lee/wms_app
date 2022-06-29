@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:wms_app/navigator/bottom_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
+import 'package:wms_app/page/home_page.dart';
 // import 'package:wms_app/page/home_page.dart';
 
 import 'package:wms_app/page/login_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_need_process_page.dart';
+import 'package:wms_app/page/returned_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 import 'package:wms_app/page/returned_shelf_page.dart';
@@ -33,6 +35,7 @@ enum RouteStatus {
   home,
   detail,
   unknown,
+  returnedPage,
   returnedScan,
   returnedPhoto,
   returnedNeedPhoto,
@@ -44,10 +47,12 @@ enum RouteStatus {
 RouteStatus getStatus(MaterialPage page) {
   if (page.child is LoginPage) {
     return RouteStatus.login;
-  } else if (page.child is BottomNavigator) {
+  } else if (page.child is HomePage) {
     return RouteStatus.home;
   } else if (page.child is DetailPage) {
     return RouteStatus.detail;
+  } else if (page.child is ReturnedPage) {
+    return RouteStatus.returnedPage;
   } else if (page.child is ReturnedScanPage) {
     return RouteStatus.returnedScan;
   } else if (page.child is ReturnedPhotoPage) {
@@ -126,10 +131,10 @@ class HiNavigator extends _RouteJumpListener {
   }
 
   void _notify(RouteStatusInfo current) {
-    if (current.page is BottomNavigator && _bottomTab != null) {
-      //如果打开的是首页，则明确到首页具体的tab
-      current = _bottomTab!;
-    }
+    // if (current.page is BottomNavigator && _bottomTab != null) {
+    //   //如果打开的是首页，则明确到首页具体的tab
+    //   current = _bottomTab!;
+    // }
     print('hi_navigator:current:${current.page}');
     print('hi_navigator:pre:${_current?.page}');
     _listeners.forEach((listener) {

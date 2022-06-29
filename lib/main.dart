@@ -9,9 +9,11 @@ import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/bottom_navigator.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
+import 'package:wms_app/page/home_page.dart';
 import 'package:wms_app/page/login_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_need_process_page.dart';
+import 'package:wms_app/page/returned_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 import 'package:wms_app/page/returned_shelf_page.dart';
@@ -146,11 +148,13 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
     if (routeStatus == RouteStatus.home) {
       //跳转首页时将栈中其它页面进行出栈，因为首页不可回退
       pages.clear();
-      page = pageWrap(const BottomNavigator());
+      page = pageWrap(const HomePage());
     } else if (routeStatus == RouteStatus.detail) {
       page = pageWrap(DetailPage(rParcel!));
     } else if (routeStatus == RouteStatus.login) {
       page = pageWrap(const LoginPage());
+    } else if (routeStatus == RouteStatus.returnedPage) {
+      page = pageWrap(const ReturnedPage());
     } else if (routeStatus == RouteStatus.returnedScan) {
       page = pageWrap(const ReturnedScanPage());
     } else if (routeStatus == RouteStatus.returnedNeedPhoto) {

@@ -41,11 +41,15 @@ class _HomePageState extends State<HomePage>
           child: Column(
             children: [
               const Text("首页"),
+              // MaterialButton(
+              //     onPressed: () => HiNavigator.getInstance().onJumpTo(
+              //         RouteStatus.detail,
+              //         args: {"rparcel": ReturnedParcel(222)}),
+              //     child: const Text("详情")),
               MaterialButton(
-                  onPressed: () => HiNavigator.getInstance().onJumpTo(
-                      RouteStatus.detail,
-                      args: {"rparcel": ReturnedParcel(222)}),
-                  child: const Text("详情"))
+                  onPressed: () => HiNavigator.getInstance()
+                      .onJumpTo(RouteStatus.returnedPage),
+                  child: const Text("Returned")),
             ],
           ),
         ));
