@@ -47,7 +47,15 @@ class _LoginPageState extends HiState<LoginPage> {
         body: Container(
           child: ListView(
             children: [
+              const Divider(
+                height: 15,
+                color: Colors.transparent,
+              ),
               const LoginLogo(),
+              const Divider(
+                height: 15,
+                color: Colors.transparent,
+              ),
               LoginInput(
                 'Email',
                 'Please input email',

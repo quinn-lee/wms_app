@@ -16,8 +16,8 @@ class LoginLogo extends StatelessWidget {
           Image(
             image: AssetImage('images/ndlogo.png'),
             fit: BoxFit.scaleDown,
-            height: 76 / 1.4,
-            width: 208 / 1.4,
+            height: 76 / 1.6,
+            width: 208 / 1.6,
           ),
         ],
       ),
