@@ -81,6 +81,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
           padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
           child: LoginButton(
             'Upload',
+            1,
             enable: submitEnable,
             onPressed: upload,
           ),

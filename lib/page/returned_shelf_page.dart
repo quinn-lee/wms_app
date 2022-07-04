@@ -67,6 +67,7 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
               padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
               child: LoginButton(
                 'Submit',
+                1,
                 enable: canSubmit,
                 onPressed: _send,
               ),

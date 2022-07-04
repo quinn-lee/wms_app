@@ -8,6 +8,7 @@ import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
+import 'package:wms_app/widget/cancel_button.dart';
 import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
@@ -39,20 +40,13 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBar("Returned Scan", "", () {}),
-        body: Container(
-          child: ListView(
-            children: _buildWidget(),
-          ),
+      appBar: appBar("Returned Scan", "", () {}),
+      body: Container(
+        child: ListView(
+          children: _buildWidget(),
         ),
-        floatingActionButton: FloatingActionButton(
-            onPressed: _cancel,
-            tooltip: 'cancel',
-            // backgroundColor: primary,
-            child: const Text(
-              "Cancel",
-              style: TextStyle(color: primary),
-            )));
+      ),
+    );
   }
 
   List<Widget> _buildWidget() {
@@ -103,17 +97,29 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     }
     if (batchNum != "") {
       widgets.add(Padding(
-        padding: const EdgeInsets.all(10),
-        child: LoginButton(
-          'Submit',
-          enable: canSubmit,
-          onPressed: _send,
-        ),
-      ));
+          padding: const EdgeInsets.all(10),
+          child: Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            children: [
+              LoginButton(
+                'Submit',
+                0.45,
+                enable: canSubmit,
+                onPressed: _send,
+              ),
+              CancelButton(
+                'Cancel',
+                0.45,
+                enable: canSubmit,
+                onPressed: _cancel,
+              ),
+            ],
+          )));
       widgets.add(Padding(
         padding: const EdgeInsets.all(10),
         child: LoginButton(
           'Submit With Photos',
+          1,
           enable: canSubmit,
           onPressed: _sendAndPhoto,
         ),

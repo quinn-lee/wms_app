@@ -89,6 +89,7 @@ class _LoginPageState extends HiState<LoginPage> {
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                 child: LoginButton(
                   'Login',
+                  1,
                   enable: loginEnable,
                   onPressed: send,
                 ),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:wms_app/util/color.dart';
 
-class LoginButton extends StatelessWidget {
+class CancelButton extends StatelessWidget {
   final String title;
   final bool enable;
   final VoidCallback? onPressed;
   final double widthFactor;
 
-  const LoginButton(this.title, this.widthFactor,
+  const CancelButton(this.title, this.widthFactor,
       {Key? key, this.enable = true, this.onPressed})
       : super(key: key);
 
@@ -19,8 +19,8 @@ class LoginButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         height: 45,
         onPressed: enable ? onPressed : null,
-        disabledColor: primary[50],
-        color: primary,
+        disabledColor: Colors.grey[500],
+        color: Colors.grey[500],
         child: Text(title,
             style: const TextStyle(color: Colors.white, fontSize: 16)),
       ),
