@@ -72,8 +72,8 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
   List<Widget> _buildWidget() {
     List<Widget> widgets = [];
     widgets.add(ScanInput(
-      "Barcode",
-      "Scan Reterned parcel's barcode",
+      "Shipment No",
+      "Scan Returned parcel's shipment no",
       focusNode,
       textEditingController,
       onChanged: (text) {

@@ -76,8 +76,8 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
   List<Widget> _buildWidget() {
     List<Widget> widgets = [];
     widgets.add(ScanInput(
-      "Barcode",
-      "Scan Reterned parcel's barcode",
+      "Shipment No",
+      "Scan Returned parcel's shipment no",
       focusNode,
       textEditingController,
       onChanged: (text) {
@@ -257,8 +257,8 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
           rParcel,
           select);
     } else {
-      _alertDialog("Your select is $select, Please Confirm!", "Warning",
-          rParcel, select);
+      _alertDialog(
+          "Your select is $select, Please Confirm!", "", rParcel, select);
     }
   }
 
