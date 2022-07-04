@@ -3,7 +3,7 @@ import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
-import 'package:wms_app/page/returned_need_photo_page.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
@@ -25,6 +25,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
   FocusNode focusNode = FocusNode();
   String? num;
   bool _isLoading = true;
+  AudioCache player = AudioCache();
   var listener;
 
   @override
@@ -272,17 +273,20 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
         print(result);
         if (result['status'] == "succ") {
           showToast("Disposal Successful ");
+          player.play('sounds/success01.mp3');
           setState(() {
             loadData(); // 重新加载数据
           });
         } else {
           showWarnToast(result['reason'].join(","));
+          player.play('sounds/alert.mp3');
           setState(() {
             loadData(); // 重新加载数据
           });
         }
       } catch (e) {
         showWarnToast(e.toString());
+        player.play('sounds/alert.mp3');
         setState(() {
           loadData(); // 重新加载数据
         });

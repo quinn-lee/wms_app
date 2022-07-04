@@ -6,7 +6,6 @@ import 'package:wms_app/http/core/hi_error.dart';
 import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/dao/login_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
-import 'package:wms_app/navigator/bottom_navigator.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
@@ -105,6 +104,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
   RouteStatus _routeStatus = RouteStatus.home;
   ReturnedParcel? rParcel;
   ReturnedParcel? needPhotoParcel;
+  String? photoFrom;
   ReturnedParcel? reshelfParcel;
   List<MaterialPage> pages = [];
 
@@ -118,6 +118,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
         rParcel = args!['rparcel'];
       } else if (routeStatus == RouteStatus.returnedPhoto) {
         needPhotoParcel = args!['needPhotoParce'];
+        photoFrom = args['photoFrom'];
       } else if (routeStatus == RouteStatus.returnedNeedReshelf) {
         reshelfParcel = args!['needReshelParcel'];
       }
@@ -162,7 +163,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
     } else if (routeStatus == RouteStatus.returnedNeedProcess) {
       page = pageWrap(const ReturnedNeedProcessPage());
     } else if (routeStatus == RouteStatus.returnedPhoto) {
-      page = pageWrap(ReturnedPhotoPage(needPhotoParcel!));
+      page = pageWrap(ReturnedPhotoPage(needPhotoParcel!, photoFrom!));
     } else if (routeStatus == RouteStatus.returnedNeedReshelf) {
       page = pageWrap(ReturnedShelfPage(reshelfParcel!));
     }

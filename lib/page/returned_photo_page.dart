@@ -9,10 +9,13 @@ import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/login_button.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class ReturnedPhotoPage extends StatefulWidget {
   final ReturnedParcel returnedParcel;
-  const ReturnedPhotoPage(this.returnedParcel, {Key? key}) : super(key: key);
+  final String photoFrom;
+  const ReturnedPhotoPage(this.returnedParcel, this.photoFrom, {Key? key})
+      : super(key: key);
 
   @override
   State<ReturnedPhotoPage> createState() => _ReturnedPhotoPageState();
@@ -21,6 +24,7 @@ class ReturnedPhotoPage extends StatefulWidget {
 class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   List<File> _images = [];
   bool submitEnable = false;
+  AudioCache player = AudioCache();
 
   Future getImage(bool isTakePhoto) async {
     Navigator.pop(context);
@@ -60,10 +64,6 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
         ListTile(
           title: const Text("Shipment Num: "),
           subtitle: Text("${widget.returnedParcel.shpmtNum}"),
-        ),
-        ListTile(
-          title: const Text("Photo Memo: "),
-          subtitle: Text("${widget.returnedParcel.photoMemo}"),
         ),
         ListTile(
           title: const Text("Pictures: "),
@@ -178,13 +178,20 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
           widget.returnedParcel.id, attachments);
       if (result['status'] == "succ") {
         showToast("Upload Pictures Successful");
+        player.play('sounds/success01.mp3');
       } else {
         showWarnToast(result['reason'].join(","));
+        player.play('sounds/alert.mp3');
       }
     } catch (e) {
-      print(e);
+      // print(e);
       showWarnToast(e.toString());
+      player.play('sounds/alert.mp3');
     }
-    HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNeedPhoto);
+    if (widget.photoFrom == "list") {
+      HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNeedPhoto);
+    } else if (widget.photoFrom == "scan") {
+      HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan);
+    }
   }
 }

@@ -2,7 +2,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
+import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/model/returned_sku.dart';
+import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
@@ -46,10 +48,10 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         floatingActionButton: FloatingActionButton(
             onPressed: _cancel,
             tooltip: 'cancel',
-            backgroundColor: primary,
+            // backgroundColor: primary,
             child: const Text(
               "Cancel",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: primary),
             )));
   }
 
@@ -62,7 +64,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       textEditingController,
       onChanged: (text) {
         num = text;
-        print("num: $num");
+        // print("num: $num");
       },
       onSubmitted: (text) {
         // _send();
@@ -101,11 +103,19 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     }
     if (batchNum != "") {
       widgets.add(Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(10),
         child: LoginButton(
           'Submit',
           enable: canSubmit,
           onPressed: _send,
+        ),
+      ));
+      widgets.add(Padding(
+        padding: const EdgeInsets.all(10),
+        child: LoginButton(
+          'Submit And Photo',
+          enable: canSubmit,
+          onPressed: _sendAndPhoto,
         ),
       ));
     }
@@ -191,6 +201,9 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
 
   void _send() async {
     dynamic result;
+    setState(() {
+      canSubmit = false; // 防止重复提交
+    });
     try {
       if (num != null && num != "") {
         result = await ReturnedDao.scan(num!);
@@ -208,7 +221,64 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             canSubmit = false;
           });
           player.play('sounds/success01.mp3');
-          showToast("Scan Successful");
+          showToast("Submit Successful");
+        } else {
+          setState(() {
+            resultShow
+                .add({"status": false, "show": result['reason'].join(",")});
+            skuList.clear();
+            batchNum = "";
+            description = "";
+            canSubmit = false;
+          });
+          player.play('sounds/alert.mp3');
+          showWarnToast(result['reason'].join(","));
+        }
+      }
+    } catch (e) {
+      setState(() {
+        resultShow.add({"status": false, "show": e.toString()});
+        skuList.clear();
+        batchNum = "";
+        description = "";
+        canSubmit = false;
+      });
+      player.play('sounds/alert.mp3');
+      showWarnToast(e.toString());
+    }
+    if (mounted) {
+      textEditingController.clear();
+      FocusScope.of(context).requestFocus(focusNode);
+    }
+  }
+
+  void _sendAndPhoto() async {
+    dynamic result;
+    setState(() {
+      canSubmit = false; // 防止重复提交
+    });
+    try {
+      if (num != null && num != "") {
+        result = await ReturnedDao.scan(num!);
+        if (result["status"] == "succ") {
+          setState(() {
+            var now = DateTime.now();
+            resultShow.add({
+              "status": true,
+              "show":
+                  "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num"
+            });
+            skuList.clear();
+            batchNum = "";
+            description = "";
+            canSubmit = false;
+          });
+          player.play('sounds/success01.mp3');
+          showToast("Submit Successful");
+          print(result["data"]);
+          ReturnedParcel rp = ReturnedParcel.fromJson(result["data"]);
+          HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,
+              args: {"needPhotoParce": rp, "photoFrom": "scan"});
         } else {
           setState(() {
             resultShow

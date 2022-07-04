@@ -78,7 +78,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
       textEditingController,
       onChanged: (text) {
         num = text;
-        print("num: $num");
+        // print("num: $num");
       },
       onSubmitted: (text) {
         loadData(shpmtNumCont: num);
@@ -98,7 +98,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
         trailing: const Icon(Icons.add_a_photo),
         onTap: () {
           HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,
-              args: {"needPhotoParce": element});
+              args: {"needPhotoParce": element, "photoFrom": "list"});
         },
       ));
       widgets.add(const Divider(
@@ -115,7 +115,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
       if (shpmtNumCont != null) {
         result = await ReturnedDao.get(shpmtNumCont: shpmtNumCont);
       } else {
-        result = await ReturnedDao.get(status: "in_process_photo");
+        result = await ReturnedDao.get(status: "received");
       }
       print('loadData():$result');
       if (result['status'] == "succ") {
