@@ -27,6 +27,7 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
 
   @override
   void initState() {
+    super.initState();
     textEditingController.addListener(() {
       print("controller: ${textEditingController.text}");
     });
@@ -59,9 +60,9 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
               // onSubmitted: (text) {
               //   _send();
               // },
-              focusChanged: (bool hasFocus) {
-                if (!hasFocus) {}
-              },
+              // focusChanged: (bool hasFocus) {
+              //   if (!hasFocus) {}
+              // },
             ),
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, top: 20),

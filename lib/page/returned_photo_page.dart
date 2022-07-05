@@ -51,48 +51,63 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
           child: const Icon(Icons.arrow_back),
         ),
       ),
-      body: Container(
-          child: ListView(children: [
-        ListTile(
-          title: const Text("Batch Num: "),
-          subtitle: Text("${widget.returnedParcel.batchNum}"),
-        ),
-        ListTile(
-          title: const Text("Order Num: "),
-          subtitle: Text("${widget.returnedParcel.orderNum}"),
-        ),
-        ListTile(
-          title: const Text("Shipment Num: "),
-          subtitle: Text("${widget.returnedParcel.shpmtNum}"),
-        ),
-        ListTile(
-          title: const Text("Pictures: "),
-          subtitle:
-              _images.isEmpty ? const Text("No Pictures") : const Text(""),
-        ),
-        Center(
-          child: Wrap(
-            spacing: 5,
-            runSpacing: 5,
-            children: _genImages(),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-          child: LoginButton(
-            'Upload',
-            1,
-            enable: submitEnable,
-            onPressed: upload,
-          ),
-        )
-      ])),
+      body: Container(child: ListView(children: _buildListView())),
       floatingActionButton: FloatingActionButton(
         onPressed: _pickImage,
         tooltip: 'Select Pictures',
         child: const Icon(Icons.add_a_photo),
       ),
     );
+  }
+
+  List<Widget> _buildListView() {
+    List<Widget> widgets = [];
+    widgets.add(ListTile(
+      title: const Text("Batch Num: "),
+      subtitle: Text("${widget.returnedParcel.batchNum}"),
+    ));
+    widgets.add(ListTile(
+      title: const Text("Order Num: "),
+      subtitle: Text("${widget.returnedParcel.orderNum}"),
+    ));
+    widgets.add(ListTile(
+      title: const Text("Shipment Num: "),
+      subtitle: Text("${widget.returnedParcel.shpmtNum}"),
+    ));
+    for (var element in widget.returnedParcel.returnedSku!) {
+      widgets.add(Card(
+        child: Column(
+          children: [
+            ListTile(
+              title: Text("${element['sku_code']}, ${element['barcode']}"),
+              subtitle: Text(
+                  "name: ${element['foreign_name']}, quantity: ${element['quantity']}"),
+            )
+          ],
+        ),
+      ));
+    }
+    widgets.add(ListTile(
+      title: const Text("Pictures: "),
+      subtitle: _images.isEmpty ? const Text("No Pictures") : const Text(""),
+    ));
+    widgets.add(Center(
+      child: Wrap(
+        spacing: 5,
+        runSpacing: 5,
+        children: _genImages(),
+      ),
+    ));
+    widgets.add(Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: LoginButton(
+        'Upload',
+        1,
+        enable: submitEnable,
+        onPressed: upload,
+      ),
+    ));
+    return widgets;
   }
 
   _pickImage() {

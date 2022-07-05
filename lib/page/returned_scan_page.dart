@@ -5,7 +5,6 @@ import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/model/returned_sku.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
-import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/cancel_button.dart';
@@ -32,6 +31,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
 
   @override
   void initState() {
+    super.initState();
     textEditingController.addListener(() {
       print("controller: ${textEditingController.text}");
     });
@@ -64,9 +64,9 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         // _send();
         _loadData();
       },
-      focusChanged: (bool hasFocus) {
-        if (!hasFocus) {}
-      },
+      // focusChanged: (bool hasFocus) {
+      //   if (!hasFocus) {}
+      // },
     ));
     widgets.add(const Divider(
       height: 1,
@@ -74,7 +74,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     ));
     if (batchNum != "") {
       widgets.add(ListTile(
-        title: Text(batchNum),
+        title: Text("$num, $batchNum"),
         subtitle: Text(description),
       ));
     }

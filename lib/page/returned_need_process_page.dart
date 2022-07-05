@@ -87,9 +87,9 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
       onSubmitted: (text) {
         loadData(shpmtNumCont: num);
       },
-      focusChanged: (bool hasFocus) {
-        if (!hasFocus) {}
-      },
+      // focusChanged: (bool hasFocus) {
+      //   if (!hasFocus) {}
+      // },
     ));
     widgets.add(const Divider(
       height: 1,

@@ -57,7 +57,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBar("Need Pictures Parcels", "", () {}),
+        appBar: appBar("Need To Be Photograghed Parcels", "", () {}),
         body: LoadingContainer(
           cover: true,
           isLoading: _isLoading,
@@ -83,9 +83,9 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
       onSubmitted: (text) {
         loadData(shpmtNumCont: num);
       },
-      focusChanged: (bool hasFocus) {
-        if (!hasFocus) {}
-      },
+      // focusChanged: (bool hasFocus) {
+      //   if (!hasFocus) {}
+      // },
     ));
     widgets.add(const Divider(
       height: 1,

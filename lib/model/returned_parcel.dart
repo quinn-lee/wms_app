@@ -6,6 +6,7 @@ class ReturnedParcel {
   String? status;
   int? operatorId;
   String? operator;
+  List? returnedSku;
   int? outboundOrderId;
   String? batchNum;
   String? orderNum;
@@ -27,6 +28,7 @@ class ReturnedParcel {
       this.status,
       this.operatorId,
       this.operator,
+      this.returnedSku,
       this.outboundOrderId,
       this.batchNum,
       this.orderNum,
@@ -49,6 +51,7 @@ class ReturnedParcel {
     status = json['status'];
     operatorId = json['operator_id'];
     operator = json['operator'];
+    returnedSku = json['returned_skus'];
     outboundOrderId = json['outbound_order_id'];
     batchNum = json['batch_num'];
     orderNum = json['order_num'];
