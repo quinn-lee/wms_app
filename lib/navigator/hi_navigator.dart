@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wms_app/navigator/bottom_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
+import 'package:wms_app/page/inbound_page.dart';
+import 'package:wms_app/page/inbound_receive_page.dart';
 // import 'package:wms_app/page/home_page.dart';
 
 import 'package:wms_app/page/login_page.dart';
@@ -36,11 +38,13 @@ enum RouteStatus {
   detail,
   unknown,
   returnedPage,
+  inboundPage,
   returnedScan,
   returnedPhoto,
   returnedNeedPhoto,
   returnedNeedProcess,
-  returnedNeedReshelf
+  returnedNeedReshelf,
+  inboundReceive
 }
 
 // 获取page 对应的RouteStatus
@@ -53,8 +57,12 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.detail;
   } else if (page.child is ReturnedPage) {
     return RouteStatus.returnedPage;
+  } else if (page.child is InboundPage) {
+    return RouteStatus.inboundPage;
   } else if (page.child is ReturnedScanPage) {
     return RouteStatus.returnedScan;
+  } else if (page.child is InboundReceivePage) {
+    return RouteStatus.inboundReceive;
   } else if (page.child is ReturnedPhotoPage) {
     return RouteStatus.returnedPhoto;
   } else if (page.child is ReturnedNeedPhotoPage) {

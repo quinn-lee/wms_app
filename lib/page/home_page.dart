@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wms_app/db/hi_cache.dart';
-import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/home_appbar.dart';
@@ -69,7 +67,7 @@ class _HomePageState extends State<HomePage>
                   )),
               InkWell(
                   onTap: () {
-                    showWarnToast("Undeveloped");
+                    HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
                   },
                   child: Container(
                     decoration: BoxDecoration(

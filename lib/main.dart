@@ -9,6 +9,8 @@ import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
+import 'package:wms_app/page/inbound_page.dart';
+import 'package:wms_app/page/inbound_receive_page.dart';
 import 'package:wms_app/page/login_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_need_process_page.dart';
@@ -156,8 +158,12 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(const LoginPage());
     } else if (routeStatus == RouteStatus.returnedPage) {
       page = pageWrap(const ReturnedPage());
+    } else if (routeStatus == RouteStatus.inboundPage) {
+      page = pageWrap(const InboundPage());
     } else if (routeStatus == RouteStatus.returnedScan) {
       page = pageWrap(const ReturnedScanPage());
+    } else if (routeStatus == RouteStatus.inboundReceive) {
+      page = pageWrap(const InboundReceivePage());
     } else if (routeStatus == RouteStatus.returnedNeedPhoto) {
       page = pageWrap(const ReturnedNeedPhotoPage());
     } else if (routeStatus == RouteStatus.returnedNeedProcess) {

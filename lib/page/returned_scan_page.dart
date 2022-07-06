@@ -33,7 +33,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   void initState() {
     super.initState();
     textEditingController.addListener(() {
-      print("controller: ${textEditingController.text}");
+      // print("controller: ${textEditingController.text}");
     });
   }
 
@@ -41,10 +41,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar("Returned Scan", "", () {}),
-      body: Container(
-        child: ListView(
-          children: _buildWidget(),
-        ),
+      body: ListView(
+        children: _buildWidget(),
       ),
     );
   }
@@ -127,10 +125,13 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     }
     for (var element in resultShow.reversed) {
       widgets.add(ListTile(
-        title: Text(element['show']),
+        title: Text(
+          element['show'],
+          style: const TextStyle(color: Colors.white),
+        ),
         tileColor: element['status']
-            ? const Color(0xFFdff0f8)
-            : const Color(0xFFf2dede),
+            ? const Color(0xFF4e72b8)
+            : const Color(0xFFf15b6c),
       ));
       widgets.add(const Divider(
         height: 1,
