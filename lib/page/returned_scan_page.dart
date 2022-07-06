@@ -178,6 +178,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             description = "";
             canSubmit = false;
           });
+          player.play('sounds/alert.mp3');
         }
       }
     } catch (e) {
@@ -190,6 +191,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         description = "";
         skuList.clear();
       });
+      player.play('sounds/alert.mp3');
     }
     if (mounted) {
       textEditingController.clear();
