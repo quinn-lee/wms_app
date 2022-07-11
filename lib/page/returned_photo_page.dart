@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wms_app/core/hi_state.dart';
@@ -24,6 +25,7 @@ class ReturnedPhotoPage extends StatefulWidget {
 class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   List<File> _images = [];
   bool submitEnable = false;
+  bool isBoken = false;
   AudioCache player = AudioCache();
 
   Future getImage(bool isTakePhoto) async {
@@ -62,6 +64,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
 
   List<Widget> _buildListView() {
     List<Widget> widgets = [];
+
     widgets.add(ListTile(
       title: const Text("Batch Num: "),
       subtitle: Text("${widget.returnedParcel.batchNum}"),
@@ -73,6 +76,16 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
     widgets.add(ListTile(
       title: const Text("Shipment Num: "),
       subtitle: Text("${widget.returnedParcel.shpmtNum}"),
+    ));
+    widgets.add(ListTile(
+      title: const Text("Unpack when taking pictures?"),
+      subtitle: widget.returnedParcel.unpackPhoto == true
+          ? const Text(
+              "Yes.",
+              style: TextStyle(
+                  color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18),
+            )
+          : const Text("No."),
     ));
     for (var element in widget.returnedParcel.returnedSku!) {
       widgets.add(Card(
@@ -87,6 +100,17 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
         ),
       ));
     }
+    widgets.add(ListTile(
+      trailing: CupertinoSwitch(
+          value: isBoken,
+          onChanged: (bool val) {
+            setState(() {
+              isBoken = val;
+            });
+          }),
+      title: const Text("Is Broken?"),
+      subtitle: const Text("Click the switch if parcel is broken."),
+    ));
     widgets.add(ListTile(
       title: const Text("Pictures: "),
       subtitle: _images.isEmpty ? const Text("No Pictures") : const Text(""),
@@ -191,7 +215,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
       // print(attachments);
 
       var result = await ReturnedDao.uploadPictures(
-          widget.returnedParcel.id, attachments);
+          widget.returnedParcel.id, attachments, isBoken);
       if (result['status'] == "succ") {
         showToast("Upload Pictures Successful");
         player.play('sounds/success01.mp3');

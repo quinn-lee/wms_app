@@ -20,6 +20,8 @@ class ReturnedParcel {
   String? disposalResult;
   String? disposalMemo;
   String? photoMemo;
+  bool? unpackPhoto;
+  bool? isBroken;
 
   ReturnedParcel(this.id,
       {this.roNum,
@@ -41,7 +43,9 @@ class ReturnedParcel {
       this.disposal,
       this.disposalResult,
       this.disposalMemo,
-      this.photoMemo});
+      this.photoMemo,
+      this.unpackPhoto,
+      this.isBroken});
 
   ReturnedParcel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -65,5 +69,7 @@ class ReturnedParcel {
     disposalResult = json['disposal_result'];
     disposalMemo = json['disposal_memo'];
     photoMemo = json['photo_memo'];
+    unpackPhoto = json['unpack_photo'];
+    isBroken = json['is_broken'];
   }
 }
