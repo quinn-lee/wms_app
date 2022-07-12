@@ -1,4 +1,5 @@
 import 'package:wms_app/http/dao/login_dao.dart';
+import 'package:wms_app/util/authority.dart';
 
 enum HttpMethod { POST, DELETE } // 框架原因，不支持get方法
 
@@ -12,7 +13,7 @@ abstract class BaseRequest {
 
   // 域名
   String authority() {
-    return "172.105.20.13:3006";
+    return auth;
   }
 
   HttpMethod httpMethod();

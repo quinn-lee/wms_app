@@ -1,13 +1,18 @@
 import 'dart:io';
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uri_to_file/uri_to_file.dart';
 import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/authority.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/login_button.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -27,6 +32,36 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   bool submitEnable = false;
   bool isBoken = false;
   AudioCache player = AudioCache();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      isBoken = widget.returnedParcel.isBroken!;
+    });
+
+    if (widget.returnedParcel.attachment != null) {
+      _getCacheImages();
+    }
+  }
+
+  _getCacheImages() async {
+    for (var element in widget.returnedParcel.attachment!) {
+      var response = await Dio().get("http://$auth${element['path']}",
+          options: Options(responseType: ResponseType.bytes));
+      final result = await ImageGallerySaver.saveImage(
+          Uint8List.fromList(response.data),
+          quality: 100);
+      print(result);
+      if (result['isSuccess'] == true) {
+        File file = await toFile(result['filePath']);
+        setState(() {
+          _images.add(file);
+          submitEnable = true;
+        });
+      }
+    }
+  }
 
   Future getImage(bool isTakePhoto) async {
     Navigator.pop(context);
@@ -106,6 +141,11 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
           onChanged: (bool val) {
             setState(() {
               isBoken = val;
+              if (_images.isEmpty) {
+                submitEnable = false;
+              } else {
+                submitEnable = true;
+              }
             });
           }),
       title: const Text("Is Broken?"),

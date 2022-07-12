@@ -4,6 +4,7 @@ import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/request/account_request.dart';
 import 'package:wms_app/http/request/base_request.dart';
 import 'package:wms_app/http/request/token_request.dart';
+import 'package:wms_app/util/authority.dart';
 
 class LoginDao {
   static const TOKEN = "access_token";
@@ -11,10 +12,9 @@ class LoginDao {
     BaseRequest request = TokenRequest();
     request.isLoginApi = true;
     request
-        .add("client_id", "NSnc8CK3ceqozl8vlwi46A")
-        .add("client_secret",
-            "h-_hEIFPWZoVUZjWcNIKrzO208VC56P7KI41gMW1IAtED8r1RYx_b63i24EgjlOVg8ZQkqmqyUuQe57_arLYSQ")
-        .add("grant_type", "password")
+        .add("client_id", clientId)
+        .add("client_secret", clientSecret)
+        .add("grant_type", grantType)
         .add("username", username)
         .add("password", password);
     var result = await HiNet.getInstance().fire(request);

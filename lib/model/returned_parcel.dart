@@ -11,6 +11,7 @@ class ReturnedParcel {
   String? batchNum;
   String? orderNum;
   int? accountId;
+  List? attachment;
   String? account;
   String? depotCode;
   String? agentDepot;
@@ -35,6 +36,7 @@ class ReturnedParcel {
       this.batchNum,
       this.orderNum,
       this.accountId,
+      this.attachment,
       this.account,
       this.depotCode,
       this.agentDepot,
@@ -60,6 +62,7 @@ class ReturnedParcel {
     batchNum = json['batch_num'];
     orderNum = json['order_num'];
     accountId = json['account_id'];
+    attachment = json['attachment'];
     account = json['account'];
     depotCode = json['depot_code'];
     agentDepot = json['agent_depot'];
