@@ -52,7 +52,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
       final result = await ImageGallerySaver.saveImage(
           Uint8List.fromList(response.data),
           quality: 100);
-      print(result);
+      // print(result);
       if (result['isSuccess'] == true) {
         File file = await toFile(result['filePath']);
         setState(() {
@@ -118,7 +118,9 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
           ? const Text(
               "Yes.",
               style: TextStyle(
-                  color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18),
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
             )
           : const Text("No."),
     ));
