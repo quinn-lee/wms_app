@@ -18,6 +18,7 @@ import 'package:wms_app/page/returned_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 import 'package:wms_app/page/returned_shelf_page.dart';
+import 'package:wms_app/page/unknown_packs_page.dart';
 import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
 
@@ -164,6 +165,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(const ReturnedScanPage());
     } else if (routeStatus == RouteStatus.inboundReceive) {
       page = pageWrap(const InboundReceivePage());
+    } else if (routeStatus == RouteStatus.unknownPacks) {
+      page = pageWrap(const UnknownPacksPage());
     } else if (routeStatus == RouteStatus.returnedNeedPhoto) {
       page = pageWrap(const ReturnedNeedPhotoPage());
     } else if (routeStatus == RouteStatus.returnedNeedProcess) {

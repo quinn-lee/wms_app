@@ -14,21 +14,27 @@ class _InboundPageState extends HiState<InboundPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: homeAppBar("Inbound"),
-        body: Container(
-          child: ListView(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.scanner),
-                title: const Text("Receive Parcels"),
-                trailing: const Icon(Icons.keyboard_arrow_right),
-                onTap: () {
-                  HiNavigator.getInstance()
-                      .onJumpTo(RouteStatus.inboundReceive);
-                },
-              ),
-            ],
+      appBar: homeAppBar("Inbound"),
+      body: ListView(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.scanner),
+            title: const Text("Receive Parcels"),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              HiNavigator.getInstance().onJumpTo(RouteStatus.inboundReceive);
+            },
           ),
-        ));
+          ListTile(
+            leading: const Icon(Icons.photo_camera),
+            title: const Text("Unknown Parcels"),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              HiNavigator.getInstance().onJumpTo(RouteStatus.unknownPacks);
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

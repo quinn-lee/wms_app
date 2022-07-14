@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 
 class DetailPage extends StatefulWidget {
@@ -10,7 +11,7 @@ class DetailPage extends StatefulWidget {
   State<DetailPage> createState() => _DetailPageState();
 }
 
-class _DetailPageState extends State<DetailPage> {
+class _DetailPageState extends HiState<DetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/inbound_dao.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
@@ -12,7 +13,7 @@ class InboundReceivePage extends StatefulWidget {
   State<InboundReceivePage> createState() => _InboundReceivePageState();
 }
 
-class _InboundReceivePageState extends State<InboundReceivePage> {
+class _InboundReceivePageState extends HiState<InboundReceivePage> {
   AudioCache player = AudioCache();
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();

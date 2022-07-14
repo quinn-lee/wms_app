@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wms_app/navigator/bottom_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/home_page.dart';
 import 'package:wms_app/page/inbound_page.dart';
@@ -13,6 +12,7 @@ import 'package:wms_app/page/returned_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 import 'package:wms_app/page/returned_shelf_page.dart';
+import 'package:wms_app/page/unknown_packs_page.dart';
 
 typedef RouteChangeListener(RouteStatusInfo current, RouteStatusInfo? pre);
 
@@ -44,7 +44,8 @@ enum RouteStatus {
   returnedNeedPhoto,
   returnedNeedProcess,
   returnedNeedReshelf,
-  inboundReceive
+  inboundReceive,
+  unknownPacks,
 }
 
 // 获取page 对应的RouteStatus
@@ -71,6 +72,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.returnedNeedProcess;
   } else if (page.child is ReturnedShelfPage) {
     return RouteStatus.returnedNeedReshelf;
+  } else if (page.child is UnknownPacksPage) {
+    return RouteStatus.unknownPacks;
   } else {
     return RouteStatus.unknown;
   }
