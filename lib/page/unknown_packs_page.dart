@@ -200,6 +200,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     }).toList();
   }
 
+  // 组装页面
   List<Widget> _buildWidget() {
     List<Widget> widgets = [];
     widgets.add(ScanInput(
@@ -209,7 +210,6 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
       textEditingController,
       onChanged: (text) {
         num = text;
-        checkInput();
       },
       onSubmitted: (text) {
         _assignData();
@@ -227,12 +227,21 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
       "Shipment Number",
       focusNode1,
       textEditingController1,
+      onChanged: (text) {
+        shipmentNum = text;
+      },
+      onSubmitted: (text) {
+        checkInput();
+      },
     ));
     widgets.add(ScanInput(
       "SKU/Serial Num",
       "SKU/Serial Number",
       focusNode2,
       textEditingController2,
+      onChanged: (text) {
+        skuNum = text;
+      },
     ));
     widgets.add(_selectCategory());
     widgets.add(_selectConsignor());
@@ -275,6 +284,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     return widgets;
   }
 
+  // 扫码后赋值给不同的变量
   void _assignData() {
     if (num == null || num == "") {
       showWarnToast("Please Scan Number");
@@ -305,6 +315,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     }
   }
 
+  // 仓库选项
   Widget _selectDepot() {
     return Column(
       children: [
@@ -347,6 +358,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     );
   }
 
+  // 类别选项
   Widget _selectCategory() {
     return Column(
       children: [
@@ -393,6 +405,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     );
   }
 
+  // 账号选项
   Widget _selectConsignor() {
     return Column(
       children: [
@@ -434,6 +447,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     );
   }
 
+  // 验证输入是否可以提交
   void checkInput() {
     bool enable;
     if (isNotEmpty(depotCode) && isNotEmpty(shipmentNum)) {
@@ -446,6 +460,51 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     });
   }
 
+  // 验证dhl校验位
+  String matchShipmentNum(String shipmentNum) {
+    String num = shipmentNum.trim();
+    if (num.substring(0, 1) == '%') {
+      if (num.length >= 23) {
+        return num.substring(8, 22);
+      }
+    }
+    if (num.length == 12) {
+      int sum = 0;
+      for (var i in [0, 2, 4, 6, 8, 10]) {
+        sum = sum + int.parse(num[i]) * 3;
+      }
+      for (var i in [1, 3, 5, 7, 9]) {
+        sum = sum + int.parse(num[i]);
+      }
+      sum = sum + 1;
+      String checkNum = (10 - int.parse(sum.toString().split('').last))
+          .toString()
+          .split('')
+          .last;
+      if (checkNum == num[num.length - 1]) {
+        return num.substring(0, 12);
+      }
+
+      sum = 0;
+      for (var i in [0, 2, 4, 6, 8, 10]) {
+        sum = sum + int.parse(num[i]) * 4;
+      }
+      for (var i in [1, 3, 5, 7, 9]) {
+        sum = sum + int.parse(num[i]) * 9;
+      }
+      sum = sum + 1;
+      checkNum = (10 - int.parse(sum.toString().split('').last))
+          .toString()
+          .split('')
+          .last;
+      if (checkNum == num[num.length - 1]) {
+        return num.substring(0, 12);
+      }
+    }
+    return num;
+  }
+
+  // 提交
   void upload() async {
     dynamic result;
     setState(() {
@@ -463,15 +522,16 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
           "content": base64.encode(bytes),
         });
       }
+      String newShipmentNum = matchShipmentNum(shipmentNum!);
       result = await InboundDao.registerUnknownParcel(
-          depotCode!, skuNum, shipmentNum!, category, accountId, attachments);
+          depotCode!, skuNum, newShipmentNum, category, accountId, attachments);
       if (result['status'] == "succ") {
         showToast("Register Unknown Parcels Successful");
         setState(() {
           resultShow.add({
             "status": true,
             "show":
-                "Register Success ! Serial Num : ${skuNum ?? ''} , Shipment Num : ${shipmentNum ?? ''}"
+                "Register Success ! Serial Num : ${skuNum ?? ''} , Shipment Num : $newShipmentNum"
           });
         });
         player.play('sounds/success01.mp3');
