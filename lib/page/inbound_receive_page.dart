@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/inbound_dao.dart';
+import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/scan_input.dart';
@@ -96,8 +97,12 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
               player.play('sounds/inbound.mp3');
             } else if (result["category"] == "return") {
               player.play('sounds/return.mp3');
+              HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan,
+                  args: {"returnPageFrom": "receive"});
             } else {
               player.play('sounds/unknown.mp3');
+              HiNavigator.getInstance().onJumpTo(RouteStatus.unknownPacks,
+                  args: {"unknownPageFrom": "receive"});
             }
           });
         } else {

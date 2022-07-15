@@ -47,7 +47,8 @@ class _ReturnedPageState extends HiState<ReturnedPage>
                 title: const Text("Register Returned Parcels"),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan);
+                  HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan,
+                      args: {"returnPageFrom": "menu"});
                 },
               ),
               ListTile(

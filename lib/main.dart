@@ -108,6 +108,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
   ReturnedParcel? rParcel;
   ReturnedParcel? needPhotoParcel;
   String? photoFrom;
+  String? unknownPageFrom;
+  String? returnPageFrom;
   ReturnedParcel? reshelfParcel;
   List<MaterialPage> pages = [];
 
@@ -124,6 +126,10 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
         photoFrom = args['photoFrom'];
       } else if (routeStatus == RouteStatus.returnedNeedReshelf) {
         reshelfParcel = args!['needReshelParcel'];
+      } else if (routeStatus == RouteStatus.unknownPacks) {
+        unknownPageFrom = args!['unknownPageFrom'] ?? "";
+      } else if (routeStatus == RouteStatus.returnedScan) {
+        returnPageFrom = args!['returnPageFrom'] ?? "";
       }
       notifyListeners();
     });
@@ -162,11 +168,11 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
     } else if (routeStatus == RouteStatus.inboundPage) {
       page = pageWrap(const InboundPage());
     } else if (routeStatus == RouteStatus.returnedScan) {
-      page = pageWrap(const ReturnedScanPage());
+      page = pageWrap(ReturnedScanPage(returnPageFrom!));
     } else if (routeStatus == RouteStatus.inboundReceive) {
       page = pageWrap(const InboundReceivePage());
     } else if (routeStatus == RouteStatus.unknownPacks) {
-      page = pageWrap(const UnknownPacksPage());
+      page = pageWrap(UnknownPacksPage(unknownPageFrom!));
     } else if (routeStatus == RouteStatus.returnedNeedPhoto) {
       page = pageWrap(const ReturnedNeedPhotoPage());
     } else if (routeStatus == RouteStatus.returnedNeedProcess) {

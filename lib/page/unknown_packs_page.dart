@@ -15,7 +15,8 @@ import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
 class UnknownPacksPage extends StatefulWidget {
-  const UnknownPacksPage({Key? key}) : super(key: key);
+  final String pageFrom;
+  const UnknownPacksPage(this.pageFrom, {Key? key}) : super(key: key);
 
   @override
   State<UnknownPacksPage> createState() => _UnknownPacksPageState();
@@ -560,5 +561,8 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
       accountId = null;
       _images.clear();
     });
+    if (widget.pageFrom == "receive") {
+      HiNavigator.getInstance().onJumpTo(RouteStatus.inboundReceive);
+    }
   }
 }

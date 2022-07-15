@@ -30,7 +30,8 @@ class _InboundPageState extends HiState<InboundPage> {
             title: const Text("Unknown Parcels"),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              HiNavigator.getInstance().onJumpTo(RouteStatus.unknownPacks);
+              HiNavigator.getInstance().onJumpTo(RouteStatus.unknownPacks,
+                  args: {"unknownPageFrom": "menu"});
             },
           ),
         ],
