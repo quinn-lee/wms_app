@@ -229,6 +229,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
       textEditingController1,
       onChanged: (text) {
         shipmentNum = text;
+        checkInput();
       },
       onSubmitted: (text) {
         checkInput();
@@ -388,10 +389,11 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
                           });
                         },
                         items: const [
-                  DropdownMenuItem(value: 'a', child: Text('111')),
-                  DropdownMenuItem(value: 'b3', child: Text('222')),
-                  DropdownMenuItem(value: 'b4', child: Text('333')),
-                  DropdownMenuItem(value: 'return', child: Text('444')),
+                  DropdownMenuItem(value: 'a', child: Text('111-dropshipping')),
+                  DropdownMenuItem(value: 'b3', child: Text('222-FBA transit')),
+                  DropdownMenuItem(
+                      value: 'b4', child: Text('333-FBA detachment')),
+                  DropdownMenuItem(value: 'return', child: Text('444-return')),
                 ])))
           ],
         ),
