@@ -55,18 +55,28 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
     ));
 
     for (var element in resultShow.reversed) {
-      widgets.add(ListTile(
-        title: Text(
-          element['show'],
-          style: const TextStyle(color: Colors.white),
-        ),
-        tileColor: {
-          "inbound": const Color(0xFF4e72b8),
-          "return": const Color(0xFF6a6da9),
-          "unknown": const Color(0xFFafb4db),
-          "error": const Color(0xFFf15b6c)
-        }[element['category']],
-      ));
+      widgets.add(InkWell(
+          onTap: () {
+            if (element['category'] == "return") {
+              HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan,
+                  args: {"returnPageFrom": "receive"});
+            } else if (element['category'] == "unknown") {
+              HiNavigator.getInstance().onJumpTo(RouteStatus.unknownPacks,
+                  args: {"unknownPageFrom": "receive"});
+            }
+          },
+          child: ListTile(
+            title: Text(
+              element['show'],
+              style: const TextStyle(color: Colors.white),
+            ),
+            tileColor: {
+              "inbound": const Color(0xFF4e72b8),
+              "return": const Color(0xFF6a6da9),
+              "unknown": const Color(0xFFafb4db),
+              "error": const Color(0xFFf15b6c)
+            }[element['category']],
+          )));
       widgets.add(const Divider(
         height: 1,
         color: Colors.white,
@@ -87,6 +97,12 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
             if (result["category"] == "inbound") {
               show =
                   "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$num, inbound_num:${result['inbound_num']}, customer:${result['abbr_code']}";
+            } else if (result["category"] == "return") {
+              show =
+                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$num, Click to Register Return Parcel";
+            } else if (result["category"] == "unknown") {
+              show =
+                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$num, Click to Register Unknown Parcel";
             } else {
               show =
                   "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$num";
@@ -97,12 +113,8 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
               player.play('sounds/inbound.mp3');
             } else if (result["category"] == "return") {
               player.play('sounds/return.mp3');
-              HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan,
-                  args: {"returnPageFrom": "receive"});
             } else {
               player.play('sounds/unknown.mp3');
-              HiNavigator.getInstance().onJumpTo(RouteStatus.unknownPacks,
-                  args: {"unknownPageFrom": "receive"});
             }
           });
         } else {
