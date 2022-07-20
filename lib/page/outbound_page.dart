@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
+import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/widget/home_appbar.dart';
 
 class OutboundPage extends StatefulWidget {
@@ -14,8 +15,17 @@ class _OutboundPageState extends HiState<OutboundPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: homeAppBar("Outbound"),
-      body: const Center(
-        child: Text('Waiting for development'),
+      body: ListView(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.scanner),
+            title: const Text("Check Orders(Drop Shipping)"),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              HiNavigator.getInstance().onJumpTo(RouteStatus.outboundCheck);
+            },
+          ),
+        ],
       ),
     );
   }

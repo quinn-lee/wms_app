@@ -554,9 +554,9 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     }
     setState(() {
       shipmentNum = "";
-      textEditingController1.text = "";
+      textEditingController1.clear();
       skuNum = "";
-      textEditingController2.text = "";
+      textEditingController2.clear();
       category = null;
       accountId = null;
       _images.clear();

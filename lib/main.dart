@@ -12,6 +12,8 @@ import 'package:wms_app/page/home_page.dart';
 import 'package:wms_app/page/inbound_page.dart';
 import 'package:wms_app/page/inbound_receive_page.dart';
 import 'package:wms_app/page/login_page.dart';
+import 'package:wms_app/page/outbound_check_page.dart';
+import 'package:wms_app/page/outbound_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_need_process_page.dart';
 import 'package:wms_app/page/returned_page.dart';
@@ -167,6 +169,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(const ReturnedPage());
     } else if (routeStatus == RouteStatus.inboundPage) {
       page = pageWrap(const InboundPage());
+    } else if (routeStatus == RouteStatus.outboundPage) {
+      page = pageWrap(const OutboundPage());
     } else if (routeStatus == RouteStatus.returnedScan) {
       page = pageWrap(ReturnedScanPage(returnPageFrom!));
     } else if (routeStatus == RouteStatus.inboundReceive) {
@@ -181,6 +185,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(ReturnedPhotoPage(needPhotoParcel!, photoFrom!));
     } else if (routeStatus == RouteStatus.returnedNeedReshelf) {
       page = pageWrap(ReturnedShelfPage(reshelfParcel!));
+    } else if (routeStatus == RouteStatus.outboundCheck) {
+      page = pageWrap(const OutboundCheckPage());
     }
     //重新创建一个数组，否则pages因引用没有改变路由不会生效
     tempPages = [...tempPages, page];

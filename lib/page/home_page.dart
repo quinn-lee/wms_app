@@ -96,7 +96,8 @@ class _HomePageState extends State<HomePage>
             children: [
               InkWell(
                   onTap: () {
-                    showWarnToast("Undeveloped");
+                    HiNavigator.getInstance()
+                        .onJumpTo(RouteStatus.outboundPage);
                   },
                   child: Container(
                     decoration: BoxDecoration(

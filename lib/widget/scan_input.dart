@@ -9,6 +9,7 @@ class ScanInput extends StatefulWidget {
   final ValueChanged<bool>? focusChanged;
   final bool lineStretch;
   final bool obscureText;
+  final bool enabled;
   final TextInputType? keyboardType;
   final FocusNode focusNode;
   final bool autofocus;
@@ -23,6 +24,7 @@ class ScanInput extends StatefulWidget {
       this.lineStretch = false,
       this.obscureText = false,
       this.autofocus = true,
+      this.enabled = true,
       this.keyboardType})
       : super(key: key);
 
@@ -86,6 +88,7 @@ class _ScanInputState extends State<ScanInput> {
       keyboardType: widget.keyboardType,
       autofocus: widget.autofocus,
       cursorColor: primary,
+      enabled: widget.enabled,
       controller: widget.textEditingController,
       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
       //输入框的样式

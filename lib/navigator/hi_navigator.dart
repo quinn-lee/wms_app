@@ -6,6 +6,8 @@ import 'package:wms_app/page/inbound_receive_page.dart';
 // import 'package:wms_app/page/home_page.dart';
 
 import 'package:wms_app/page/login_page.dart';
+import 'package:wms_app/page/outbound_check_page.dart';
+import 'package:wms_app/page/outbound_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_need_process_page.dart';
 import 'package:wms_app/page/returned_page.dart';
@@ -39,6 +41,7 @@ enum RouteStatus {
   unknown,
   returnedPage,
   inboundPage,
+  outboundPage,
   returnedScan,
   returnedPhoto,
   returnedNeedPhoto,
@@ -46,6 +49,7 @@ enum RouteStatus {
   returnedNeedReshelf,
   inboundReceive,
   unknownPacks,
+  outboundCheck,
 }
 
 // 获取page 对应的RouteStatus
@@ -60,6 +64,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.returnedPage;
   } else if (page.child is InboundPage) {
     return RouteStatus.inboundPage;
+  } else if (page.child is OutboundPage) {
+    return RouteStatus.outboundPage;
   } else if (page.child is ReturnedScanPage) {
     return RouteStatus.returnedScan;
   } else if (page.child is InboundReceivePage) {
@@ -74,6 +80,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.returnedNeedReshelf;
   } else if (page.child is UnknownPacksPage) {
     return RouteStatus.unknownPacks;
+  } else if (page.child is OutboundCheckPage) {
+    return RouteStatus.outboundCheck;
   } else {
     return RouteStatus.unknown;
   }
