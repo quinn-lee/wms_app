@@ -12,6 +12,7 @@ import 'package:wms_app/page/home_page.dart';
 import 'package:wms_app/page/inbound_page.dart';
 import 'package:wms_app/page/inbound_receive_page.dart';
 import 'package:wms_app/page/login_page.dart';
+import 'package:wms_app/page/outbound_check_multiple_page.dart';
 import 'package:wms_app/page/outbound_check_page.dart';
 import 'package:wms_app/page/outbound_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
@@ -187,6 +188,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(ReturnedShelfPage(reshelfParcel!));
     } else if (routeStatus == RouteStatus.outboundCheck) {
       page = pageWrap(const OutboundCheckPage());
+    } else if (routeStatus == RouteStatus.outboundCheckMultiple) {
+      page = pageWrap(const OutboundCheckMultiplePage());
     }
     //重新创建一个数组，否则pages因引用没有改变路由不会生效
     tempPages = [...tempPages, page];

@@ -25,6 +25,15 @@ class _OutboundPageState extends HiState<OutboundPage> {
               HiNavigator.getInstance().onJumpTo(RouteStatus.outboundCheck);
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.photo_camera),
+            title: const Text("Check Orders Multiple(Drop Shipping)"),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              HiNavigator.getInstance()
+                  .onJumpTo(RouteStatus.outboundCheckMultiple);
+            },
+          ),
         ],
       ),
     );

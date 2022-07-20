@@ -6,6 +6,7 @@ import 'package:wms_app/page/inbound_receive_page.dart';
 // import 'package:wms_app/page/home_page.dart';
 
 import 'package:wms_app/page/login_page.dart';
+import 'package:wms_app/page/outbound_check_multiple_page.dart';
 import 'package:wms_app/page/outbound_check_page.dart';
 import 'package:wms_app/page/outbound_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
@@ -50,6 +51,7 @@ enum RouteStatus {
   inboundReceive,
   unknownPacks,
   outboundCheck,
+  outboundCheckMultiple,
 }
 
 // 获取page 对应的RouteStatus
@@ -82,6 +84,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.unknownPacks;
   } else if (page.child is OutboundCheckPage) {
     return RouteStatus.outboundCheck;
+  } else if (page.child is OutboundCheckMultiplePage) {
+    return RouteStatus.outboundCheckMultiple;
   } else {
     return RouteStatus.unknown;
   }

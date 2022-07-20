@@ -1,29 +1,29 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/outbound_dao.dart';
 import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/cancel_button.dart';
+import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
+import 'package:wms_app/widget/show_input.dart';
 
-class OutboundCheckPage extends StatefulWidget {
-  const OutboundCheckPage({Key? key}) : super(key: key);
+class OutboundCheckMultiplePage extends StatefulWidget {
+  const OutboundCheckMultiplePage({Key? key}) : super(key: key);
 
   @override
-  State<OutboundCheckPage> createState() => _OutboundCheckPageState();
+  State<OutboundCheckMultiplePage> createState() =>
+      _OutboundCheckMultiplePageState();
 }
 
-class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
+class _OutboundCheckMultiplePageState extends State<OutboundCheckMultiplePage> {
   String? num;
   String? shipmentNum;
-  String? barcode;
+  Map skuInfo = {};
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
   final TextEditingController textEditingController1 = TextEditingController();
   FocusNode focusNode1 = FocusNode();
-  final TextEditingController textEditingController2 = TextEditingController();
-  FocusNode focusNode2 = FocusNode();
   bool submitEnable = false;
   List<Map> resultShow = [];
   AudioCache player = AudioCache();
@@ -32,7 +32,7 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Check Orders(Drop Shipping)'),
+        title: const Text('Check Orders Multiple(Drop Shipping)'),
         leading: GestureDetector(
           onTap: () {
             Navigator.pop(context);
@@ -59,37 +59,48 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
       },
       onSubmitted: (text) {
         _assignData();
+        checkInput();
       },
     ));
-    widgets.add(const Divider(
-      thickness: 32,
-      color: Color(0XFFEEEEEE),
-      height: 30,
+    widgets.add(Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: LoginButton(
+        'Finish Scan',
+        1,
+        enable: submitEnable,
+        onPressed: upload,
+      ),
     ));
+
     widgets.add(ScanInput(
-      "SKU Code/Barcode",
-      "SKU Code/Barcode",
-      focusNode2,
-      textEditingController2,
-      enabled: false,
-    ));
-    widgets.add(ScanInput(
-      "Shipment Num",
-      "Shipment Number",
+      "Shpmt Num",
+      "Shpmt Num",
       focusNode1,
       textEditingController1,
       enabled: false,
     ));
-    widgets.add(Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-      child: CancelButton(
-        'Clear',
-        1,
-        enable: true,
-        onPressed: clear,
-      ),
-    ));
-
+    skuInfo.forEach((key, value) {
+      TextEditingController tec = TextEditingController();
+      tec.text = value.toString();
+      widgets.add(ShowInput(
+        "SKU Code/Barcode($key)",
+        "",
+        FocusNode(),
+        tec,
+        enabled: false,
+      ));
+    });
+    if (isNotEmpty(shipmentNum) || skuInfo.isNotEmpty) {
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+        child: CancelButton(
+          'Clear',
+          1,
+          enable: true,
+          onPressed: clear,
+        ),
+      ));
+    }
     for (var element in resultShow.reversed) {
       widgets.add(ListTile(
         title: Text(
@@ -108,39 +119,52 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
     return widgets;
   }
 
-  void clear() {
-    setState(() {
-      shipmentNum = null;
-      barcode = null;
-    });
-    if (mounted) {
-      textEditingController.clear();
-      textEditingController1.clear();
-      textEditingController2.clear();
-      FocusScope.of(context).requestFocus(focusNode);
-    }
-  }
-
   void _assignData() {
     if (num == null || num == "") {
       showWarnToast("Please Scan Number");
     } else {
-      if (num!.length == 28 && num!.substring(0, 1) == '%') {
-        shipmentNum = num!.substring(8, 22);
-        textEditingController1.text = num!.substring(8, 22);
-      } else if (num!.startsWith("0145") ||
-          num!.startsWith("0150") ||
-          num!.startsWith("094")) {
-        shipmentNum = num!;
-        textEditingController1.text = num!;
+      if (shipmentNum == null) {
+        String newShipmentNum = matchShipmentNum(num!);
+        shipmentNum = newShipmentNum;
+        textEditingController1.text = newShipmentNum;
       } else {
-        barcode = num!;
-        textEditingController2.text = num!;
+        if (skuInfo.containsKey(num!)) {
+          setState(() {
+            skuInfo[num!] = skuInfo[num!] + 1;
+          });
+        } else {
+          setState(() {
+            skuInfo[num!] = 1;
+          });
+        }
       }
     }
-    if (isNotEmpty(shipmentNum) && isNotEmpty(barcode)) {
-      upload();
+    if (mounted) {
+      textEditingController.clear();
+      FocusScope.of(context).requestFocus(focusNode);
     }
+  }
+
+  void checkInput() {
+    if (skuInfo.isNotEmpty && isNotEmpty(shipmentNum)) {
+      setState(() {
+        submitEnable = true;
+      });
+    } else {
+      setState(() {
+        submitEnable = false;
+      });
+    }
+  }
+
+  void clear() {
+    setState(() {
+      submitEnable = false;
+      shipmentNum = null;
+      skuInfo = {};
+      textEditingController.clear();
+      textEditingController1.clear();
+    });
     if (mounted) {
       textEditingController.clear();
       FocusScope.of(context).requestFocus(focusNode);
@@ -148,9 +172,16 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
   }
 
   void upload() async {
+    setState(() {
+      submitEnable = false;
+    });
     dynamic result;
     try {
-      result = await OutboundDao.check(shipmentNum!, barcode!);
+      List newSkuInfo = [];
+      skuInfo.forEach((key, value) {
+        newSkuInfo.add({"barcode": key, "quantity": value});
+      });
+      result = await OutboundDao.checkMultiple(shipmentNum!, newSkuInfo);
       if (result['status'] == "succ") {
         showToast("Check Outbound Order Successful");
         var now = DateTime.now();
@@ -178,10 +209,13 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
     }
     setState(() {
       shipmentNum = null;
-      barcode = null;
+      skuInfo = {};
       textEditingController.clear();
       textEditingController1.clear();
-      textEditingController2.clear();
     });
+    if (mounted) {
+      textEditingController.clear();
+      FocusScope.of(context).requestFocus(focusNode);
+    }
   }
 }
