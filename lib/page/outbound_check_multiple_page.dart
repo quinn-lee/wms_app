@@ -134,10 +134,29 @@ class _OutboundCheckMultiplePageState extends State<OutboundCheckMultiplePage> {
     if (num == null || num == "") {
       showWarnToast("Please Scan Number");
     } else {
-      if (shipmentNum == null) {
-        String newShipmentNum = matchShipmentNum(num!);
-        shipmentNum = newShipmentNum;
-        textEditingController1.text = newShipmentNum;
+      // if (shipmentNum == null) {
+      //   String newShipmentNum = matchShipmentNum(num!);
+      //   shipmentNum = newShipmentNum;
+      //   textEditingController1.text = newShipmentNum;
+      // } else {
+      //   if (skuInfo.containsKey(num!)) {
+      //     setState(() {
+      //       skuInfo[num!] = skuInfo[num!] + 1;
+      //     });
+      //   } else {
+      //     setState(() {
+      //       skuInfo[num!] = 1;
+      //     });
+      //   }
+      // }
+      if (num!.length == 28 && num!.substring(0, 1) == '%') {
+        shipmentNum = num!.substring(8, 22);
+        textEditingController1.text = num!.substring(8, 22);
+      } else if (num!.startsWith("0145") ||
+          num!.startsWith("0150") ||
+          num!.startsWith("094")) {
+        shipmentNum = num!;
+        textEditingController1.text = num!;
       } else {
         if (skuInfo.containsKey(num!)) {
           setState(() {
@@ -192,7 +211,8 @@ class _OutboundCheckMultiplePageState extends State<OutboundCheckMultiplePage> {
       skuInfo.forEach((key, value) {
         newSkuInfo.add({"barcode": key, "quantity": value});
       });
-      result = await OutboundDao.checkMultiple(shipmentNum!, newSkuInfo);
+      String newShipmentNum = matchShipmentNum(shipmentNum!);
+      result = await OutboundDao.checkMultiple(newShipmentNum, newSkuInfo);
       if (result['status'] == "succ") {
         showToast("Check Outbound Order Successful");
         var now = DateTime.now();
