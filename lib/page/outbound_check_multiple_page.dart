@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:wms_app/http/dao/outbound_dao.dart';
+import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/cancel_button.dart';
@@ -90,17 +91,27 @@ class _OutboundCheckMultiplePageState extends State<OutboundCheckMultiplePage> {
         enabled: false,
       ));
     });
-    if (isNotEmpty(shipmentNum) || skuInfo.isNotEmpty) {
-      widgets.add(Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-        child: CancelButton(
-          'Clear',
-          1,
-          enable: true,
-          onPressed: clear,
-        ),
-      ));
-    }
+    widgets.add(Padding(
+        padding: const EdgeInsets.all(10),
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          children: [
+            LoginButton(
+              'To Check Orders Page',
+              0.45,
+              enable: true,
+              onPressed: () {
+                HiNavigator.getInstance().onJumpTo(RouteStatus.outboundCheck);
+              },
+            ),
+            CancelButton(
+              'Clear',
+              0.45,
+              enable: true,
+              onPressed: clear,
+            ),
+          ],
+        )));
     for (var element in resultShow.reversed) {
       widgets.add(ListTile(
         title: Text(
