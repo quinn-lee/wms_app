@@ -11,6 +11,7 @@ import 'package:wms_app/http/dao/inbound_dao.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
+import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
@@ -41,12 +42,19 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
   bool submitEnable = false;
   List<Map> resultShow = [];
   AudioCache player = AudioCache();
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _isLoading = true;
+    });
     loadDepotData();
     loadConsignorData();
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -139,8 +147,12 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
           child: const Icon(Icons.arrow_back),
         ),
       ),
-      body: ListView(
-        children: _buildWidget(),
+      body: LoadingContainer(
+        cover: true,
+        isLoading: _isLoading,
+        child: ListView(
+          children: _buildWidget(),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _pickImage,
@@ -479,6 +491,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     dynamic result;
     setState(() {
       submitEnable = false; // 防止重复提交
+      _isLoading = true;
     });
     List attachments = [];
     int index = 0;
@@ -498,6 +511,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
       if (result['status'] == "succ") {
         showToast("Register Unknown Parcels Successful");
         setState(() {
+          _isLoading = false;
           resultShow.add({
             "status": true,
             "show":
@@ -508,18 +522,21 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
       } else {
         showWarnToast(result['reason'].join(","));
         setState(() {
+          _isLoading = false;
           resultShow.add({"status": false, "show": result['reason'].join(",")});
         });
         player.play('sounds/alert.mp3');
       }
     } catch (e) {
       setState(() {
+        _isLoading = false;
         resultShow.add({"status": false, "show": e.toString()});
       });
       player.play('sounds/alert.mp3');
       showWarnToast(e.toString());
     }
     setState(() {
+      _isLoading = false;
       shipmentNum = "";
       textEditingController1.clear();
       skuNum = "";

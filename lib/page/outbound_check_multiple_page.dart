@@ -6,6 +6,7 @@ import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/cancel_button.dart';
+import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 import 'package:wms_app/widget/show_input.dart';
@@ -30,6 +31,7 @@ class _OutboundCheckMultiplePageState
   bool submitEnable = false;
   List<Map> resultShow = [];
   AudioCache player = AudioCache();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -43,19 +45,22 @@ class _OutboundCheckMultiplePageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Check Orders Multiple(Drop Shipping)'),
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(Icons.arrow_back),
+        appBar: AppBar(
+          title: const Text('Check Orders Multiple(Drop Shipping)'),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back),
+          ),
         ),
-      ),
-      body: ListView(
-        children: _buildWidget(),
-      ),
-    );
+        body: LoadingContainer(
+          cover: true,
+          isLoading: _isLoading,
+          child: ListView(
+            children: _buildWidget(),
+          ),
+        ));
   }
 
   // 组装页面
@@ -215,6 +220,7 @@ class _OutboundCheckMultiplePageState
   void upload() async {
     setState(() {
       submitEnable = false;
+      _isLoading = true;
     });
     dynamic result;
     try {
@@ -228,6 +234,7 @@ class _OutboundCheckMultiplePageState
         showToast("Check Outbound Order Successful");
         var now = DateTime.now();
         setState(() {
+          _isLoading = false;
           resultShow.add({
             "status": true,
             "show":
@@ -238,12 +245,14 @@ class _OutboundCheckMultiplePageState
       } else {
         showWarnToast(result['reason'].join(","));
         setState(() {
+          _isLoading = false;
           resultShow.add({"status": false, "show": result['reason'].join(",")});
         });
         player.play('sounds/alert.mp3');
       }
     } catch (e) {
       setState(() {
+        _isLoading = false;
         resultShow.add({"status": false, "show": e.toString()});
       });
       player.play('sounds/alert.mp3');
@@ -251,6 +260,7 @@ class _OutboundCheckMultiplePageState
     }
     setState(() {
       shipmentNum = null;
+      _isLoading = false;
       skuInfo = {};
       textEditingController.clear();
       textEditingController1.clear();

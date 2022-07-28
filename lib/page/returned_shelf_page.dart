@@ -7,6 +7,7 @@ import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
+import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
@@ -24,12 +25,13 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
   String? shelfNum;
   bool canSubmit = false;
   AudioCache player = AudioCache();
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     textEditingController.addListener(() {
-      print("controller: ${textEditingController.text}");
+      // print("controller: ${textEditingController.text}");
     });
   }
 
@@ -44,7 +46,9 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar("Returned Reshelf", "", () {}),
-      body: Container(
+      body: LoadingContainer(
+        cover: true,
+        isLoading: _isLoading,
         child: ListView(
           children: [
             ListTile(
@@ -99,12 +103,19 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
   }
 
   _send() async {
+    setState(() {
+      canSubmit = false;
+      _isLoading = true;
+    });
     dynamic result;
     try {
       if (shelfNum != null && shelfNum != "") {
         result = await ReturnedDao.finish(
             widget.returnedParcel.id, widget.returnedParcel.disposal!,
             shelfNum: shelfNum);
+        setState(() {
+          _isLoading = false;
+        });
         if (result["status"] == "succ") {
           player.play('sounds/success01.mp3');
           showToast("Reshelf Successful");
@@ -114,6 +125,9 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
         }
       }
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       player.play('sounds/alert.mp3');
       showWarnToast(e.toString());
     }

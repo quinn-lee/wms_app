@@ -5,6 +5,7 @@ import 'package:wms_app/http/dao/inbound_dao.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
+import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
 class InboundReceivePage extends StatefulWidget {
@@ -20,6 +21,7 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
   FocusNode focusNode = FocusNode();
   String? num;
   List<Map> resultShow = [];
+  bool _isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -38,11 +40,14 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("Receive Parcels", "", () {}),
-      body: ListView(
-        children: _buildWidget(),
-      ),
-    );
+        appBar: appBar("Receive Parcels", "", () {}),
+        body: LoadingContainer(
+          cover: true,
+          isLoading: _isLoading,
+          child: ListView(
+            children: _buildWidget(),
+          ),
+        ));
   }
 
   List<Widget> _buildWidget() {
@@ -93,12 +98,16 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
   }
 
   void _send() async {
+    setState(() {
+      _isLoading = true;
+    });
     dynamic result;
     try {
       if (num != null && num != "") {
         result = await InboundDao.receive(num!);
         if (result["status"] == "succ") {
           setState(() {
+            _isLoading = false;
             var now = DateTime.now();
             String show = "";
             if (result["category"] == "inbound") {
@@ -126,6 +135,7 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
           });
         } else {
           setState(() {
+            _isLoading = false;
             resultShow
                 .add({"category": "error", "show": result['reason'].join(",")});
           });
@@ -133,8 +143,12 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
           showWarnToast(result['reason'].join(","));
         }
       }
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
+        _isLoading = false;
         resultShow.add({"category": "error", "show": e.toString()});
       });
       player.play('sounds/alert.mp3');

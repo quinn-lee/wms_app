@@ -7,6 +7,7 @@ import 'package:wms_app/http/dao/login_dao.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
+import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/login_input.dart';
 
@@ -27,6 +28,7 @@ class _LoginPageState extends HiState<LoginPage> {
   bool loginEnable = false;
   String? userName;
   String? password;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -51,7 +53,9 @@ class _LoginPageState extends HiState<LoginPage> {
         appBar: appBar("Login", "", (() {
           print("right button click.");
         })),
-        body: Container(
+        body: LoadingContainer(
+          cover: true,
+          isLoading: _isLoading,
           child: ListView(
             children: [
               const Divider(
@@ -122,20 +126,30 @@ class _LoginPageState extends HiState<LoginPage> {
     dynamic result;
     setState(() {
       loginEnable = false; //不能重复点击登录
+      _isLoading = true;
     });
     try {
       result = await LoginDao.getToken(userName!, password!);
       if (result[LoginDao.TOKEN] != null) {
+        setState(() {
+          _isLoading = false;
+        });
         print("login successful");
         showToast("Login Successful");
         HiNavigator.getInstance().onJumpTo(RouteStatus.home);
         // 暂时不需要获取用户信息
         // await LoginDao.getAccountInfo(result[LoginDao.TOKEN]);
       } else {
+        setState(() {
+          _isLoading = false;
+        });
         print("login fail");
         showWarnToast(result['error']);
       }
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       print(e);
       showWarnToast(e.toString());
     }

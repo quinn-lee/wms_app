@@ -8,6 +8,7 @@ import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/cancel_button.dart';
+import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
@@ -29,6 +30,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   AudioCache player = AudioCache();
   String batchNum = "";
   String description = "";
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -48,11 +50,14 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar("Returned Scan", "", () {}),
-      body: ListView(
-        children: _buildWidget(),
-      ),
-    );
+        appBar: appBar("Returned Scan", "", () {}),
+        body: LoadingContainer(
+          cover: true,
+          isLoading: _isLoading,
+          child: ListView(
+            children: _buildWidget(),
+          ),
+        ));
   }
 
   List<Widget> _buildWidget() {
@@ -150,6 +155,9 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   }
 
   void _loadData() async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       if (num != null && num != "") {
         var result = await ReturnedDao.getReturnedSkus(num!);
@@ -157,6 +165,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         if (result['status'] == "succ") {
           setState(() {
             skuList.clear();
+            _isLoading = false;
             batchNum = result['data']['batch_num'];
             description = result['data']['description'];
             for (var item in result['data']['skus']) {
@@ -179,6 +188,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
           print(result['reason']);
           showWarnToast(result['reason'].join(","));
           setState(() {
+            _isLoading = false;
             resultShow
                 .add({"status": false, "show": result['reason'].join(",")});
             skuList.clear();
@@ -193,6 +203,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       print(e);
       showWarnToast(e.toString());
       setState(() {
+        _isLoading = false;
         resultShow.add({"status": false, "show": e.toString()});
         canSubmit = false;
         batchNum = "";
@@ -220,12 +231,14 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     dynamic result;
     setState(() {
       canSubmit = false; // 防止重复提交
+      _isLoading = true;
     });
     try {
       if (num != null && num != "") {
         result = await ReturnedDao.scan(num!);
         if (result["status"] == "succ") {
           setState(() {
+            _isLoading = false;
             var now = DateTime.now();
             resultShow.add({
               "status": true,
@@ -241,6 +254,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
           showToast("Submit Successful");
         } else {
           setState(() {
+            _isLoading = false;
             resultShow
                 .add({"status": false, "show": result['reason'].join(",")});
             skuList.clear();
@@ -254,6 +268,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       }
     } catch (e) {
       setState(() {
+        _isLoading = false;
         resultShow.add({"status": false, "show": e.toString()});
         skuList.clear();
         batchNum = "";
@@ -276,12 +291,14 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     dynamic result;
     setState(() {
       canSubmit = false; // 防止重复提交
+      _isLoading = true;
     });
     try {
       if (num != null && num != "") {
         result = await ReturnedDao.scan(num!);
         if (result["status"] == "succ") {
           setState(() {
+            _isLoading = false;
             var now = DateTime.now();
             resultShow.add({
               "status": true,
@@ -303,6 +320,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
               args: {"needPhotoParce": rp, "photoFrom": photoFrom});
         } else {
           setState(() {
+            _isLoading = false;
             resultShow
                 .add({"status": false, "show": result['reason'].join(",")});
             skuList.clear();
@@ -316,6 +334,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       }
     } catch (e) {
       setState(() {
+        _isLoading = false;
         resultShow.add({"status": false, "show": e.toString()});
         skuList.clear();
         batchNum = "";

@@ -14,6 +14,7 @@ import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/authority.dart';
 import 'package:wms_app/util/toast.dart';
+import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/login_button.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -32,6 +33,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   bool submitEnable = false;
   bool isBoken = false;
   AudioCache player = AudioCache();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -88,7 +90,10 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
           child: const Icon(Icons.arrow_back),
         ),
       ),
-      body: Container(child: ListView(children: _buildListView())),
+      body: LoadingContainer(
+          cover: true,
+          isLoading: _isLoading,
+          child: ListView(children: _buildListView())),
       floatingActionButton: FloatingActionButton(
         onPressed: _pickImage,
         tooltip: 'Select Pictures',
@@ -241,6 +246,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   void upload() async {
     setState(() {
       submitEnable = false; // 防止重复提交
+      _isLoading = true;
     });
     List attachments = [];
     int index = 1;
@@ -258,6 +264,9 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
 
       var result = await ReturnedDao.uploadPictures(
           widget.returnedParcel.id, attachments, isBoken);
+      setState(() {
+        _isLoading = false;
+      });
       if (result['status'] == "succ") {
         showToast("Upload Pictures Successful");
         player.play('sounds/success01.mp3');
@@ -266,6 +275,9 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
         player.play('sounds/alert.mp3');
       }
     } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
       // print(e);
       showWarnToast(e.toString());
       player.play('sounds/alert.mp3');
