@@ -1,0 +1,19 @@
+import 'package:wms_app/http/request/base_request.dart';
+
+// FBA移除-新增包裹实例
+class FbaDetachNewRequest extends BaseRequest {
+  @override
+  HttpMethod httpMethod() {
+    return HttpMethod.POST;
+  }
+
+  @override
+  bool needLogin() {
+    return true;
+  }
+
+  @override
+  String path() {
+    return "/api/v1.0/inbound_idle_parcels/fba_detach/set_identifier";
+  }
+}
