@@ -39,6 +39,13 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   }
 
   @override
+  void dispose() {
+    focusNode.dispose();
+    textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar("Returned Scan", "", () {}),

@@ -34,6 +34,13 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
   }
 
   @override
+  void dispose() {
+    focusNode.dispose();
+    textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar("Returned Reshelf", "", () {}),

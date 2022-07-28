@@ -51,6 +51,8 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
   @override
   void dispose() {
     HiNavigator.getInstance().removeListener(listener);
+    textEditingController.dispose();
+    focusNode.dispose();
     super.dispose();
   }
 

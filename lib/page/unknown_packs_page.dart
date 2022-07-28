@@ -49,6 +49,17 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     loadConsignorData();
   }
 
+  @override
+  void dispose() {
+    focusNode.dispose();
+    textEditingController.dispose();
+    focusNode1.dispose();
+    textEditingController1.dispose();
+    focusNode2.dispose();
+    textEditingController2.dispose();
+    super.dispose();
+  }
+
   void loadDepotData() async {
     try {
       var result = await DepotDao.getDepotList();

@@ -55,6 +55,8 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
   @override
   void dispose() {
     HiNavigator.getInstance().removeListener(listener);
+    textEditingController.dispose();
+    focusNode.dispose();
     super.dispose();
   }
 

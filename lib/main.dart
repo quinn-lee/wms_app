@@ -5,9 +5,12 @@ import 'package:wms_app/db/hi_cache.dart';
 import 'package:wms_app/http/core/hi_error.dart';
 import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/dao/login_dao.dart';
+import 'package:wms_app/model/fba_detach_parcel.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
+import 'package:wms_app/page/fba_detach_scan_page.dart';
+import 'package:wms_app/page/fba_detach_scan_sku_page.dart';
 import 'package:wms_app/page/home_page.dart';
 import 'package:wms_app/page/inbound_page.dart';
 import 'package:wms_app/page/inbound_receive_page.dart';
@@ -114,6 +117,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
   String? unknownPageFrom;
   String? returnPageFrom;
   ReturnedParcel? reshelfParcel;
+  FbaDetachParcel? fbaDetachParcel;
   List<MaterialPage> pages = [];
 
   //为Navigator设置一个key，必要的时候可以通过navigatorKey.currentState来获取到NavigatorState对象
@@ -133,6 +137,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
         unknownPageFrom = args!['unknownPageFrom'] ?? "";
       } else if (routeStatus == RouteStatus.returnedScan) {
         returnPageFrom = args!['returnPageFrom'] ?? "";
+      } else if (routeStatus == RouteStatus.fbaDetachScanSku) {
+        fbaDetachParcel = args!['fbaDetachParcel'];
       }
       notifyListeners();
     });
@@ -190,6 +196,10 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(const OutboundCheckPage());
     } else if (routeStatus == RouteStatus.outboundCheckMultiple) {
       page = pageWrap(const OutboundCheckMultiplePage());
+    } else if (routeStatus == RouteStatus.fbaDetachScan) {
+      page = pageWrap(const FbaDetachScanPage());
+    } else if (routeStatus == RouteStatus.fbaDetachScanSku) {
+      page = pageWrap(FbaDetachScanSkuPage(fbaDetachParcel!));
     }
     //重新创建一个数组，否则pages因引用没有改变路由不会生效
     tempPages = [...tempPages, page];

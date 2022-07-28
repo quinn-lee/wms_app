@@ -39,6 +39,13 @@ class _LoginPageState extends HiState<LoginPage> {
   }
 
   @override
+  void dispose() {
+    emailEditingController.dispose();
+    passwdEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: appBar("Login", "", (() {

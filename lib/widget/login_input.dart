@@ -10,6 +10,8 @@ class LoginInput extends StatefulWidget {
   final bool obscureText;
   final TextInputType? keyboardType;
   final TextEditingController textEditingController;
+  final bool enabled;
+  final bool autofocus;
 
   const LoginInput(this.title, this.hint, this.textEditingController,
       {Key? key,
@@ -17,6 +19,8 @@ class LoginInput extends StatefulWidget {
       this.focusChanged,
       this.lineStretch = false,
       this.obscureText = false,
+      this.autofocus = false,
+      this.enabled = true,
       this.keyboardType})
       : super(key: key);
 
@@ -40,7 +44,7 @@ class _LoginInputState extends State<LoginInput> {
   @override
   void dispose() {
     _focusNode.dispose();
-    widget.textEditingController.dispose();
+    // widget.textEditingController.dispose();
     super.dispose();
   }
 
@@ -78,7 +82,8 @@ class _LoginInputState extends State<LoginInput> {
       onChanged: widget.onChanged,
       obscureText: widget.obscureText,
       keyboardType: widget.keyboardType,
-      autofocus: !widget.obscureText,
+      autofocus: widget.autofocus,
+      enabled: widget.enabled,
       cursorColor: primary,
       controller: widget.textEditingController,
       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w300),

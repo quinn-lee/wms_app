@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/outbound_dao.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/util/string_util.dart';
@@ -17,7 +18,8 @@ class OutboundCheckMultiplePage extends StatefulWidget {
       _OutboundCheckMultiplePageState();
 }
 
-class _OutboundCheckMultiplePageState extends State<OutboundCheckMultiplePage> {
+class _OutboundCheckMultiplePageState
+    extends HiState<OutboundCheckMultiplePage> {
   String? num;
   String? shipmentNum;
   Map skuInfo = {};
@@ -28,6 +30,15 @@ class _OutboundCheckMultiplePageState extends State<OutboundCheckMultiplePage> {
   bool submitEnable = false;
   List<Map> resultShow = [];
   AudioCache player = AudioCache();
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    textEditingController.dispose();
+    focusNode1.dispose();
+    textEditingController1.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

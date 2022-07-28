@@ -34,6 +34,14 @@ class _InboundPageState extends HiState<InboundPage> {
                   args: {"unknownPageFrom": "menu"});
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.list),
+            title: const Text("Fba Detach Parcels"),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              HiNavigator.getInstance().onJumpTo(RouteStatus.fbaDetachScan);
+            },
+          ),
         ],
       ),
     );

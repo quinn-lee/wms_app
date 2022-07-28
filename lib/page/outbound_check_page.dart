@@ -31,6 +31,17 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
   AudioCache player = AudioCache();
 
   @override
+  void dispose() {
+    focusNode.dispose();
+    textEditingController.dispose();
+    focusNode1.dispose();
+    textEditingController1.dispose();
+    focusNode2.dispose();
+    textEditingController2.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
