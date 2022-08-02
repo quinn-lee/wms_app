@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wms_app/util/color.dart';
 
 class CancelButton extends StatelessWidget {
   final String title;

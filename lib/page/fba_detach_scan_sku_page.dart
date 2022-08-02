@@ -4,9 +4,12 @@ import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/fba_detach_dao.dart';
 import 'package:wms_app/model/fba_detach_parcel.dart';
 import 'package:wms_app/model/fba_detach_sku.dart';
+import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
+import 'package:wms_app/widget/cancel_button.dart';
 import 'package:wms_app/widget/loading_container.dart';
 import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/login_input.dart';
@@ -43,6 +46,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
   bool canSubmit = false;
   AudioCache player = AudioCache();
   List<Map> resultShow = [];
+  Map sumList = {};
 
   @override
   void dispose() {
@@ -60,14 +64,16 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBar("Fba Detach Add Sku", "", () {}),
-        body: LoadingContainer(
-          cover: true,
-          isLoading: _isLoading,
-          child: ListView(
-            children: _buildWidget(),
-          ),
-        ));
+      appBar:
+          appBar("Fba Detach Add Sku", "", () {}, backPressed: _alertReturn),
+      body: LoadingContainer(
+        cover: true,
+        isLoading: _isLoading,
+        child: ListView(
+          children: _buildWidget(),
+        ),
+      ),
+    );
   }
 
   List<Widget> _buildWidget() {
@@ -77,10 +83,25 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
           "Shipment Num: ${widget.fdp.identifier}, ${widget.fdp.account ?? ''}"),
       subtitle: Text(widget.fdp.updatedAt!.substring(0, 10)),
     ));
-    widgets.add(const Divider(
-      height: 1,
-      color: Colors.white,
-    ));
+    widgets.add(Padding(
+        padding: const EdgeInsets.all(10),
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          children: [
+            LoginButton(
+              'SKU Summary',
+              0.45,
+              enable: true,
+              onPressed: _showSumList,
+            ),
+            CancelButton(
+              'Quit',
+              0.45,
+              enable: true,
+              onPressed: _alertReturn,
+            ),
+          ],
+        )));
     widgets.add(ScanInput(
       "Barcode",
       "Scan sku's barcode",
@@ -103,7 +124,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
         title: Text("SkuCode: ${element.skuCode}, ${element.account ?? ''}"),
         subtitle: Text(
             "length: ${element.length}, width: ${element.width}, height: ${element.height}, weight: ${element.weight}"),
-        trailing: const Icon(Icons.library_add_check),
+        trailing: const Icon(Icons.check_circle_outline),
         onTap: () {
           setState(() {
             isSelected = true;
@@ -189,24 +210,45 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
     }
 
     for (var element in resultShow.reversed) {
-      widgets.add(ListTile(
-        title: Text(
-          element['show'],
-          style: const TextStyle(color: Colors.white),
-        ),
-        tileColor: element['status']
-            ? const Color(0xFF4e72b8)
-            : const Color(0xFFf15b6c),
-      ));
-      widgets.add(const Divider(
-        height: 1,
-        color: Colors.white,
-      ));
+      if (element['barcode'] != null) {
+        widgets.add(ListTile(
+          title: Text(
+            element['show'],
+            style: const TextStyle(color: Colors.white),
+          ),
+          tileColor: element['status']
+              ? const Color(0xFF4e72b8)
+              : const Color(0xFFf15b6c),
+          onTap: () {
+            _alertRollback(
+                element['barcode'], element['quantity'], element['accountId']);
+          },
+        ));
+        widgets.add(const Divider(
+          height: 1,
+          color: Colors.white,
+        ));
+      } else {
+        widgets.add(ListTile(
+          title: Text(
+            element['show'],
+            style: const TextStyle(color: Colors.white),
+          ),
+          tileColor: element['status']
+              ? const Color(0xFF4e72b8)
+              : const Color(0xFFf15b6c),
+        ));
+        widgets.add(const Divider(
+          height: 1,
+          color: Colors.white,
+        ));
+      }
     }
 
     return widgets;
   }
 
+  // 查询sku信息
   void loadData() async {
     setState(() {
       _isLoading = true;
@@ -273,6 +315,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
     }
   }
 
+  // 添加sku提交
   void newSku() async {
     setState(() {
       _isLoading = true;
@@ -299,8 +342,17 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
           resultShow.add({
             "status": true,
             "show":
-                "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num, Quantity: $quantity"
+                "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num, Quantity: $quantity. Click here to roll back this operation.",
+            "barcode": num,
+            "quantity": quantity,
+            "accountId": accountId
           });
+          // 汇总信息
+          if (sumList.containsKey(num!)) {
+            sumList[num!] = sumList[num!] + quantity;
+          } else {
+            sumList[num!] = quantity;
+          }
         });
       } else {
         showWarnToast(result['reason'].join(","));
@@ -339,5 +391,153 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
       textEditingController.clear();
       FocusScope.of(context).requestFocus(focusNode);
     }
+  }
+
+  // 回退
+  void rollback(String barcode, int quantity, int accountId) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      dynamic result;
+      Map data = {
+        "barcode": barcode,
+        "account_id": accountId,
+        "quantity": -quantity,
+      };
+      result = await FbaDetachDao.addSku(widget.fdp.id, data);
+
+      if (result['status'] == "succ") {
+        setState(() {
+          _isLoading = false;
+          player.play('sounds/success01.mp3');
+          var now = DateTime.now();
+          resultShow.add({
+            "status": true,
+            "show":
+                "${now.hour}:${now.minute}:${now.second}-Rollback Succeeded! Num:$barcode, Quantity: -$quantity.",
+          });
+          // 汇总信息
+          if (sumList.containsKey(barcode)) {
+            sumList[barcode] = sumList[barcode] - quantity;
+          } else {
+            sumList[barcode] = -quantity;
+          }
+        });
+      } else {
+        showWarnToast(result['reason'].join(","));
+        player.play('sounds/alert.mp3');
+        setState(() {
+          _isLoading = false;
+          resultShow.add({"status": false, "show": result['reason'].join(",")});
+        });
+      }
+    } catch (e) {
+      showWarnToast(e.toString());
+      player.play('sounds/alert.mp3');
+      setState(() {
+        _isLoading = false;
+        resultShow.add({"status": false, "show": e.toString()});
+      });
+    }
+    if (mounted) {
+      textEditingController.clear();
+      FocusScope.of(context).requestFocus(focusNode);
+    }
+  }
+
+  _alertRollback(String barcode, int quantity, int accountId) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+                "The number of this sku-$barcode will be reduced by $quantity, confirm?"),
+            content: const Text(""),
+            actions: [
+              MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context, "cancel");
+                  },
+                  child:
+                      const Text("Cancel", style: TextStyle(color: primary))),
+              MaterialButton(
+                  onPressed: () {
+                    rollback(barcode, quantity, accountId);
+                    Navigator.pop(context, "ok");
+                  },
+                  color: primary,
+                  child: const Text(
+                    "Confirm",
+                    style: TextStyle(color: Colors.white),
+                  ))
+            ],
+          );
+        });
+  }
+
+  // 展示汇总信息
+  _showSumList() async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("SKU Summary"),
+            content: _buildTable(),
+            actions: [
+              MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context, "close");
+                  },
+                  child: const Text("Close", style: TextStyle(color: primary))),
+            ],
+          );
+        });
+  }
+
+  Widget _buildTable() {
+    List<DataRow> rows = [];
+    sumList.forEach((key, value) {
+      rows.add(DataRow(cells: [
+        DataCell(Text(key.toString())),
+        DataCell(Text(value.toString()))
+      ]));
+    });
+    return DataTable(columns: const [
+      DataColumn(label: Text("Barcode")),
+      DataColumn(label: Text("Quantity"))
+    ], rows: rows);
+  }
+
+  // 退出页面confirm
+  _alertReturn() async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+                "After exiting the page, the operation cannot be rolled back, are you sure?"),
+            content: const Text(""),
+            actions: [
+              MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context, "cancel");
+                  },
+                  child:
+                      const Text("Cancel", style: TextStyle(color: primary))),
+              MaterialButton(
+                  onPressed: () {
+                    HiNavigator.getInstance()
+                        .onJumpTo(RouteStatus.fbaDetachScan);
+                    Navigator.pop(context, "ok");
+                  },
+                  color: primary,
+                  child: const Text(
+                    "Confirm",
+                    style: TextStyle(color: Colors.white),
+                  ))
+            ],
+          );
+        });
   }
 }
