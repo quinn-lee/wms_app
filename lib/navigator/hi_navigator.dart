@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wms_app/page/detail_page.dart';
+import 'package:wms_app/page/fba_detach_current_page.dart';
 import 'package:wms_app/page/fba_detach_scan_page.dart';
 import 'package:wms_app/page/fba_detach_scan_sku_page.dart';
 import 'package:wms_app/page/home_page.dart';
@@ -55,7 +56,8 @@ enum RouteStatus {
   outboundCheck,
   outboundCheckMultiple,
   fbaDetachScan,
-  fbaDetachScanSku
+  fbaDetachScanSku,
+  fbaDetachCurrent
 }
 
 // 获取page 对应的RouteStatus
@@ -94,6 +96,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.fbaDetachScan;
   } else if (page.child is FbaDetachScanSkuPage) {
     return RouteStatus.fbaDetachScanSku;
+  } else if (page.child is FbaDetachCurrentPage) {
+    return RouteStatus.fbaDetachCurrent;
   } else {
     return RouteStatus.unknown;
   }

@@ -36,10 +36,18 @@ class _InboundPageState extends HiState<InboundPage> {
           ),
           ListTile(
             leading: const Icon(Icons.list),
-            title: const Text("Fba Detach Parcels"),
+            title: const Text("Fba Detach Parcels Scan"),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               HiNavigator.getInstance().onJumpTo(RouteStatus.fbaDetachScan);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.list),
+            title: const Text("Fba Detach Parcels List"),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              HiNavigator.getInstance().onJumpTo(RouteStatus.fbaDetachCurrent);
             },
           ),
         ],

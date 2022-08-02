@@ -1,6 +1,8 @@
 import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/request/base_request.dart';
 import 'package:wms_app/http/request/fba_detach_add_request.dart';
+import 'package:wms_app/http/request/fba_detach_current_request.dart';
+import 'package:wms_app/http/request/fba_detach_delete_request.dart';
 import 'package:wms_app/http/request/fba_detach_new_request.dart';
 import 'package:wms_app/http/request/fba_detach_search_request.dart';
 import 'package:wms_app/http/request/fba_detach_search_sku_request.dart';
@@ -44,6 +46,24 @@ class FbaDetachDao {
     BaseRequest request = FbaDetachAddReqeust();
     request.pathParams = "$id/add_sku";
     request.add("data", [data]);
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
+    return result;
+  }
+
+  static current({String? shipmentNum}) async {
+    BaseRequest request = FbaDetachCurrentRequest();
+    if (shipmentNum != null) {
+      request.add("num", shipmentNum);
+    }
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
+    return result;
+  }
+
+  static delete(int id) async {
+    BaseRequest request = FbaDetachDeleteRequest();
+    request.pathParams = "$id/delete";
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;

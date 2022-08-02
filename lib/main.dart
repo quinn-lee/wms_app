@@ -9,6 +9,7 @@ import 'package:wms_app/model/fba_detach_parcel.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
+import 'package:wms_app/page/fba_detach_current_page.dart';
 import 'package:wms_app/page/fba_detach_scan_page.dart';
 import 'package:wms_app/page/fba_detach_scan_sku_page.dart';
 import 'package:wms_app/page/home_page.dart';
@@ -198,6 +199,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(const OutboundCheckMultiplePage());
     } else if (routeStatus == RouteStatus.fbaDetachScan) {
       page = pageWrap(const FbaDetachScanPage());
+    } else if (routeStatus == RouteStatus.fbaDetachCurrent) {
+      page = pageWrap(const FbaDetachCurrentPage());
     } else if (routeStatus == RouteStatus.fbaDetachScanSku) {
       page = pageWrap(FbaDetachScanSkuPage(fbaDetachParcel!));
     }

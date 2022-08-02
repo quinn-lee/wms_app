@@ -7,6 +7,8 @@ class FbaDetachParcel {
   String? identifier;
   int? accountId;
   String? account;
+  List? skus;
+  bool? canDelete;
 
   FbaDetachParcel(this.id,
       {this.createdAt,
@@ -15,7 +17,9 @@ class FbaDetachParcel {
       this.status,
       this.identifier,
       this.accountId,
-      this.account});
+      this.account,
+      this.canDelete,
+      this.skus});
 
   FbaDetachParcel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -26,5 +30,7 @@ class FbaDetachParcel {
     identifier = json['identifier'];
     accountId = json['account_id'];
     account = json['account'];
+    canDelete = json['can_delete'];
+    skus = json['skus'];
   }
 }
