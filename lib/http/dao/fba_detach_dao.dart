@@ -54,8 +54,10 @@ class FbaDetachDao {
   static current({String? shipmentNum}) async {
     BaseRequest request = FbaDetachCurrentRequest();
     if (shipmentNum != null) {
-      request.add("num", shipmentNum);
+      request.add("identifier", shipmentNum);
     }
+    request.add("page", 1);
+    request.add("per_page", 50);
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;

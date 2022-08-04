@@ -499,13 +499,25 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
     List<DataRow> rows = [];
     sumList.forEach((key, value) {
       rows.add(DataRow(cells: [
-        DataCell(Text(key.toString())),
-        DataCell(Text(value.toString()))
+        DataCell(SizedBox(
+            width: 120,
+            child: Text(
+              key.toString(),
+            ))),
+        DataCell(SizedBox(width: 35, child: Text(value.toString())))
       ]));
     });
     return DataTable(columns: const [
-      DataColumn(label: Text("Barcode")),
-      DataColumn(label: Text("Quantity"))
+      DataColumn(
+          label: SizedBox(
+        width: 120,
+        child: Text("Barcode"),
+      )),
+      DataColumn(
+          label: SizedBox(
+        width: 35,
+        child: Text("QTY"),
+      ))
     ], rows: rows);
   }
 

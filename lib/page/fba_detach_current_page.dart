@@ -171,6 +171,7 @@ class _FbaDetachCurrentPageState extends HiState<FbaDetachCurrentPage> {
           _isLoading = false;
           showToast("Delete successful");
           player.play('sounds/success01.mp3');
+          num = null;
           // 重新加载数据
           loadData();
         });
@@ -179,12 +180,14 @@ class _FbaDetachCurrentPageState extends HiState<FbaDetachCurrentPage> {
         player.play('sounds/alert.mp3');
         setState(() {
           _isLoading = false;
+          num = null;
         });
       }
     } catch (e) {
       showWarnToast(e.toString());
       player.play('sounds/alert.mp3');
       setState(() {
+        num = null;
         parcelList.clear();
       });
     }
@@ -213,13 +216,15 @@ class _FbaDetachCurrentPageState extends HiState<FbaDetachCurrentPage> {
     List<DataRow> rows = [];
     for (var element in skuList) {
       rows.add(DataRow(cells: [
-        DataCell(Text(element['barcode'].toString())),
-        DataCell(Text(element['quantity'].toString())),
+        DataCell(
+            SizedBox(width: 120, child: Text(element['barcode'].toString()))),
+        DataCell(
+            SizedBox(width: 35, child: Text(element['quantity'].toString()))),
       ]));
     }
     return DataTable(columns: const [
-      DataColumn(label: Text("Barcode")),
-      DataColumn(label: Text("Quantity"))
+      DataColumn(label: SizedBox(width: 120, child: Text("Barcode"))),
+      DataColumn(label: SizedBox(width: 35, child: Text("QTY")))
     ], rows: rows);
   }
 }
