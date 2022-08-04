@@ -5,6 +5,7 @@ import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/model/returned_sku.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/cancel_button.dart';
@@ -160,8 +161,9 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     });
     try {
       if (num != null && num != "") {
-        var result = await ReturnedDao.getReturnedSkus(num!);
-        print('loadData():$result');
+        String newShipmentNum = matchShipmentNum(num!);
+        var result = await ReturnedDao.getReturnedSkus(newShipmentNum);
+        // print('loadData():$result');
         if (result['status'] == "succ") {
           setState(() {
             skuList.clear();
@@ -185,7 +187,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
           //   showWarnToast("No Sku Info Found");
           // }
         } else {
-          print(result['reason']);
+          // print(result['reason']);
           showWarnToast(result['reason'].join(","));
           setState(() {
             _isLoading = false;
@@ -200,7 +202,6 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         }
       }
     } catch (e) {
-      print(e);
       showWarnToast(e.toString());
       setState(() {
         _isLoading = false;
@@ -235,7 +236,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     });
     try {
       if (num != null && num != "") {
-        result = await ReturnedDao.scan(num!);
+        String newShipmentNum = matchShipmentNum(num!);
+        result = await ReturnedDao.scan(newShipmentNum);
         if (result["status"] == "succ") {
           setState(() {
             _isLoading = false;
@@ -243,7 +245,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             resultShow.add({
               "status": true,
               "show":
-                  "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num"
+                  "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$newShipmentNum"
             });
             skuList.clear();
             batchNum = "";
@@ -295,7 +297,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     });
     try {
       if (num != null && num != "") {
-        result = await ReturnedDao.scan(num!);
+        String newShipmentNum = matchShipmentNum(num!);
+        result = await ReturnedDao.scan(newShipmentNum);
         if (result["status"] == "succ") {
           setState(() {
             _isLoading = false;
@@ -303,7 +306,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             resultShow.add({
               "status": true,
               "show":
-                  "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num"
+                  "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$newShipmentNum"
             });
             skuList.clear();
             batchNum = "";
@@ -312,7 +315,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
           });
           player.play('sounds/success01.mp3');
           showToast("Submit Successful");
-          print(result["data"]);
+          // print(result["data"]);
           ReturnedParcel rp = ReturnedParcel.fromJson(result["data"]);
           String photoFrom =
               (widget.pageFrom == "receive" ? widget.pageFrom : "scan");

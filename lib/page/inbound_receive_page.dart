@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/inbound_dao.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/loading_container.dart';
@@ -104,7 +105,8 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
     dynamic result;
     try {
       if (num != null && num != "") {
-        result = await InboundDao.receive(num!);
+        String newShipmentNum = matchShipmentNum(num!);
+        result = await InboundDao.receive(newShipmentNum);
         if (result["status"] == "succ") {
           setState(() {
             _isLoading = false;
@@ -112,16 +114,16 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
             String show = "";
             if (result["category"] == "inbound") {
               show =
-                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$num, inbound_num:${result['inbound_num']}, customer:${result['abbr_code']}";
+                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$newShipmentNum, inbound_num:${result['inbound_num']}, customer:${result['abbr_code']}";
             } else if (result["category"] == "return") {
               show =
-                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$num, Click to Register Return Parcel";
+                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$newShipmentNum, Click to Register Return Parcel";
             } else if (result["category"] == "unknown") {
               show =
-                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$num, Click to Register Unknown Parcel";
+                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$newShipmentNum, Click to Register Unknown Parcel";
             } else {
               show =
-                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$num";
+                  "${now.hour}:${now.minute}:${now.second}-${result['category']} parcel! Num:$newShipmentNum";
             }
             resultShow.add({"category": result["category"], "show": show});
 
