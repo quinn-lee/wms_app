@@ -26,6 +26,7 @@ import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 import 'package:wms_app/page/returned_shelf_page.dart';
 import 'package:wms_app/page/unknown_packs_page.dart';
+import 'package:wms_app/util/authority.dart';
 import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
 
@@ -48,7 +49,7 @@ class _MyAppState extends HiState<MyApp> {
     super.initState();
     initXUpdate();
     FlutterXUpdate.checkUpdate(
-        url: "http://172.105.20.13:3006/api/v1.0/apk/apk_update_info",
+        url: "http://$auth/api/v1.0/apk/apk_update_info",
         themeColor: "#ffff9db5",
         topImageRes: "white",
         buttonTextColor: "#ffffffff");
@@ -94,14 +95,14 @@ class _MyAppState extends HiState<MyApp> {
             //在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
             enableRetry: false)
         .then((value) {
-      print("初始化成功: $value");
+      // print("初始化成功: $value");
     }).catchError((error) {
-      print(error);
+      // print(error);
     });
 
     FlutterXUpdate.setErrorHandler(
         onUpdateError: (Map<String, dynamic>? message) async {
-      print(message);
+      // print(message);
     });
   }
 }
