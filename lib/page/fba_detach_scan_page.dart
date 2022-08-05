@@ -4,6 +4,7 @@ import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/fba_detach_dao.dart';
 import 'package:wms_app/model/fba_detach_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/loading_container.dart';
@@ -102,7 +103,8 @@ class _FbaDetachScanPageState extends HiState<FbaDetachScanPage> {
     try {
       dynamic result;
       if (num != null && num != "") {
-        result = await FbaDetachDao.search(num!);
+        String newShipmentNum = matchShipmentNum(num!);
+        result = await FbaDetachDao.search(newShipmentNum);
       } else {
         setState(() {
           _isLoading = false;
@@ -145,7 +147,8 @@ class _FbaDetachScanPageState extends HiState<FbaDetachScanPage> {
     try {
       dynamic result;
       if (num != null && num != "") {
-        result = await FbaDetachDao.newIdentifier(num!);
+        String newShipmentNum = matchShipmentNum(num!);
+        result = await FbaDetachDao.newIdentifier(newShipmentNum);
       } else {
         showWarnToast("Please scan shipment num!");
       }

@@ -118,6 +118,10 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
       subtitle: Text("${widget.returnedParcel.shpmtNum}"),
     ));
     widgets.add(ListTile(
+      title: const Text("Return Num: "),
+      subtitle: Text("${widget.returnedParcel.roNum}"),
+    ));
+    widgets.add(ListTile(
       title: const Text("Unpack when taking pictures?"),
       subtitle: widget.returnedParcel.unpackPhoto == true
           ? const Text(

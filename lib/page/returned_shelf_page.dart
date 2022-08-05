@@ -56,6 +56,10 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
               subtitle: Text("${widget.returnedParcel.shpmtNum}"),
             ),
             ListTile(
+              title: const Text("Return Num: "),
+              subtitle: Text("${widget.returnedParcel.roNum}"),
+            ),
+            ListTile(
               title: const Text("Disposal: "),
               subtitle: Text("${widget.returnedParcel.disposal}"),
             ),

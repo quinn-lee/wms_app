@@ -4,6 +4,7 @@ import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/fba_detach_dao.dart';
 import 'package:wms_app/model/fba_detach_parcel.dart';
 import 'package:wms_app/util/color.dart';
+import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/loading_container.dart';
@@ -95,7 +96,8 @@ class _FbaDetachCurrentPageState extends HiState<FbaDetachCurrentPage> {
     try {
       dynamic result;
       if (num != null && num != "") {
-        result = await FbaDetachDao.current(shipmentNum: num);
+        String newShipmentNum = matchShipmentNum(num!);
+        result = await FbaDetachDao.current(shipmentNum: newShipmentNum);
       } else {
         result = await FbaDetachDao.current();
       }

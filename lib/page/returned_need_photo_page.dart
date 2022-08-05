@@ -3,6 +3,7 @@ import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/loading_container.dart';
@@ -29,18 +30,18 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
     bool resumeFlag = false;
     super.initState();
     textEditingController.addListener(() {
-      print("controller: ${textEditingController.text}");
+      // print("controller: ${textEditingController.text}");
     });
     HiNavigator.getInstance().addListener(listener = (current, pre) {
-      print("current: ${current.page}");
-      print("pre: ${pre.page}");
+      // print("current: ${current.page}");
+      // print("pre: ${pre.page}");
       if (widget == current.page || current.page is ReturnedNeedPhotoPage) {
-        print("打开了待拍照列表: onResume");
+        // print("打开了待拍照列表: onResume");
         textEditingController.clear(); // 清除搜索栏
         loadData(); // 重新加载数据
         resumeFlag = true;
       } else if (widget == pre?.page || pre?.page is ReturnedNeedPhotoPage) {
-        print("待拍照列表: onPause");
+        // print("待拍照列表: onPause");
       }
     });
     if (!resumeFlag) {
@@ -95,7 +96,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
     ));
     for (var element in parcelList) {
       widgets.add(ListTile(
-        title: Text("${element.shpmtNum}, ${element.orderNum}"),
+        title: Text("${element.shpmtNum}, ${element.roNum}"),
         subtitle: Text("${element.batchNum}"),
         trailing: const Icon(Icons.add_a_photo),
         onTap: () {
@@ -115,11 +116,12 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
     try {
       dynamic result;
       if (shpmtNumCont != null) {
-        result = await ReturnedDao.get(shpmtNumCont: shpmtNumCont);
+        String newShipmentNum = matchShipmentNum(shpmtNumCont!);
+        result = await ReturnedDao.get(shpmtNumCont: newShipmentNum);
       } else {
         result = await ReturnedDao.get(status: "received");
       }
-      print('loadData():$result');
+      // print('loadData():$result');
       if (result['status'] == "succ") {
         setState(() {
           parcelList.clear();
@@ -132,7 +134,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
           showWarnToast("No Returned Parcel Need To Be Photoed");
         }
       } else {
-        print(result['reason']);
+        // print(result['reason']);
         showWarnToast(result['reason'].join(","));
         setState(() {
           _isLoading = false;
@@ -140,7 +142,7 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
         });
       }
     } catch (e) {
-      print(e);
+      // print(e);
       showWarnToast(e.toString());
       setState(() {
         _isLoading = false;

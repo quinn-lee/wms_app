@@ -5,6 +5,7 @@ import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:wms_app/util/color.dart';
+import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/loading_container.dart';
@@ -33,18 +34,18 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
     bool resumeFlag = false;
     super.initState();
     textEditingController.addListener(() {
-      print("controller: ${textEditingController.text}");
+      // print("controller: ${textEditingController.text}");
     });
     HiNavigator.getInstance().addListener(listener = (current, pre) {
-      print("current: ${current.page}");
-      print("pre: ${pre.page}");
+      // print("current: ${current.page}");
+      // print("pre: ${pre.page}");
       if (widget == current.page || current.page is ReturnedNeedProcessPage) {
-        print("打开了待处理列表: onResume");
+        // print("打开了待处理列表: onResume");
         textEditingController.clear(); // 清除搜索栏
         loadData(); // 重新加载数据
         resumeFlag = true;
       } else if (widget == pre?.page || pre?.page is ReturnedNeedProcessPage) {
-        print("待处理列表: onPause");
+        // print("待处理列表: onPause");
       }
     });
     if (!resumeFlag) {
@@ -84,7 +85,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
       textEditingController,
       onChanged: (text) {
         num = text;
-        print("num: $num");
+        // print("num: $num");
       },
       onSubmitted: (text) {
         loadData(shpmtNumCont: num);
@@ -99,7 +100,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
     ));
     for (var element in parcelList) {
       widgets.add(ListTile(
-        title: Text("${element.shpmtNum}, ${element.orderNum}"),
+        title: Text("${element.shpmtNum}, ${element.roNum}"),
         subtitle: Text("customer's disposal: ${element.disposal}"),
         trailing: _tools(element),
       ));
@@ -212,9 +213,15 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
 
   void loadData({shpmtNumCont = ""}) async {
     try {
+      String newShipmentNum = "";
+      if (shpmtNumCont != null && shpmtNumCont != "") {
+        newShipmentNum = matchShipmentNum(shpmtNumCont!);
+      } else {
+        newShipmentNum = shpmtNumCont;
+      }
       var result = await ReturnedDao.get(
-          shpmtNumCont: shpmtNumCont, status: "in_process");
-      print('loadData():$result');
+          shpmtNumCont: newShipmentNum, status: "in_process");
+      // print('loadData():$result');
       if (result['status'] == "succ") {
         setState(() {
           parcelList.clear();
@@ -227,7 +234,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
           showWarnToast("No Returned Parcel Need To Be Processed");
         }
       } else {
-        print(result['reason']);
+        // print(result['reason']);
         showWarnToast(result['reason'].join(","));
         setState(() {
           _isLoading = false;
@@ -235,7 +242,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
         });
       }
     } catch (e) {
-      print(e);
+      // print(e);
       showWarnToast(e.toString());
       setState(() {
         _isLoading = false;
@@ -259,8 +266,10 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
           rParcel,
           select);
     } else {
-      _alertDialog(
-          "Your select is $select, Please Confirm!", "", rParcel, select);
+      // _alertDialog(
+      //     "Your select is $select, Please Confirm!", "", rParcel, select);
+      // 选择一致时，不跳Warning，直接处理
+      _handle(select, rParcel);
     }
   }
 
@@ -272,7 +281,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
     } else {
       try {
         var result = await ReturnedDao.finish(rParcel.id, select);
-        print(result);
+        // print(result);
         if (result['status'] == "succ") {
           showToast("Disposal Successful ");
           player.play('sounds/success01.mp3');
