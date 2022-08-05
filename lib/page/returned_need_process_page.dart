@@ -112,34 +112,6 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
     return widgets;
   }
 
-  // List<PopupMenuEntry<String>> _toolMenuItems(BuildContext context) {
-  //   List<ToolModel> toolOptions = [
-  //     ToolModel("Reshelf", "reshelf"),
-  //     ToolModel("Reshelf As Spare", "reshelf_as_spare"),
-  //     ToolModel("As Problem Skus", "problem_sku"),
-  //     ToolModel("Abandon", "abandon"),
-  //   ];
-  //   return toolOptions.map<PopupMenuEntry<String>>((option) {
-  //     return PopupMenuItem<String>(
-  //       padding: const EdgeInsets.only(
-  //         left: 8,
-  //         right: 8,
-  //       ),
-  //       value: option.value,
-  //       child: Row(
-  //         children: [
-  //           const SizedBox(
-  //             width: 4,
-  //           ),
-  //           Text(
-  //             option.title,
-  //           )
-  //         ],
-  //       ),
-  //     );
-  //   }).toList();
-  // }
-
   Widget _tools(ReturnedParcel rParcel) {
     List<ToolModel> toolOptions = [
       ToolModel("Reshelf", "reshelf"),
@@ -279,6 +251,9 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
       HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNeedReshelf,
           args: {"needReshelParcel": rParcel});
     } else {
+      setState(() {
+        _isLoading = true;
+      });
       try {
         var result = await ReturnedDao.finish(rParcel.id, select);
         // print(result);
@@ -286,12 +261,14 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
           showToast("Disposal Successful ");
           player.play('sounds/success01.mp3');
           setState(() {
+            _isLoading = false;
             loadData(); // 重新加载数据
           });
         } else {
           showWarnToast(result['reason'].join(","));
           player.play('sounds/alert.mp3');
           setState(() {
+            _isLoading = false;
             loadData(); // 重新加载数据
           });
         }
@@ -299,6 +276,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
         showWarnToast(e.toString());
         player.play('sounds/alert.mp3');
         setState(() {
+          _isLoading = false;
           loadData(); // 重新加载数据
         });
       }
