@@ -218,14 +218,18 @@ class _FbaDetachCurrentPageState extends HiState<FbaDetachCurrentPage> {
     List<DataRow> rows = [];
     for (var element in skuList) {
       rows.add(DataRow(cells: [
-        DataCell(
-            SizedBox(width: 120, child: Text(element['barcode'].toString()))),
+        DataCell(SizedBox(
+            width: 120,
+            child: Text(
+              "${element['barcode'].toString()}\n${element['sku_code'].toString()}",
+              style: const TextStyle(fontSize: 7),
+            ))),
         DataCell(
             SizedBox(width: 35, child: Text(element['quantity'].toString()))),
       ]));
     }
     return DataTable(columns: const [
-      DataColumn(label: SizedBox(width: 120, child: Text("Barcode"))),
+      DataColumn(label: SizedBox(width: 120, child: Text("Barcode/SkuCode"))),
       DataColumn(label: SizedBox(width: 35, child: Text("QTY")))
     ], rows: rows);
   }

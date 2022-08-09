@@ -44,6 +44,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
   bool isSelected = false;
   bool _isLoading = false;
   bool canSubmit = false;
+  String? skuCode;
   AudioCache player = AudioCache();
   List<Map> resultShow = [];
   Map sumList = {};
@@ -141,6 +142,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
             tec4.text = height ?? '';
             weight = element.weight;
             tec5.text = weight ?? '';
+            skuCode = element.skuCode;
             skuList.clear();
             checkInput();
           });
@@ -220,8 +222,8 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
               ? const Color(0xFF4e72b8)
               : const Color(0xFFf15b6c),
           onTap: () {
-            _alertRollback(
-                element['barcode'], element['quantity'], element['accountId']);
+            _alertRollback(element['barcode'], element['quantity'],
+                element['accountId'], element['skuCode']);
           },
         ));
         widgets.add(const Divider(
@@ -345,13 +347,14 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
                 "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$num, Quantity: $quantity. Click here to roll back this operation.",
             "barcode": num,
             "quantity": quantity,
+            "skuCode": skuCode,
             "accountId": accountId
           });
           // 汇总信息
-          if (sumList.containsKey(num!)) {
-            sumList[num!] = sumList[num!] + quantity;
+          if (sumList.containsKey("$num\n$skuCode")) {
+            sumList["$num\n$skuCode"] = sumList["$num\n$skuCode"] + quantity;
           } else {
-            sumList[num!] = quantity;
+            sumList["$num\n$skuCode"] = quantity;
           }
         });
       } else {
@@ -384,6 +387,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
       tec4.text = '';
       weight = null;
       tec5.text = '';
+      skuCode = null;
       skuList.clear();
       num = null;
     });
@@ -394,7 +398,8 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
   }
 
   // 回退
-  void rollback(String barcode, int quantity, int accountId) async {
+  void rollback(
+      String barcode, int quantity, int accountId, String skuCode) async {
     setState(() {
       _isLoading = true;
     });
@@ -418,10 +423,11 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
                 "${now.hour}:${now.minute}:${now.second}-Rollback Succeeded! Num:$barcode, Quantity: -$quantity.",
           });
           // 汇总信息
-          if (sumList.containsKey(barcode)) {
-            sumList[barcode] = sumList[barcode] - quantity;
+          if (sumList.containsKey("$barcode\n$skuCode")) {
+            sumList["$barcode\n$skuCode"] =
+                sumList["$barcode\n$skuCode"] - quantity;
           } else {
-            sumList[barcode] = -quantity;
+            sumList["$barcode\n$skuCode"] = -quantity;
           }
         });
       } else {
@@ -446,7 +452,8 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
     }
   }
 
-  _alertRollback(String barcode, int quantity, int accountId) async {
+  _alertRollback(
+      String barcode, int quantity, int accountId, String skuCode) async {
     await showDialog(
         context: context,
         builder: (context) {
@@ -463,7 +470,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
                       const Text("Cancel", style: TextStyle(color: primary))),
               MaterialButton(
                   onPressed: () {
-                    rollback(barcode, quantity, accountId);
+                    rollback(barcode, quantity, accountId, skuCode);
                     Navigator.pop(context, "ok");
                   },
                   color: primary,
@@ -503,6 +510,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
             width: 120,
             child: Text(
               key.toString(),
+              style: const TextStyle(fontSize: 7),
             ))),
         DataCell(SizedBox(width: 35, child: Text(value.toString())))
       ]));
@@ -511,7 +519,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
       DataColumn(
           label: SizedBox(
         width: 120,
-        child: Text("Barcode"),
+        child: Text("Barcode/SkuCode"),
       )),
       DataColumn(
           label: SizedBox(
