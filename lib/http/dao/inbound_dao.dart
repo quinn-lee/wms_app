@@ -20,10 +20,12 @@ class InboundDao {
       String identifier,
       String? category,
       String? accountId,
+      int quantity,
       List attachment) async {
     BaseRequest request = UnknownPackRequest();
     request.add("depot_code", depotCode);
     request.add("identifier", identifier);
+    request.add("quantity", quantity);
     if (isNotEmpty(serialNum)) {
       request.add("serial_number", serialNum!);
     }

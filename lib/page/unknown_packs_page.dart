@@ -32,12 +32,15 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
   String? num;
   String? shipmentNum;
   String? skuNum;
+  int quantity = 1;
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
   final TextEditingController textEditingController1 = TextEditingController();
   FocusNode focusNode1 = FocusNode();
   final TextEditingController textEditingController2 = TextEditingController();
   FocusNode focusNode2 = FocusNode();
+  final TextEditingController textEditingController3 = TextEditingController();
+  FocusNode focusNode3 = FocusNode();
   List<File> _images = [];
   bool submitEnable = false;
   List<Map> resultShow = [];
@@ -55,6 +58,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     setState(() {
       _isLoading = false;
     });
+    textEditingController3.text = quantity.toString();
   }
 
   @override
@@ -65,6 +69,8 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     textEditingController1.dispose();
     focusNode2.dispose();
     textEditingController2.dispose();
+    focusNode3.dispose();
+    textEditingController3.dispose();
     super.dispose();
   }
 
@@ -270,6 +276,20 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
     ));
     widgets.add(_selectCategory());
     widgets.add(_selectConsignor());
+    widgets.add(ScanInput(
+      "Quantity",
+      "",
+      focusNode3,
+      textEditingController3,
+      onChanged: (text) {
+        if (isNotEmpty(text) && text != "") {
+          quantity = int.parse(text);
+        } else {
+          quantity = 1;
+        }
+        checkInput();
+      },
+    ));
     widgets.add(ListTile(
       title: const Text("Pictures: "),
       subtitle: _images.isEmpty ? const Text("No Pictures") : const Text(""),
@@ -506,8 +526,8 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
         });
       }
       String newShipmentNum = matchShipmentNum(shipmentNum!);
-      result = await InboundDao.registerUnknownParcel(
-          depotCode!, skuNum, newShipmentNum, category, accountId, attachments);
+      result = await InboundDao.registerUnknownParcel(depotCode!, skuNum,
+          newShipmentNum, category, accountId, quantity, attachments);
       if (result['status'] == "succ") {
         showToast("Register Unknown Parcels Successful");
         setState(() {
@@ -543,10 +563,16 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
       textEditingController2.clear();
       category = null;
       accountId = null;
+      quantity = 1;
+      textEditingController3.text = quantity.toString();
       _images.clear();
     });
     if (widget.pageFrom == "receive") {
       HiNavigator.getInstance().onJumpTo(RouteStatus.inboundReceive);
+    }
+    if (mounted) {
+      textEditingController.clear();
+      FocusScope.of(context).requestFocus(focusNode);
     }
   }
 }
