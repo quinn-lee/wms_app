@@ -547,6 +547,7 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
                       const Text("Cancel", style: TextStyle(color: primary))),
               MaterialButton(
                   onPressed: () {
+                    saveDelete();
                     HiNavigator.getInstance()
                         .onJumpTo(RouteStatus.fbaDetachScan);
                     Navigator.pop(context, "ok");
@@ -559,5 +560,17 @@ class _FbaDetachScanSkuPageState extends HiState<FbaDetachScanSkuPage> {
             ],
           );
         });
+  }
+
+  // 删除
+  void saveDelete() async {
+    try {
+      dynamic result;
+      result = await FbaDetachDao.saveDelete(widget.fdp.id);
+      if (result['status'] == "succ") {
+      } else {}
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:wms_app/http/request/fba_detach_add_request.dart';
 import 'package:wms_app/http/request/fba_detach_current_request.dart';
 import 'package:wms_app/http/request/fba_detach_delete_request.dart';
 import 'package:wms_app/http/request/fba_detach_new_request.dart';
+import 'package:wms_app/http/request/fba_detach_save_delete_request.dart';
 import 'package:wms_app/http/request/fba_detach_search_request.dart';
 import 'package:wms_app/http/request/fba_detach_search_sku_request.dart';
 
@@ -13,7 +14,7 @@ class FbaDetachDao {
     BaseRequest request = FbaDetachSearchRequest();
     request.add("num", shipmentNum);
     var result = await HiNet.getInstance().fire(request);
-    print(result);
+    // print(result);
     return result;
   }
 
@@ -22,7 +23,7 @@ class FbaDetachDao {
     BaseRequest request = FbaDetachNewRequest();
     request.add("num", shipmentNum);
     var result = await HiNet.getInstance().fire(request);
-    print(result);
+    // print(result);
     return result;
   }
 
@@ -31,7 +32,7 @@ class FbaDetachDao {
     BaseRequest request = FbaDetachSearchSkuRequest();
     request.add("barcode", barcode);
     var result = await HiNet.getInstance().fire(request);
-    print(result);
+    // print(result);
     return result;
   }
 
@@ -47,7 +48,7 @@ class FbaDetachDao {
     request.pathParams = "$id/add_sku";
     request.add("data", [data]);
     var result = await HiNet.getInstance().fire(request);
-    print(result);
+    // print(result);
     return result;
   }
 
@@ -59,13 +60,21 @@ class FbaDetachDao {
     request.add("page", 1);
     request.add("per_page", 50);
     var result = await HiNet.getInstance().fire(request);
-    print(result);
+    // print(result);
     return result;
   }
 
   static delete(int id) async {
     BaseRequest request = FbaDetachDeleteRequest();
     request.pathParams = "$id/delete";
+    var result = await HiNet.getInstance().fire(request);
+    // print(result);
+    return result;
+  }
+
+  static saveDelete(int id) async {
+    BaseRequest request = FbaDetachSaveDeleteRequest();
+    request.pathParams = "$id/safe_delete";
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;
