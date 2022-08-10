@@ -28,6 +28,19 @@ class _FbaDetachScanPageState extends HiState<FbaDetachScanPage> {
   AudioCache player = AudioCache();
 
   @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      textEditingController.clear(); // 清除搜索栏
+    }
+    setState(() {
+      parcelList.clear();
+      num = null;
+      scanFlag = false;
+    });
+  }
+
+  @override
   void dispose() {
     focusNode.dispose();
     textEditingController.dispose();
@@ -71,6 +84,14 @@ class _FbaDetachScanPageState extends HiState<FbaDetachScanPage> {
         subtitle: Text(element.updatedAt!.substring(0, 10)),
         trailing: const Icon(Icons.navigate_next),
         onTap: () {
+          setState(() {
+            parcelList.clear();
+            scanFlag = false;
+            num = null;
+          });
+          if (mounted) {
+            textEditingController.clear(); // 清除搜索栏
+          }
           HiNavigator.getInstance().onJumpTo(RouteStatus.fbaDetachScanSku,
               args: {"fbaDetachParcel": element});
         },
@@ -125,6 +146,7 @@ class _FbaDetachScanPageState extends HiState<FbaDetachScanPage> {
         setState(() {
           _isLoading = false;
           parcelList.clear();
+          scanFlag = false;
         });
       }
     } catch (e) {
@@ -132,6 +154,7 @@ class _FbaDetachScanPageState extends HiState<FbaDetachScanPage> {
       setState(() {
         _isLoading = false;
         parcelList.clear();
+        scanFlag = false;
       });
     }
     if (mounted) {
@@ -153,9 +176,14 @@ class _FbaDetachScanPageState extends HiState<FbaDetachScanPage> {
         showWarnToast("Please scan shipment num!");
       }
       if (result['status'] == "succ") {
+        if (mounted) {
+          textEditingController.clear(); // 清除搜索栏
+        }
         setState(() {
           _isLoading = false;
           parcelList.clear();
+          scanFlag = false;
+          num = null;
           player.play('sounds/success01.mp3');
           FbaDetachParcel fdp = FbaDetachParcel.fromJson(result['data']);
           HiNavigator.getInstance().onJumpTo(RouteStatus.fbaDetachScanSku,
@@ -167,6 +195,7 @@ class _FbaDetachScanPageState extends HiState<FbaDetachScanPage> {
         setState(() {
           _isLoading = false;
           parcelList.clear();
+          scanFlag = false;
         });
       }
     } catch (e) {
@@ -175,6 +204,7 @@ class _FbaDetachScanPageState extends HiState<FbaDetachScanPage> {
       setState(() {
         _isLoading = false;
         parcelList.clear();
+        scanFlag = false;
       });
     }
   }
