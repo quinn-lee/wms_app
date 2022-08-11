@@ -97,7 +97,8 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
     for (var element in parcelList) {
       widgets.add(ListTile(
         title: Text("${element.shpmtNum}, ${element.roNum}"),
-        subtitle: Text("${element.batchNum}"),
+        subtitle: Text(
+            "${element.account}${element.status == 'in_process_photo' ? ',  Apply for unpacking photos' : ''}"),
         trailing: const Icon(Icons.add_a_photo),
         onTap: () {
           HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,
@@ -119,7 +120,8 @@ class _ReturnedNeedPhotoPageState extends HiState<ReturnedNeedPhotoPage>
         String newShipmentNum = matchShipmentNum(shpmtNumCont!);
         result = await ReturnedDao.get(shpmtNumCont: newShipmentNum);
       } else {
-        result = await ReturnedDao.get(status: "received");
+        result =
+            await ReturnedDao.get(status: ["received", "in_process_photo"]);
       }
       // print('loadData():$result');
       if (result['status'] == "succ") {

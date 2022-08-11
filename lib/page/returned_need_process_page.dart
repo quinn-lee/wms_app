@@ -192,7 +192,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
         newShipmentNum = shpmtNumCont;
       }
       var result = await ReturnedDao.get(
-          shpmtNumCont: newShipmentNum, status: "in_process");
+          shpmtNumCont: newShipmentNum, status: ["in_process"]);
       // print('loadData():$result');
       if (result['status'] == "succ") {
         setState(() {

@@ -28,7 +28,7 @@ class ReturnedDao {
   // 获取待处理
   static get(
       {String? shpmtNumCont,
-      String? status,
+      List? status,
       int page = 1,
       int perPage = 10}) async {
     BaseRequest request = ReturnedRequest();

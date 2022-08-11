@@ -124,9 +124,9 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
     widgets.add(ListTile(
       title: const Text("Unpack when taking pictures?"),
       subtitle: widget.returnedParcel.unpackPhoto == true
-          ? const Text(
-              "Yes.",
-              style: TextStyle(
+          ? Text(
+              "Yes.${widget.returnedParcel.status == 'in_process_photo' ? '(Apply for unpacking photos)' : ''}",
+              style: const TextStyle(
                   color: Colors.green,
                   fontWeight: FontWeight.bold,
                   fontSize: 18),
