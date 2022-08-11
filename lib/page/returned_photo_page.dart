@@ -48,6 +48,9 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   }
 
   _getCacheImages() async {
+    setState(() {
+      _isLoading = true;
+    });
     for (var element in widget.returnedParcel.attachment!) {
       var response = await Dio().get("http://$auth${element['path']}",
           options: Options(responseType: ResponseType.bytes));
@@ -63,6 +66,9 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
         });
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future getImage(bool isTakePhoto) async {

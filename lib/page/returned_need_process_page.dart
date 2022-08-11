@@ -116,7 +116,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
     List<ToolModel> toolOptions = [
       ToolModel("Reshelf", "reshelf"),
       ToolModel("Reshelf As Spare", "reshelf_as_spare"),
-      ToolModel("As Problem Skus", "problem_sku"),
+      // ToolModel("As Problem Skus", "problem_sku"),
       ToolModel("Abandon", "abandon"),
     ];
     return PopupMenuButton<String>(
