@@ -112,7 +112,7 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
             setState(() {
               accounts.add(DropdownMenuItem(
                   value: account['id'].toString(),
-                  child: Text(account['abbr_code'])));
+                  child: Text(account['abbr_code'] ?? '')));
             });
           }
         } else {
