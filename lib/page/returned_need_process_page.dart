@@ -118,6 +118,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
       ToolModel("Reshelf As Spare", "reshelf_as_spare"),
       // ToolModel("As Problem Skus", "problem_sku"),
       ToolModel("Abandon", "abandon"),
+      ToolModel("Other", "other"),
     ];
     return PopupMenuButton<String>(
       itemBuilder: (BuildContext context) {
@@ -231,6 +232,14 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
   bool get wantKeepAlive => true;
 
   void _confirm(String select, ReturnedParcel rParcel) {
+    // 客户选择了其他处理方式时，仓库也只能选择其他。
+    if ((select == "other" && rParcel.disposal != "other") ||
+        (select != "other" && rParcel.disposal == "other")) {
+      showWarnToast(
+          "Customer's choice is ${rParcel.disposal}, you can not select $select");
+      player.play('sounds/alert.mp3');
+      return;
+    }
     if (select != rParcel.disposal) {
       _alertDialog(
           "Your select($select) is not same as customer's choice(${rParcel.disposal}), Are You Sure?",
@@ -238,10 +247,14 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
           rParcel,
           select);
     } else {
-      // _alertDialog(
-      //     "Your select is $select, Please Confirm!", "", rParcel, select);
-      // 选择一致时，不跳Warning，直接处理
-      _handle(select, rParcel);
+      if (select == "other") {
+        _alertDialog("${rParcel.disposalInfo}", "Handle Memo", rParcel, select);
+      } else {
+        // _alertDialog(
+        //     "Your select is $select, Please Confirm!", "", rParcel, select);
+        // 选择一致时，不跳Warning，直接处理
+        _handle(select, rParcel);
+      }
     }
   }
 

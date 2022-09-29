@@ -169,7 +169,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             skuList.clear();
             _isLoading = false;
             batchNum = result['data']['batch_num'];
-            description = result['data']['description'];
+            description = result['data']['description'] ?? '';
             for (var item in result['data']['skus']) {
               skuList.add(ReturnedSku.fromJson(item));
             }

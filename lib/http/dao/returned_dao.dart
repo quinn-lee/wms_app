@@ -47,11 +47,13 @@ class ReturnedDao {
   }
 
   // 上传图片
-  static uploadPictures(int id, List attachment, bool isBroken) async {
+  static uploadPictures(
+      int id, List attachment, bool isBroken, bool isOpen) async {
     BaseRequest request = UploadPictureRequest();
     request.pathParams = "$id/take_photo";
     request.add("attachment", attachment);
     request.add("is_broken", isBroken);
+    request.add("is_open", isOpen);
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;

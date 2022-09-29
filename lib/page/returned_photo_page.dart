@@ -32,6 +32,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   List<File> _images = [];
   bool submitEnable = false;
   bool isBoken = false;
+  bool isOpen = false;
   AudioCache player = AudioCache();
   bool _isLoading = false;
 
@@ -40,6 +41,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
     super.initState();
     setState(() {
       isBoken = widget.returnedParcel.isBroken!;
+      isOpen = widget.returnedParcel.isOpen!;
     });
 
     if (widget.returnedParcel.attachment != null) {
@@ -169,6 +171,22 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
       subtitle: const Text("Click the switch if parcel is broken."),
     ));
     widgets.add(ListTile(
+      trailing: CupertinoSwitch(
+          value: isOpen,
+          onChanged: (bool val) {
+            setState(() {
+              isOpen = val;
+              if (_images.isEmpty) {
+                submitEnable = false;
+              } else {
+                submitEnable = true;
+              }
+            });
+          }),
+      title: const Text("Is Open?"),
+      subtitle: const Text("Click the switch if parcel is open."),
+    ));
+    widgets.add(ListTile(
       title: const Text("Pictures: "),
       subtitle: _images.isEmpty ? const Text("No Pictures") : const Text(""),
     ));
@@ -273,7 +291,7 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
       // print(attachments);
 
       var result = await ReturnedDao.uploadPictures(
-          widget.returnedParcel.id, attachments, isBoken);
+          widget.returnedParcel.id, attachments, isBoken, isOpen);
       setState(() {
         _isLoading = false;
       });
