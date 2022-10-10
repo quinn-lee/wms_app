@@ -1,4 +1,4 @@
-package com.example.wms_app
+package com.nordlicht.wms_app
 
 import io.flutter.embedding.android.FlutterActivity
 
