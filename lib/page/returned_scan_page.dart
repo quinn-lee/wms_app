@@ -31,6 +31,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   AudioCache player = AudioCache();
   String batchNum = "";
   String description = "";
+  String returnSt = "";
   bool _isLoading = false;
 
   @override
@@ -85,10 +86,21 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       color: Colors.white,
     ));
     if (batchNum != "") {
+      if (description != "") {
+        widgets.add(ListTile(
+          title: Text("$num, $batchNum"),
+          subtitle: Text(description),
+        ));
+      } else {
+        widgets.add(ListTile(title: Text("$num, $batchNum")));
+      }
+    }
+    if (returnSt != "") {
       widgets.add(ListTile(
-        title: Text("$num, $batchNum"),
-        subtitle: Text(description),
-      ));
+          title: Text(
+        "WARNING INFO: $returnSt",
+        style: const TextStyle(fontSize: 20, color: Color(0xffDC143C)),
+      )));
     }
     for (var element in skuList) {
       widgets.add(Card(
@@ -170,6 +182,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             _isLoading = false;
             batchNum = result['data']['batch_num'];
             description = result['data']['description'] ?? '';
+            returnSt = result['data']['return_st'] ?? '';
+
             for (var item in result['data']['skus']) {
               skuList.add(ReturnedSku.fromJson(item));
             }
@@ -196,6 +210,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             skuList.clear();
             batchNum = "";
             description = "";
+            returnSt = "";
             canSubmit = false;
           });
           player.play('sounds/alert.mp3');
@@ -209,6 +224,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         canSubmit = false;
         batchNum = "";
         description = "";
+        returnSt = "";
         skuList.clear();
       });
       player.play('sounds/alert.mp3');
@@ -224,6 +240,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       canSubmit = false;
       batchNum = "";
       description = "";
+      returnSt = "";
       skuList.clear();
     });
   }
@@ -250,6 +267,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             skuList.clear();
             batchNum = "";
             description = "";
+            returnSt = "";
             canSubmit = false;
           });
           player.play('sounds/success01.mp3');
@@ -262,6 +280,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             skuList.clear();
             batchNum = "";
             description = "";
+            returnSt = "";
             canSubmit = false;
           });
           player.play('sounds/alert.mp3');
@@ -275,6 +294,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         skuList.clear();
         batchNum = "";
         description = "";
+        returnSt = "";
         canSubmit = false;
       });
       player.play('sounds/alert.mp3');
@@ -311,6 +331,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             skuList.clear();
             batchNum = "";
             description = "";
+            returnSt = "";
             canSubmit = false;
           });
           player.play('sounds/success01.mp3');
@@ -329,6 +350,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             skuList.clear();
             batchNum = "";
             description = "";
+            returnSt = "";
             canSubmit = false;
           });
           player.play('sounds/alert.mp3');
@@ -342,6 +364,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
         skuList.clear();
         batchNum = "";
         description = "";
+        returnSt = "";
         canSubmit = false;
       });
       player.play('sounds/alert.mp3');
