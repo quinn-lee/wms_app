@@ -2,6 +2,7 @@ import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/request/base_request.dart';
 import 'package:wms_app/http/request/outbound_check_multiple_request.dart';
 import 'package:wms_app/http/request/outbound_check_request.dart';
+import 'package:wms_app/http/request/scan_log_request.dart';
 
 class OutboundDao {
   // 一件代发出库核对
@@ -23,6 +24,16 @@ class OutboundDao {
     BaseRequest request = OutboundCheckMultipleRequest();
     request.add("shpmt_num", shpmtNum);
     request.add("skus", skus);
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
+    return result;
+  }
+
+  // 通用记录接口
+  static Future<Map> scanLog(List nums, {String description = "缺货登记"}) async {
+    BaseRequest request = ScanLogRequest();
+    request.add("nums", nums);
+    request.add("description", description);
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;

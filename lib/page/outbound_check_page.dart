@@ -104,7 +104,7 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
           alignment: WrapAlignment.spaceBetween,
           children: [
             LoginButton(
-              'To Check Orders Multiple Page',
+              'To Check Multiple',
               0.45,
               enable: true,
               onPressed: () {
@@ -112,9 +112,25 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
                     .onJumpTo(RouteStatus.outboundCheckMultiple);
               },
             ),
+            LoginButton(
+              'To Oos Registration',
+              0.45,
+              enable: true,
+              onPressed: () {
+                HiNavigator.getInstance()
+                    .onJumpTo(RouteStatus.outboundOosRegistration);
+              },
+            ),
+          ],
+        )));
+    widgets.add(Padding(
+        padding: const EdgeInsets.all(10),
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          children: [
             CancelButton(
               'Clear',
-              0.45,
+              1,
               enable: true,
               onPressed: clear,
             ),

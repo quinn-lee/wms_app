@@ -120,9 +120,25 @@ class _OutboundCheckMultiplePageState
                 HiNavigator.getInstance().onJumpTo(RouteStatus.outboundCheck);
               },
             ),
+            LoginButton(
+              'To Oos Registration',
+              0.45,
+              enable: true,
+              onPressed: () {
+                HiNavigator.getInstance()
+                    .onJumpTo(RouteStatus.outboundOosRegistration);
+              },
+            ),
+          ],
+        )));
+    widgets.add(Padding(
+        padding: const EdgeInsets.all(10),
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          children: [
             CancelButton(
               'Clear',
-              0.45,
+              1,
               enable: true,
               onPressed: clear,
             ),

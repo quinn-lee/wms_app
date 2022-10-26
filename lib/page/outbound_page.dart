@@ -34,6 +34,15 @@ class _OutboundPageState extends HiState<OutboundPage> {
                   .onJumpTo(RouteStatus.outboundCheckMultiple);
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.photo_camera),
+            title: const Text("Outbound Oos Registration"),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              HiNavigator.getInstance()
+                  .onJumpTo(RouteStatus.outboundOosRegistration);
+            },
+          ),
         ],
       ),
     );

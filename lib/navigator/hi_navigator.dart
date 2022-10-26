@@ -11,6 +11,7 @@ import 'package:wms_app/page/inbound_receive_page.dart';
 import 'package:wms_app/page/login_page.dart';
 import 'package:wms_app/page/outbound_check_multiple_page.dart';
 import 'package:wms_app/page/outbound_check_page.dart';
+import 'package:wms_app/page/outbound_oos_registration_page.dart';
 import 'package:wms_app/page/outbound_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_need_process_page.dart';
@@ -55,6 +56,7 @@ enum RouteStatus {
   unknownPacks,
   outboundCheck,
   outboundCheckMultiple,
+  outboundOosRegistration,
   fbaDetachScan,
   fbaDetachScanSku,
   fbaDetachCurrent
@@ -92,6 +94,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.outboundCheck;
   } else if (page.child is OutboundCheckMultiplePage) {
     return RouteStatus.outboundCheckMultiple;
+  } else if (page.child is OutboundOosRegistrationPage) {
+    return RouteStatus.outboundOosRegistration;
   } else if (page.child is FbaDetachScanPage) {
     return RouteStatus.fbaDetachScan;
   } else if (page.child is FbaDetachScanSkuPage) {
