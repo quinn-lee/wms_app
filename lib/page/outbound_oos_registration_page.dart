@@ -18,11 +18,12 @@ class OutboundOosRegistrationPage extends StatefulWidget {
 
 class _OutboundOosRegistrationPageState
     extends HiState<OutboundOosRegistrationPage> {
-  List nums = [];
+  String shipmentNum = "";
   String? num;
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
   bool _isLoading = false;
+  List<Map> resultShow = [];
   AudioCache player = AudioCache();
 
   @override
@@ -60,10 +61,10 @@ class _OutboundOosRegistrationPageState
         _assignData();
       },
     ));
-    for (var element in nums.reversed) {
+    if (shipmentNum.isNotEmpty) {
       widgets.add(ListTile(
           title: Text(
-            element,
+            shipmentNum,
             style: const TextStyle(color: Colors.white),
           ),
           tileColor: const Color(0xFFDCDCDC)));
@@ -71,40 +72,36 @@ class _OutboundOosRegistrationPageState
         height: 1,
         color: Colors.white,
       ));
-    }
-    if (nums.isNotEmpty) {
       widgets.add(Padding(
           padding: const EdgeInsets.all(10),
           child: Wrap(
             alignment: WrapAlignment.spaceBetween,
             children: [
-              CancelButton(
-                'Clear',
-                0.45,
-                enable: true,
-                onPressed: clear,
-              ),
               LoginButton(
-                'Finish Scan',
-                0.45,
+                'Submit',
+                1,
                 enable: true,
                 onPressed: upload,
               ),
             ],
           )));
     }
-    return widgets;
-  }
-
-  void clear() {
-    setState(() {
-      nums = [];
-      num = null;
-    });
-    if (mounted) {
-      textEditingController.clear();
-      FocusScope.of(context).requestFocus(focusNode);
+    for (var element in resultShow.reversed) {
+      widgets.add(ListTile(
+        title: Text(
+          element['show'],
+          style: const TextStyle(color: Colors.white),
+        ),
+        tileColor: element['status']
+            ? const Color(0xFF4e72b8)
+            : const Color(0xFFf15b6c),
+      ));
+      widgets.add(const Divider(
+        height: 1,
+        color: Colors.white,
+      ));
     }
+    return widgets;
   }
 
   void _assignData() {
@@ -113,16 +110,20 @@ class _OutboundOosRegistrationPageState
     } else {
       if (num!.length == 28 && num!.substring(0, 1) == '%') {
         setState(() {
-          nums.add(num!.substring(8, 22));
+          shipmentNum = num!.substring(8, 22);
         });
       } else if (num!.startsWith("0145") ||
           num!.startsWith("0150") ||
           num!.startsWith("094")) {
         setState(() {
-          nums.add(num!);
+          shipmentNum = num!;
         });
       } else {
-        showWarnToast("The Number Is Not A Waybill Number");
+        showWarnToast("$num Is Not A Waybill Number");
+        setState(() {
+          resultShow
+              .add({"status": false, "show": "$num Is Not A Waybill Number"});
+        });
       }
     }
     if (mounted) {
@@ -137,30 +138,38 @@ class _OutboundOosRegistrationPageState
     });
     dynamic result;
     try {
-      result = await OutboundDao.scanLog(nums);
+      result = await OutboundDao.scanLog([shipmentNum]);
       if (result['status'] == "succ") {
         showToast("Oos Registration Successful");
+        var now = DateTime.now();
         setState(() {
           _isLoading = false;
+          resultShow.add({
+            "status": true,
+            "show":
+                "${now.hour}:${now.minute}:${now.second} - Succeeded! $shipmentNum"
+          });
         });
         player.play('sounds/success01.mp3');
       } else {
         showWarnToast(result['reason'].join(","));
         setState(() {
           _isLoading = false;
+          resultShow.add({"status": false, "show": result['reason'].join(",")});
         });
         player.play('sounds/alert.mp3');
       }
     } catch (e) {
       setState(() {
         _isLoading = false;
+        resultShow.add({"status": false, "show": e.toString()});
       });
       player.play('sounds/alert.mp3');
       showWarnToast(e.toString());
     }
     setState(() {
       num = null;
-      nums = [];
+      shipmentNum = "";
       _isLoading = false;
       textEditingController.clear();
     });

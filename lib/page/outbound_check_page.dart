@@ -214,9 +214,9 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
         });
         player.play('sounds/success01.mp3');
       } else {
-        _isLoading = false;
         showWarnToast(result['reason'].join(","));
         setState(() {
+          _isLoading = false;
           resultShow.add({"status": false, "show": result['reason'].join(",")});
         });
         player.play('sounds/alert.mp3');
