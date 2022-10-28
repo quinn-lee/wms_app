@@ -47,7 +47,7 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Check Orders(Drop Shipping)'),
+          title: const Text('Single Item Check(Drop Shipping)'),
           leading: GestureDetector(
             onTap: () {
               Navigator.pop(context);
@@ -68,7 +68,7 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
   List<Widget> _buildWidget() {
     List<Widget> widgets = [];
     widgets.add(ScanInput(
-      "Scan No",
+      "Single Item\nScan No",
       "Scan Number",
       focusNode,
       textEditingController,
@@ -104,7 +104,7 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
           alignment: WrapAlignment.spaceBetween,
           children: [
             LoginButton(
-              'To Check Multiple',
+              'Multiple Item?\nClick Here',
               0.45,
               enable: true,
               onPressed: () {
@@ -113,7 +113,7 @@ class _OutboundCheckPageState extends HiState<OutboundCheckPage> {
               },
             ),
             LoginButton(
-              'To Oos Registration',
+              'No Stock?\nClick Here',
               0.45,
               enable: true,
               onPressed: () {

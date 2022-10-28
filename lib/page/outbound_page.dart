@@ -19,7 +19,7 @@ class _OutboundPageState extends HiState<OutboundPage> {
         children: [
           ListTile(
             leading: const Icon(Icons.scanner),
-            title: const Text("Check Orders(Drop Shipping)"),
+            title: const Text("Single Item Check(Drop Shipping Orders)"),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               HiNavigator.getInstance().onJumpTo(RouteStatus.outboundCheck);
@@ -27,7 +27,7 @@ class _OutboundPageState extends HiState<OutboundPage> {
           ),
           ListTile(
             leading: const Icon(Icons.photo_camera),
-            title: const Text("Check Orders Multiple(Drop Shipping)"),
+            title: const Text("Multiple Item Check(Drop Shipping Orders)"),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               HiNavigator.getInstance()

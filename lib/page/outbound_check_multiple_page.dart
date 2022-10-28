@@ -46,7 +46,7 @@ class _OutboundCheckMultiplePageState
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Check Orders Multiple(Drop Shipping)'),
+          title: const Text('Multiple Item Check(Drop Shipping)'),
           leading: GestureDetector(
             onTap: () {
               Navigator.pop(context);
@@ -113,7 +113,7 @@ class _OutboundCheckMultiplePageState
           alignment: WrapAlignment.spaceBetween,
           children: [
             LoginButton(
-              'To Check Orders Page',
+              'Single Item?\nClick Here',
               0.45,
               enable: true,
               onPressed: () {
@@ -121,7 +121,7 @@ class _OutboundCheckMultiplePageState
               },
             ),
             LoginButton(
-              'To Oos Registration',
+              'No Stock?\nClick Here',
               0.45,
               enable: true,
               onPressed: () {
