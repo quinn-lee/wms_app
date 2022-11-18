@@ -72,18 +72,25 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
     ));
     if (widget.returnedParcel.disposal == "reshelf") {
       widgets.add(ListTile(
-        title: const Text("New SkuCode: "),
-        subtitle: Text("${widget.returnedParcel.disposalVas!['new_sku_code']}"),
+        title: const Text("Repacking?"),
+        subtitle: widget.returnedParcel.disposalVas!['new_carton'] == true
+            ? const Text("YES.",
+                style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18))
+            : const Text("No."),
       ));
       widgets.add(ListTile(
-        title: const Text("Packing Material Code: "),
-        subtitle: Text(
-            "${widget.returnedParcel.disposalVas!['packing_material_code']}"),
-      ));
-      widgets.add(ListTile(
-        title: const Text("Tape Reinforcement: "),
+        title: const Text("Reinforced wrapping?"),
         subtitle:
-            Text("${widget.returnedParcel.disposalVas!['tape_reinforcement']}"),
+            widget.returnedParcel.disposalVas!['tape_reinforcement'] == true
+                ? const Text("YES.",
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18))
+                : const Text("No."),
       ));
     }
     widgets.add(ScanInput(
