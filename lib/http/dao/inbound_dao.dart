@@ -48,8 +48,11 @@ class InboundDao {
   }
 
   // 待上架
-  static waitToOperate() async {
+  static waitToOperate({String? batchNum}) async {
     BaseRequest request = InboundBatchSearchRequest();
+    if (batchNum != null) {
+      request.add("batch_num", batchNum);
+    }
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;

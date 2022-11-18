@@ -50,48 +50,62 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
         cover: true,
         isLoading: _isLoading,
         child: ListView(
-          children: [
-            ListTile(
-              title: const Text("Shipment Num: "),
-              subtitle: Text("${widget.returnedParcel.shpmtNum}"),
-            ),
-            ListTile(
-              title: const Text("Return Num: "),
-              subtitle: Text("${widget.returnedParcel.roNum}"),
-            ),
-            ListTile(
-              title: const Text("Disposal: "),
-              subtitle: Text("${widget.returnedParcel.disposal}"),
-            ),
-            ScanInput(
-              "Shelf",
-              "Scan Shelf's Barcode",
-              focusNode,
-              textEditingController,
-              onChanged: (text) {
-                shelfNum = text;
-                checkInput();
-              },
-              // onSubmitted: (text) {
-              //   _send();
-              // },
-              // focusChanged: (bool hasFocus) {
-              //   if (!hasFocus) {}
-              // },
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: LoginButton(
-                'Submit',
-                1,
-                enable: canSubmit,
-                onPressed: _send,
-              ),
-            )
-          ],
+          children: _buildWidget(),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildWidget() {
+    List<Widget> widgets = [];
+    widgets.add(ListTile(
+      title: const Text("Shipment Num: "),
+      subtitle: Text("${widget.returnedParcel.shpmtNum}"),
+    ));
+    widgets.add(ListTile(
+      title: const Text("Return Num: "),
+      subtitle: Text("${widget.returnedParcel.roNum}"),
+    ));
+    widgets.add(ListTile(
+      title: const Text("Disposal: "),
+      subtitle: Text("${widget.returnedParcel.disposal}"),
+    ));
+    if (widget.returnedParcel.disposal == "reshelf") {
+      widgets.add(ListTile(
+        title: const Text("New SkuCode: "),
+        subtitle: Text("${widget.returnedParcel.disposalVas!['new_sku_code']}"),
+      ));
+      widgets.add(ListTile(
+        title: const Text("Packing Material Code: "),
+        subtitle: Text(
+            "${widget.returnedParcel.disposalVas!['packing_material_code']}"),
+      ));
+      widgets.add(ListTile(
+        title: const Text("Tape Reinforcement: "),
+        subtitle:
+            Text("${widget.returnedParcel.disposalVas!['tape_reinforcement']}"),
+      ));
+    }
+    widgets.add(ScanInput(
+      "Shelf",
+      "Scan Shelf's Barcode",
+      focusNode,
+      textEditingController,
+      onChanged: (text) {
+        shelfNum = text;
+        checkInput();
+      },
+    ));
+    widgets.add(Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: LoginButton(
+        'Submit',
+        1,
+        enable: canSubmit,
+        onPressed: _send,
+      ),
+    ));
+    return widgets;
   }
 
   void checkInput() {

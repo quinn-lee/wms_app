@@ -254,7 +254,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     try {
       if (num != null && num != "") {
         String newShipmentNum = matchShipmentNum(num!);
-        result = await ReturnedDao.scan(newShipmentNum);
+        result = await ReturnedDao.scan(newShipmentNum, skipDispose: true);
         if (result["status"] == "succ") {
           setState(() {
             _isLoading = false;
