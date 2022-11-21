@@ -115,7 +115,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
   Widget _tools(ReturnedParcel rParcel) {
     List<ToolModel> toolOptions = [
       ToolModel("Reshelf", "reshelf"),
-      ToolModel("Reshelf As Spare", "reshelf_as_spare"),
+      ToolModel("Reshelf as New Packing", "reshelf_as_spare"),
       // ToolModel("As Problem Skus", "problem_sku"),
       ToolModel("Abandon", "abandon"),
       ToolModel("Other", "other"),
