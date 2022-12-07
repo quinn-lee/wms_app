@@ -1,6 +1,7 @@
 class InboundBatch {
   late int id;
   String? inboundNum;
+  String? abbrCode;
   String? inboundType;
   int? priority;
   String? priorityMemo;
@@ -19,6 +20,7 @@ class InboundBatch {
 
   InboundBatch(this.id,
       {this.inboundNum,
+      this.abbrCode,
       this.inboundType,
       this.priority,
       this.priorityMemo,
@@ -38,6 +40,7 @@ class InboundBatch {
   InboundBatch.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     inboundNum = json['inbound_num'];
+    abbrCode = json['abbr_code'];
     inboundType = json['inbound_type'];
     priority = json['priority'];
     priorityMemo = json['priority_memo'];

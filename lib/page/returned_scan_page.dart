@@ -32,6 +32,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   String batchNum = "";
   String description = "";
   String returnSt = "";
+  String? depotCode;
   bool _isLoading = false;
 
   @override
@@ -81,6 +82,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       //   if (!hasFocus) {}
       // },
     ));
+    widgets.add(_selectDepot());
     widgets.add(const Divider(
       height: 1,
       color: Colors.white,
@@ -167,6 +169,53 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     return widgets;
   }
 
+  // 类别选项
+  Widget _selectDepot() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(left: 15),
+              width: 120,
+              child: const Text(
+                "Depot",
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            Expanded(
+                child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                        value: depotCode,
+                        elevation: 12,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.black),
+                        iconEnabledColor: Colors.green,
+                        onChanged: (newValue) {
+                          setState(() {
+                            depotCode = newValue!;
+                            if (batchNum != "") canSubmit = true;
+                          });
+                        },
+                        items: const [
+                  DropdownMenuItem(value: 'DUI', child: Text('DUI')),
+                  DropdownMenuItem(value: 'DUI-U5', child: Text('DUI-U5')),
+                  DropdownMenuItem(value: 'DUI-W7', child: Text('DUI-W7')),
+                ])))
+          ],
+        ),
+        const Padding(
+            padding: EdgeInsets.only(left: 15),
+            child: Divider(
+              height: 1,
+              thickness: 0.5,
+            ))
+      ],
+    );
+  }
+
   void _loadData() async {
     setState(() {
       _isLoading = true;
@@ -187,7 +236,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
             for (var item in result['data']['skus']) {
               skuList.add(ReturnedSku.fromJson(item));
             }
-            canSubmit = true;
+            if (depotCode != null) canSubmit = true;
           });
           // if (result['data']['skus'].length == 0) {
           //   setState(() {
@@ -241,6 +290,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
       batchNum = "";
       description = "";
       returnSt = "";
+      depotCode = null;
       skuList.clear();
     });
   }
@@ -254,7 +304,8 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     try {
       if (num != null && num != "") {
         String newShipmentNum = matchShipmentNum(num!);
-        result = await ReturnedDao.scan(newShipmentNum, skipDispose: true);
+        result = await ReturnedDao.scan(newShipmentNum, depotCode!,
+            skipDispose: true);
         if (result["status"] == "succ") {
           setState(() {
             _isLoading = false;
@@ -318,7 +369,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     try {
       if (num != null && num != "") {
         String newShipmentNum = matchShipmentNum(num!);
-        result = await ReturnedDao.scan(newShipmentNum);
+        result = await ReturnedDao.scan(newShipmentNum, depotCode!);
         if (result["status"] == "succ") {
           setState(() {
             _isLoading = false;

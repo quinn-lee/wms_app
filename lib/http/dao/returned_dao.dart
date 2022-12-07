@@ -8,9 +8,11 @@ import 'package:wms_app/http/request/upload_picture_request.dart';
 
 class ReturnedDao {
   // 扫描
-  static Future<Map> scan(String num, {bool skipDispose = false}) async {
+  static Future<Map> scan(String num, String receiveDepotCode,
+      {bool skipDispose = false}) async {
     BaseRequest request = ReceiveRequest();
     request.add("num", num);
+    request.add("receive_depot_code", receiveDepotCode);
     request.add("skip_dispose", skipDispose);
     var result = await HiNet.getInstance().fire(request);
     print(result);
