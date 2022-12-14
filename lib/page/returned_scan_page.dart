@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
+import 'package:wms_app/http/dao/depot_dao.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/model/returned_sku.dart';
@@ -23,6 +24,7 @@ class ReturnedScanPage extends StatefulWidget {
 
 class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   final TextEditingController textEditingController = TextEditingController();
+  List<DropdownMenuItem<String>> depots = [];
   FocusNode focusNode = FocusNode();
   String? num;
   List<Map> resultShow = [];
@@ -38,6 +40,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
   @override
   void initState() {
     super.initState();
+    loadDepotData();
     textEditingController.addListener(() {
       // print("controller: ${textEditingController.text}");
     });
@@ -48,6 +51,33 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
     focusNode.dispose();
     textEditingController.dispose();
     super.dispose();
+  }
+
+  void loadDepotData() async {
+    try {
+      var result = await DepotDao.getDepotList();
+      if (result['status'] == "succ") {
+        if (result['data'].length > 0) {
+          for (var depot in result['data']) {
+            setState(() {
+              depots.add(DropdownMenuItem(value: depot, child: Text(depot)));
+            });
+          }
+          // setState(() {
+          //   depotCode = result['data'][0];
+          // });
+        } else {
+          showWarnToast("No Depots Found");
+          HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
+        }
+      } else {
+        showWarnToast(result['reason'].join(","));
+        HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
+      }
+    } catch (e) {
+      showWarnToast(e.toString());
+      HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
+    }
   }
 
   @override
@@ -199,11 +229,7 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
                             if (batchNum != "") canSubmit = true;
                           });
                         },
-                        items: const [
-                  DropdownMenuItem(value: 'DUI', child: Text('DUI')),
-                  DropdownMenuItem(value: 'DUI-U5', child: Text('DUI-U5')),
-                  DropdownMenuItem(value: 'DUI-W7', child: Text('DUI-W7')),
-                ])))
+                        items: depots)))
           ],
         ),
         const Padding(

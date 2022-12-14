@@ -81,14 +81,12 @@ class _UnknownPacksPageState extends HiState<UnknownPacksPage> {
         if (result['data'].length > 0) {
           for (var depot in result['data']) {
             setState(() {
-              depots.add(DropdownMenuItem(
-                  value: depot['depot_code'],
-                  child: Text(depot['depot_code'])));
+              depots.add(DropdownMenuItem(value: depot, child: Text(depot)));
             });
           }
-          setState(() {
-            depotCode = result['data'][0]['depot_code'];
-          });
+          // setState(() {
+          //   depotCode = result['data'][0];
+          // });
         } else {
           showWarnToast("No Depots Found");
           HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);

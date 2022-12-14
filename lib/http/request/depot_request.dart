@@ -13,6 +13,6 @@ class DepotRequest extends BaseRequest {
 
   @override
   String path() {
-    return "/api/v1.0/depots";
+    return "/api/v1.0/depots/depot_code_enum";
   }
 }
