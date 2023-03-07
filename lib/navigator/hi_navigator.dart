@@ -13,8 +13,11 @@ import 'package:wms_app/page/outbound_check_multiple_page.dart';
 import 'package:wms_app/page/outbound_check_page.dart';
 import 'package:wms_app/page/outbound_oos_registration_page.dart';
 import 'package:wms_app/page/outbound_page.dart';
+import 'package:wms_app/page/returned_broken_package_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_need_process_page.dart';
+import 'package:wms_app/page/returned_new_scan_page.dart';
+import 'package:wms_app/page/returned_new_shelf_page.dart';
 import 'package:wms_app/page/returned_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
@@ -48,10 +51,13 @@ enum RouteStatus {
   inboundPage,
   outboundPage,
   returnedScan,
+  returnedNewScan,
   returnedPhoto,
   returnedNeedPhoto,
   returnedNeedProcess,
   returnedNeedReshelf,
+  returnedNewShelf,
+  returnedBrokenPackage,
   inboundReceive,
   unknownPacks,
   outboundCheck,
@@ -78,6 +84,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.outboundPage;
   } else if (page.child is ReturnedScanPage) {
     return RouteStatus.returnedScan;
+  } else if (page.child is ReturnedNewScanPage) {
+    return RouteStatus.returnedNewScan;
   } else if (page.child is InboundReceivePage) {
     return RouteStatus.inboundReceive;
   } else if (page.child is ReturnedPhotoPage) {
@@ -88,6 +96,10 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.returnedNeedProcess;
   } else if (page.child is ReturnedShelfPage) {
     return RouteStatus.returnedNeedReshelf;
+  } else if (page.child is ReturnedBrokenPackagePage) {
+    return RouteStatus.returnedBrokenPackage;
+  } else if (page.child is ReturnedNewShelfPage) {
+    return RouteStatus.returnedNewShelf;
   } else if (page.child is UnknownPacksPage) {
     return RouteStatus.unknownPacks;
   } else if (page.child is OutboundCheckPage) {

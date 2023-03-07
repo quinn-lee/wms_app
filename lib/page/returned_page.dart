@@ -69,6 +69,15 @@ class _ReturnedPageState extends HiState<ReturnedPage>
                       .onJumpTo(RouteStatus.returnedNeedProcess);
                 },
               ),
+              ListTile(
+                leading: const Icon(Icons.scanner),
+                title: const Text("Register Returned Parcels(NEW!)"),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  HiNavigator.getInstance()
+                      .onJumpTo(RouteStatus.returnedNewScan);
+                },
+              ),
             ],
           ),
         ));

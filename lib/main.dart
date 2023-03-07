@@ -7,6 +7,7 @@ import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/dao/login_dao.dart';
 import 'package:wms_app/model/fba_detach_parcel.dart';
 import 'package:wms_app/model/returned_parcel.dart';
+import 'package:wms_app/model/returned_sku.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
 import 'package:wms_app/page/detail_page.dart';
 import 'package:wms_app/page/fba_detach_current_page.dart';
@@ -20,8 +21,11 @@ import 'package:wms_app/page/outbound_check_multiple_page.dart';
 import 'package:wms_app/page/outbound_check_page.dart';
 import 'package:wms_app/page/outbound_oos_registration_page.dart';
 import 'package:wms_app/page/outbound_page.dart';
+import 'package:wms_app/page/returned_broken_package_page.dart';
 import 'package:wms_app/page/returned_need_photo_page.dart';
 import 'package:wms_app/page/returned_need_process_page.dart';
+import 'package:wms_app/page/returned_new_scan_page.dart';
+import 'package:wms_app/page/returned_new_shelf_page.dart';
 import 'package:wms_app/page/returned_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
@@ -122,6 +126,14 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
   ReturnedParcel? reshelfParcel;
   FbaDetachParcel? fbaDetachParcel;
   List<MaterialPage> pages = [];
+  String? returnedNewShelfBatchNum;
+  String? returnedNewShelfShpmtNum;
+  String? returnedNewShelfDepotCode;
+  String? returnedBrokenPackageBatchNum;
+  String? returnedBrokenPackageShpmtNum;
+  String? returnedBrokenPackageDepotCode;
+  String? returnedBrokenPackageDefaultDisposal;
+  List<ReturnedSku>? returnedBrokenPackageSkuList;
 
   //为Navigator设置一个key，必要的时候可以通过navigatorKey.currentState来获取到NavigatorState对象
   EtRouteDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
@@ -142,6 +154,17 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
         returnPageFrom = args!['returnPageFrom'] ?? "";
       } else if (routeStatus == RouteStatus.fbaDetachScanSku) {
         fbaDetachParcel = args!['fbaDetachParcel'];
+      } else if (routeStatus == RouteStatus.returnedNewShelf) {
+        returnedNewShelfBatchNum = args!['returnedNewShelfBatchNum'];
+        returnedNewShelfShpmtNum = args['returnedNewShelfShpmtNum'];
+        returnedNewShelfDepotCode = args['returnedNewShelfDepotCode'];
+      } else if (routeStatus == RouteStatus.returnedBrokenPackage) {
+        returnedBrokenPackageBatchNum = args!['returnedBrokenPackageBatchNum'];
+        returnedBrokenPackageShpmtNum = args['returnedBrokenPackageShpmtNum'];
+        returnedBrokenPackageDepotCode = args['returnedBrokenPackageDepotCode'];
+        returnedBrokenPackageDefaultDisposal =
+            args['returnedBrokenPackageDefaultDisposal'];
+        returnedBrokenPackageSkuList = args['returnedBrokenPackageSkuList'];
       }
       notifyListeners();
     });
@@ -189,10 +212,22 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(UnknownPacksPage(unknownPageFrom!));
     } else if (routeStatus == RouteStatus.returnedNeedPhoto) {
       page = pageWrap(const ReturnedNeedPhotoPage());
+    } else if (routeStatus == RouteStatus.returnedNewScan) {
+      page = pageWrap(const ReturnedNewScanPage());
     } else if (routeStatus == RouteStatus.returnedNeedProcess) {
       page = pageWrap(const ReturnedNeedProcessPage());
     } else if (routeStatus == RouteStatus.returnedPhoto) {
       page = pageWrap(ReturnedPhotoPage(needPhotoParcel!, photoFrom!));
+    } else if (routeStatus == RouteStatus.returnedNewShelf) {
+      page = pageWrap(ReturnedNewShelfPage(returnedNewShelfBatchNum!,
+          returnedNewShelfShpmtNum!, returnedNewShelfDepotCode!));
+    } else if (routeStatus == RouteStatus.returnedBrokenPackage) {
+      page = pageWrap(ReturnedBrokenPackagePage(
+          returnedBrokenPackageBatchNum!,
+          returnedBrokenPackageShpmtNum!,
+          returnedBrokenPackageDepotCode!,
+          returnedBrokenPackageDefaultDisposal!,
+          returnedBrokenPackageSkuList!));
     } else if (routeStatus == RouteStatus.returnedNeedReshelf) {
       page = pageWrap(ReturnedShelfPage(reshelfParcel!));
     } else if (routeStatus == RouteStatus.outboundCheck) {

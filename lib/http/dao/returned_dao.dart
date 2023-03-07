@@ -2,6 +2,7 @@ import 'package:wms_app/http/core/hi_net.dart';
 import 'package:wms_app/http/request/base_request.dart';
 import 'package:wms_app/http/request/finish_returned_request.dart';
 import 'package:wms_app/http/request/receive_request.dart';
+import 'package:wms_app/http/request/recive_and_finish_request.dart';
 import 'package:wms_app/http/request/returned_request.dart';
 import 'package:wms_app/http/request/returned_sku_request.dart';
 import 'package:wms_app/http/request/upload_picture_request.dart';
@@ -68,6 +69,27 @@ class ReturnedDao {
     request.add("disposal_result", disposalResult);
     if (shelfNum != null) {
       request.add("shelf_num", shelfNum);
+    }
+    var result = await HiNet.getInstance().fire(request);
+    print(result);
+    return result;
+  }
+
+  static receiveAndFinish(
+      String num, String receiveDepotCode, String disposalResult,
+      {String? disposalMemo, String? shelfNum, List? attachment}) async {
+    BaseRequest request = ReceiveAndFinishRequest();
+    request.add("num", num);
+    request.add("receive_depot_code", receiveDepotCode);
+    request.add("disposal_result", disposalResult);
+    if (shelfNum != null) {
+      request.add("shelf_num", shelfNum);
+    }
+    if (disposalMemo != null) {
+      request.add("disposal_memo", disposalMemo);
+    }
+    if (attachment != null) {
+      request.add("attachment", attachment);
     }
     var result = await HiNet.getInstance().fire(request);
     print(result);
