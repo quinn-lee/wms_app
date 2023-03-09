@@ -37,7 +37,6 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
   String returnSt = "";
   String defaultDisposal = "";
   String? depotCode;
-  String? depotCode1;
   bool _isLoading = false;
 
   @override
@@ -161,7 +160,8 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
       widgets.add(const ListTile(
           title: Text(
         "If the package is undamaged, \nselect <Reshelf>",
-        style: TextStyle(fontSize: 20, color: Color(0xffDC143C)),
+        style:
+            TextStyle(fontSize: 20, color: Color.fromARGB(255, 20, 113, 220)),
       )));
       widgets.add(Padding(
           padding: const EdgeInsets.all(10),
@@ -189,9 +189,18 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
           "abandon": "Abandon"
         }[defaultDisposal];
         widgets.add(ListTile(
-            title: Text(
-          "If the package is broken, please select <Change Packing> or <Abandon>(customer's default choice is ${choice!})",
-          style: const TextStyle(fontSize: 20, color: Color(0xffDC143C)),
+            title: RichText(
+          text: TextSpan(
+              text:
+                  "If the package is broken, please select <Change Packing> or <Abandon>. Customer's default choice is ",
+              style: const TextStyle(
+                  fontSize: 20, color: Color.fromARGB(255, 20, 113, 220)),
+              children: <TextSpan>[
+                TextSpan(
+                    text: choice!,
+                    style: const TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold))
+              ]),
         )));
         widgets.add(Padding(
             padding: const EdgeInsets.all(10),
@@ -216,7 +225,8 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
         widgets.add(const ListTile(
             title: Text(
           "If the package is broken(customer's default choice is blank), please select <Submit With Photos>",
-          style: TextStyle(fontSize: 20, color: Color(0xffDC143C)),
+          style:
+              TextStyle(fontSize: 20, color: Color.fromARGB(255, 20, 113, 220)),
         )));
         widgets.add(Padding(
           padding: const EdgeInsets.all(10),
@@ -274,7 +284,6 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
                         onChanged: (newValue) {
                           setState(() {
                             depotCode = newValue!;
-                            depotCode1 = newValue;
                             if (batchNum != "") canSubmit = true;
                           });
                         },
@@ -370,7 +379,7 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
         HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewShelf, args: {
           "returnedNewShelfBatchNum": batchNum1,
           "returnedNewShelfShpmtNum": num,
-          "returnedNewShelfDepotCode": depotCode1
+          "returnedNewShelfDepotCode": depotCode
         });
       }
     } catch (e) {
@@ -399,7 +408,7 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
             .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
           "returnedBrokenPackageBatchNum": batchNum1,
           "returnedBrokenPackageShpmtNum": num,
-          "returnedBrokenPackageDepotCode": depotCode1,
+          "returnedBrokenPackageDepotCode": depotCode,
           "returnedBrokenPackageDefaultDisposal": "reshelf_as_spare",
           "returnedBrokenPackageSkuList": skuList1
         });
@@ -430,7 +439,7 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
             .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
           "returnedBrokenPackageBatchNum": batchNum1,
           "returnedBrokenPackageShpmtNum": num,
-          "returnedBrokenPackageDepotCode": depotCode1,
+          "returnedBrokenPackageDepotCode": depotCode,
           "returnedBrokenPackageDefaultDisposal": "abandon",
           "returnedBrokenPackageSkuList": skuList1
         });
@@ -456,7 +465,7 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     description = "";
     returnSt = "";
     canSubmit = false;
-    depotCode = null;
+    // depotCode = null;
   }
 
   void _sendAndPhoto() async {

@@ -101,6 +101,35 @@ class _ReturnedBrokenPackagePageState
       title: const Text("Shipment Num: "),
       subtitle: Text(widget.shpmtNum),
     ));
+    widgets.add(ListTile(
+      title: const Text("Original Photos: "),
+      subtitle: _images.isEmpty ? const Text("No Photos") : const Text(""),
+    ));
+    widgets.add(const Divider(
+      height: 1,
+      color: Colors.grey,
+    ));
+    widgets.add(ListTile(
+      title: RichText(
+        text: TextSpan(
+            text: "handled way: ",
+            style: const TextStyle(color: Colors.black, fontSize: 18),
+            children: <TextSpan>[
+              TextSpan(
+                  text: choice!,
+                  style: const TextStyle(
+                      color: Colors.red, fontWeight: FontWeight.bold))
+            ]),
+      ),
+      subtitle: const Text(""),
+    ));
+    widgets.add(Center(
+      child: Wrap(
+        spacing: 5,
+        runSpacing: 5,
+        children: _genImages(),
+      ),
+    ));
     if (widget.defaultDisposal == "reshelf_as_spare") {
       for (var element in widget.skuList) {
         widgets.add(Card(
@@ -136,22 +165,10 @@ class _ReturnedBrokenPackagePageState
       ));
     }
 
-    widgets.add(ListTile(
-      title: const Text("Pictures: "),
-      subtitle: _images.isEmpty ? const Text("No Pictures") : const Text(""),
-    ));
-    widgets.add(Center(
-      child: Wrap(
-        spacing: 5,
-        runSpacing: 5,
-        children: _genImages(),
-      ),
-    ));
-
     widgets.add(Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
       child: LoginButton(
-        choice!,
+        "Submit",
         1,
         enable: submitEnable,
         onPressed: upload,
