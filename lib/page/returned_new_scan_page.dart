@@ -185,14 +185,14 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
       if (defaultDisposal == "reshelf_as_spare" ||
           defaultDisposal == "abandon") {
         String? choice = {
-          "reshelf_as_spare": "Change Packing",
+          "reshelf_as_spare": "New Packing",
           "abandon": "Abandon"
         }[defaultDisposal];
         widgets.add(ListTile(
             title: RichText(
           text: TextSpan(
               text:
-                  "If the package is broken, please select <Change Packing> or <Abandon>. Customer's default choice is ",
+                  "If the package is broken, please select <New Packing> or <Abandon>. Customer's default choice is ",
               style: const TextStyle(
                   fontSize: 20, color: Color.fromARGB(255, 20, 113, 220)),
               children: <TextSpan>[
@@ -208,7 +208,7 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
               alignment: WrapAlignment.spaceBetween,
               children: [
                 LoginButton(
-                  'Change Packing',
+                  'New Packing',
                   0.45,
                   enable: canSubmit,
                   onPressed: _changePacking,

@@ -45,9 +45,8 @@ class _ReturnedBrokenPackagePageState
   void initState() {
     super.initState();
     setState(() {
-      submitEnable = (widget.defaultDisposal != "reshelf_as_spare");
       choice = {
-        "reshelf_as_spare": "Change Packing",
+        "reshelf_as_spare": "New Packing",
         "abandon": "Abandon"
       }[widget.defaultDisposal];
     });
@@ -61,7 +60,7 @@ class _ReturnedBrokenPackagePageState
     if (image != null) {
       setState(() {
         _images.add(File(image.path));
-        //submitEnable = true;
+        checkInput();
       });
     }
   }
@@ -103,11 +102,26 @@ class _ReturnedBrokenPackagePageState
     ));
     widgets.add(ListTile(
       title: const Text("Original Photos: "),
-      subtitle: _images.isEmpty ? const Text("No Photos") : const Text(""),
+      subtitle: _images.isEmpty
+          ? const Text(
+              "No Photos",
+              style: TextStyle(color: Colors.red),
+            )
+          : const Text(""),
     ));
-    widgets.add(const Divider(
-      height: 1,
-      color: Colors.grey,
+    widgets.add(Center(
+      child: Wrap(
+        spacing: 5,
+        runSpacing: 5,
+        children: _genImages(),
+      ),
+    ));
+    widgets.add(const Padding(
+      padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: Divider(
+        height: 1,
+        color: Colors.grey,
+      ),
     ));
     widgets.add(ListTile(
       title: RichText(
@@ -123,13 +137,7 @@ class _ReturnedBrokenPackagePageState
       ),
       subtitle: const Text(""),
     ));
-    widgets.add(Center(
-      child: Wrap(
-        spacing: 5,
-        runSpacing: 5,
-        children: _genImages(),
-      ),
-    ));
+
     if (widget.defaultDisposal == "reshelf_as_spare") {
       for (var element in widget.skuList) {
         widgets.add(Card(
@@ -216,9 +224,7 @@ class _ReturnedBrokenPackagePageState
                 onTap: () {
                   setState(() {
                     _images.remove(file);
-                    //if (_images.isEmpty) {
-                    //  submitEnable = false;
-                    //}
+                    checkInput();
                   });
                 },
                 child: ClipOval(
@@ -241,10 +247,18 @@ class _ReturnedBrokenPackagePageState
 
   void checkInput() {
     bool enable;
-    if (isNotEmpty(shelfNum)) {
-      enable = true;
+    if (widget.defaultDisposal == "reshelf_as_spare") {
+      if (isNotEmpty(shelfNum) && _images.isNotEmpty) {
+        enable = true;
+      } else {
+        enable = false;
+      }
     } else {
-      enable = false;
+      if (_images.isNotEmpty) {
+        enable = true;
+      } else {
+        enable = false;
+      }
     }
     setState(() {
       submitEnable = enable;

@@ -101,7 +101,12 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
     for (var element in parcelList) {
       widgets.add(ListTile(
         title: Text("${element.shpmtNum}, ${element.roNum}"),
-        subtitle: Text("customer's disposal: ${element.disposal}"),
+        subtitle: Text("customer's disposal: ${{
+          "reshelf_as_spare": "Reshelf as New Packing",
+          "abandon": "Abandon",
+          "reshelf": "Reshelf",
+          "other": "Other"
+        }[element.disposal]}"),
         trailing: _tools(element),
       ));
       widgets.add(const Divider(
