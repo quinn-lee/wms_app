@@ -38,6 +38,8 @@ class _ReturnedBrokenPackagePageState
   List<File> _images = [];
   bool submitEnable = false;
   String? choice;
+  String? actualDisposal;
+  String? actualChoice;
   AudioCache player = AudioCache();
   bool _isLoading = false;
 
@@ -49,6 +51,16 @@ class _ReturnedBrokenPackagePageState
         "reshelf_as_spare": "New Packing",
         "abandon": "Abandon"
       }[widget.defaultDisposal];
+      actualDisposal = widget.defaultDisposal;
+      actualChoice = choice;
+      if (widget.defaultDisposal == "reshelf_as_spare") {
+        for (var ele in widget.skuList) {
+          if (isEmpty(ele.defaultPackingMaterial)) {
+            actualChoice = "Abandon";
+            actualDisposal = "abandon";
+          }
+        }
+      }
     });
   }
 
@@ -130,12 +142,15 @@ class _ReturnedBrokenPackagePageState
             style: const TextStyle(color: Colors.black, fontSize: 18),
             children: <TextSpan>[
               TextSpan(
-                  text: choice!,
+                  text: actualChoice!,
                   style: const TextStyle(
                       color: Colors.red, fontWeight: FontWeight.bold))
             ]),
       ),
-      subtitle: const Text(""),
+      subtitle: actualDisposal == widget.defaultDisposal
+          ? const Text("")
+          : const Text(
+              "Because the default packing material of this package's sku is blank."),
     ));
 
     if (widget.defaultDisposal == "reshelf_as_spare") {
@@ -161,6 +176,8 @@ class _ReturnedBrokenPackagePageState
           ),
         ));
       }
+    }
+    if (actualDisposal == "reshelf_as_spare") {
       widgets.add(ScanInput(
         "Shelf",
         "Scan Shelf's Barcode",
@@ -247,7 +264,7 @@ class _ReturnedBrokenPackagePageState
 
   void checkInput() {
     bool enable;
-    if (widget.defaultDisposal == "reshelf_as_spare") {
+    if (actualDisposal == "reshelf_as_spare") {
       if (isNotEmpty(shelfNum) && _images.isNotEmpty) {
         enable = true;
       } else {
@@ -285,13 +302,13 @@ class _ReturnedBrokenPackagePageState
       // print(attachments);
 
       var result = await ReturnedDao.receiveAndFinish(
-          widget.shpmtNum, widget.depotCode, widget.defaultDisposal,
+          widget.shpmtNum, widget.depotCode, actualDisposal!,
           shelfNum: shelfNum, attachment: attachments);
       setState(() {
         _isLoading = false;
       });
       if (result['status'] == "succ") {
-        showToast("$choice Successful");
+        showToast("${actualChoice!} Successful");
         player.play('sounds/success01.mp3');
       } else {
         showWarnToast(result['reason'].join(","));

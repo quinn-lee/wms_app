@@ -93,6 +93,30 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
                 : const Text("No."),
       ));
     }
+    if (widget.returnedParcel.disposal == "reshelf_as_spare") {
+      for (var element in widget.returnedParcel.returnedSku!) {
+        widgets.add(Card(
+          child: Column(
+            children: [
+              ListTile(
+                title: Text("${element['sku_code']}, ${element['barcode']}"),
+                subtitle: RichText(
+                  text: TextSpan(
+                      text: "Default Packing Material: ",
+                      style: const TextStyle(color: Colors.grey),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: element['default_packing_material'],
+                            style: const TextStyle(
+                                color: Colors.red, fontWeight: FontWeight.bold))
+                      ]),
+                ),
+              )
+            ],
+          ),
+        ));
+      }
+    }
     widgets.add(ScanInput(
       "Shelf",
       "Scan Shelf's Barcode",
