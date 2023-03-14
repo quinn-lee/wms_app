@@ -290,6 +290,10 @@ class _ReturnedScanPageState extends HiState<ReturnedScanPage> {
           });
           player.play('sounds/alert.mp3');
         }
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
     } catch (e) {
       showWarnToast(e.toString());

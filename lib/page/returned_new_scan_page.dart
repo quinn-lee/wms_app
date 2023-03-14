@@ -347,6 +347,10 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
           });
           player.play('sounds/alert.mp3');
         }
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
     } catch (e) {
       showWarnToast(e.toString());

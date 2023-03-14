@@ -8,6 +8,7 @@ import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_sku.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/loading_container.dart';
@@ -59,6 +60,13 @@ class _ReturnedBrokenPackagePageState
             actualChoice = "Abandon";
             actualDisposal = "abandon";
           }
+        }
+        if (actualDisposal == "abandon") {
+          Future.delayed(Duration.zero, () {
+            _alertDialog(
+                "Because the defulat packing material of this package's sku is blank, the handled way is changed to abandonment!",
+                "Handle Memo");
+          });
         }
       }
     });
@@ -150,7 +158,7 @@ class _ReturnedBrokenPackagePageState
       subtitle: actualDisposal == widget.defaultDisposal
           ? const Text("")
           : const Text(
-              "Because the default packing material of this package's sku is blank."),
+              "Because the defulat packing material of this package's sku is blank, the handled way is changed to abandonment!"),
     ));
 
     if (widget.defaultDisposal == "reshelf_as_spare") {
@@ -280,6 +288,34 @@ class _ReturnedBrokenPackagePageState
     setState(() {
       submitEnable = enable;
     });
+  }
+
+  _alertDialog(String message, String title) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: [
+              //MaterialButton(
+              //    onPressed: () {
+              //      Navigator.pop(context, "cancel");
+              //    },
+              //    child:
+              //        const Text("Cancel", style: TextStyle(color: primary))),
+              MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context, "ok");
+                  },
+                  color: primary,
+                  child: const Text(
+                    "Confirm",
+                    style: TextStyle(color: Colors.white),
+                  ))
+            ],
+          );
+        });
   }
 
   void upload() async {
