@@ -102,7 +102,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
       widgets.add(ListTile(
         title: Text("${element.shpmtNum}, ${element.roNum}"),
         subtitle: Text("customer's disposal: ${{
-          "reshelf_as_spare": "Reshelf as New Packing",
+          "reshelf_as_spare": "Reshelf as Improved Packing",
           "abandon": "Abandon",
           "reshelf": "Reshelf",
           "other": "Other"
@@ -120,7 +120,7 @@ class _ReturnedNeedProcessPageState extends HiState<ReturnedNeedProcessPage>
   Widget _tools(ReturnedParcel rParcel) {
     List<ToolModel> toolOptions = [
       ToolModel("Reshelf", "reshelf"),
-      ToolModel("Reshelf as New Packing", "reshelf_as_spare"),
+      ToolModel("Reshelf as Improved Packing", "reshelf_as_spare"),
       // ToolModel("As Problem Skus", "problem_sku"),
       ToolModel("Abandon", "abandon"),
       ToolModel("Other", "other"),

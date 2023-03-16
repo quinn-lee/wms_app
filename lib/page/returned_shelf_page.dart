@@ -68,12 +68,17 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
     ));
     widgets.add(ListTile(
       title: const Text("Disposal: "),
-      subtitle: Text("${widget.returnedParcel.disposal}"),
+      subtitle: Text("${{
+        "reshelf_as_spare": "Reshelf as Improved Packing",
+        "abandon": "Abandon",
+        "reshelf": "Reshelf",
+        "other": "Other"
+      }[widget.returnedParcel.disposal]}"),
     ));
-    if (widget.returnedParcel.disposal == "reshelf") {
+    if (widget.returnedParcel.disposal == "reshelf_as_spare") {
       widgets.add(ListTile(
         title: const Text("Repacking?"),
-        subtitle: widget.returnedParcel.disposalVas!['new_carton'] == true
+        subtitle: widget.returnedParcel.disposalVas!['new_carton']
             ? const Text("YES.",
                 style: TextStyle(
                     color: Colors.red,
@@ -83,17 +88,17 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
       ));
       widgets.add(ListTile(
         title: const Text("Reinforced wrapping?"),
-        subtitle:
-            widget.returnedParcel.disposalVas!['tape_reinforcement'] == true
-                ? const Text("YES.",
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18))
-                : const Text("No."),
+        subtitle: widget.returnedParcel.disposalVas!['tape_reinforcement']
+            ? const Text("YES.",
+                style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18))
+            : const Text("No."),
       ));
     }
-    if (widget.returnedParcel.disposal == "reshelf_as_spare") {
+    if (widget.returnedParcel.disposal == "reshelf_as_spare" &&
+        widget.returnedParcel.disposalVas!['new_carton']) {
       for (var element in widget.returnedParcel.returnedSku!) {
         widgets.add(Card(
           child: Column(
@@ -106,7 +111,11 @@ class _ReturnedShelfPageState extends HiState<ReturnedShelfPage> {
                       style: const TextStyle(color: Colors.grey),
                       children: <TextSpan>[
                         TextSpan(
-                            text: element['default_packing_material'],
+                            text: isNotEmpty(widget.returnedParcel
+                                    .disposalVas?['packing_material'])
+                                ? widget.returnedParcel
+                                    .disposalVas!['packing_material']
+                                : element['default_packing_material'],
                             style: const TextStyle(
                                 color: Colors.red, fontWeight: FontWeight.bold))
                       ]),
