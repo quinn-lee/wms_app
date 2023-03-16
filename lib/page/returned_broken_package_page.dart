@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wms_app/core/hi_state.dart';
@@ -39,8 +40,8 @@ class _ReturnedBrokenPackagePageState
   List<File> _images = [];
   bool submitEnable = false;
   String? choice;
-  String? actualDisposal;
-  String? actualChoice;
+  bool blankMo = false;
+  bool tbd = false;
   AudioCache player = AudioCache();
   bool _isLoading = false;
 
@@ -52,19 +53,17 @@ class _ReturnedBrokenPackagePageState
         "reshelf_as_spare": "New Packing",
         "abandon": "Abandon"
       }[widget.defaultDisposal];
-      actualDisposal = widget.defaultDisposal;
-      actualChoice = choice;
       if (widget.defaultDisposal == "reshelf_as_spare") {
         for (var ele in widget.skuList) {
           if (isEmpty(ele.defaultPackingMaterial)) {
-            actualChoice = "Abandon";
-            actualDisposal = "abandon";
+            blankMo = true;
+            tbd = true;
           }
         }
-        if (actualDisposal == "abandon") {
+        if (blankMo) {
           Future.delayed(Duration.zero, () {
             _alertDialog(
-                "Because the defulat packing material of this package's sku is blank, the handled way is changed to abandonment!",
+                "Because the defulat packing material of this package's sku is blank, please take photos for package and submit it to let the customer choose how to handle it!",
                 "Handle Memo");
           });
         }
@@ -144,22 +143,21 @@ class _ReturnedBrokenPackagePageState
       ),
     ));
     widgets.add(ListTile(
-      title: RichText(
-        text: TextSpan(
-            text: "handled way: ",
-            style: const TextStyle(color: Colors.black, fontSize: 18),
-            children: <TextSpan>[
-              TextSpan(
-                  text: actualChoice!,
-                  style: const TextStyle(
-                      color: Colors.red, fontWeight: FontWeight.bold))
-            ]),
-      ),
-      subtitle: actualDisposal == widget.defaultDisposal
-          ? const Text("")
-          : const Text(
-              "Because the defulat packing material of this package's sku is blank, the handled way is changed to abandonment!"),
-    ));
+        title: RichText(
+          text: TextSpan(
+              text: "handled way: ",
+              style: const TextStyle(color: Colors.black, fontSize: 18),
+              children: <TextSpan>[
+                TextSpan(
+                    text: choice!,
+                    style: const TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold))
+              ]),
+        ),
+        subtitle: blankMo
+            ? const Text(
+                "Because the defulat packing material of this package's sku is blank, please take photos for package and submit it to let the customer choose how to handle it!")
+            : const Text("")));
 
     if (widget.defaultDisposal == "reshelf_as_spare") {
       for (var element in widget.skuList) {
@@ -185,7 +183,20 @@ class _ReturnedBrokenPackagePageState
         ));
       }
     }
-    if (actualDisposal == "reshelf_as_spare") {
+    if (widget.defaultDisposal == "reshelf_as_spare" && blankMo == false) {
+      widgets.add(ListTile(
+        trailing: CupertinoSwitch(
+            value: tbd,
+            onChanged: (bool val) {
+              setState(() {
+                tbd = val;
+                checkInput();
+              });
+            }),
+        title: const Text("Let Customer Decide?"),
+        subtitle: const Text(
+            "Click the switch If the packing material is not found. Let the customer choose how to handle it"),
+      ));
       widgets.add(ScanInput(
         "Shelf",
         "Scan Shelf's Barcode",
@@ -272,11 +283,27 @@ class _ReturnedBrokenPackagePageState
 
   void checkInput() {
     bool enable;
-    if (actualDisposal == "reshelf_as_spare") {
-      if (isNotEmpty(shelfNum) && _images.isNotEmpty) {
-        enable = true;
+    if (widget.defaultDisposal == "reshelf_as_spare") {
+      if (blankMo == false) {
+        if (tbd == false) {
+          if (isNotEmpty(shelfNum) && _images.isNotEmpty) {
+            enable = true;
+          } else {
+            enable = false;
+          }
+        } else {
+          if (_images.isNotEmpty) {
+            enable = true;
+          } else {
+            enable = false;
+          }
+        }
       } else {
-        enable = false;
+        if (_images.isNotEmpty) {
+          enable = true;
+        } else {
+          enable = false;
+        }
       }
     } else {
       if (_images.isNotEmpty) {
@@ -338,13 +365,13 @@ class _ReturnedBrokenPackagePageState
       // print(attachments);
 
       var result = await ReturnedDao.receiveAndFinish(
-          widget.shpmtNum, widget.depotCode, actualDisposal!,
-          shelfNum: shelfNum, attachment: attachments);
+          widget.shpmtNum, widget.depotCode, widget.defaultDisposal,
+          shelfNum: shelfNum, attachment: attachments, tbd: tbd);
       setState(() {
         _isLoading = false;
       });
       if (result['status'] == "succ") {
-        showToast("${actualChoice!} Successful");
+        showToast("Submit Successful");
         player.play('sounds/success01.mp3');
       } else {
         showWarnToast(result['reason'].join(","));

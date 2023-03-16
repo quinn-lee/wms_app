@@ -77,11 +77,15 @@ class ReturnedDao {
 
   static receiveAndFinish(
       String num, String receiveDepotCode, String disposalResult,
-      {String? disposalMemo, String? shelfNum, List? attachment}) async {
+      {String? disposalMemo,
+      String? shelfNum,
+      List? attachment,
+      bool tbd = false}) async {
     BaseRequest request = ReceiveAndFinishRequest();
     request.add("num", num);
     request.add("receive_depot_code", receiveDepotCode);
     request.add("disposal_result", disposalResult);
+    request.add("tbd", tbd);
     if (shelfNum != null) {
       request.add("shelf_num", shelfNum);
     }
