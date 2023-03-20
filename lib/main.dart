@@ -123,6 +123,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
   String? photoFrom;
   String? unknownPageFrom;
   String? returnPageFrom;
+  String? newReturnPageFrom;
   ReturnedParcel? reshelfParcel;
   FbaDetachParcel? fbaDetachParcel;
   List<MaterialPage> pages = [];
@@ -152,6 +153,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
         unknownPageFrom = args!['unknownPageFrom'] ?? "";
       } else if (routeStatus == RouteStatus.returnedScan) {
         returnPageFrom = args!['returnPageFrom'] ?? "";
+      } else if (routeStatus == RouteStatus.returnedNewScan) {
+        newReturnPageFrom = args!['newReturnPageFrom'] ?? "";
       } else if (routeStatus == RouteStatus.fbaDetachScanSku) {
         fbaDetachParcel = args!['fbaDetachParcel'];
       } else if (routeStatus == RouteStatus.returnedNewShelf) {
@@ -213,7 +216,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
     } else if (routeStatus == RouteStatus.returnedNeedPhoto) {
       page = pageWrap(const ReturnedNeedPhotoPage());
     } else if (routeStatus == RouteStatus.returnedNewScan) {
-      page = pageWrap(const ReturnedNewScanPage());
+      page = pageWrap(ReturnedNewScanPage(newReturnPageFrom!));
     } else if (routeStatus == RouteStatus.returnedNeedProcess) {
       page = pageWrap(const ReturnedNeedProcessPage());
     } else if (routeStatus == RouteStatus.returnedPhoto) {

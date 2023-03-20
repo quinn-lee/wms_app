@@ -71,8 +71,8 @@ class _InboundReceivePageState extends HiState<InboundReceivePage> {
       widgets.add(InkWell(
           onTap: () {
             if (element['category'] == "return") {
-              HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan,
-                  args: {"returnPageFrom": "receive"});
+              HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewScan,
+                  args: {"newReturnPageFrom": "receive"});
             } else if (element['category'] == "unknown") {
               HiNavigator.getInstance().onJumpTo(RouteStatus.unknownPacks,
                   args: {"unknownPageFrom": "receive"});

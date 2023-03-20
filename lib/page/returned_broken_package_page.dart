@@ -385,6 +385,7 @@ class _ReturnedBrokenPackagePageState
       showWarnToast(e.toString());
       player.play('sounds/alert.mp3');
     }
-    HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewScan);
+    HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewScan,
+        args: {"newReturnPageFrom": "brokenPage"});
   }
 }

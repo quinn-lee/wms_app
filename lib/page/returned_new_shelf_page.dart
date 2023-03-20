@@ -134,6 +134,6 @@ class _ReturnedNewShelfPageState extends HiState<ReturnedNewShelfPage> {
       showWarnToast(e.toString());
     }
     HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewScan,
-        args: {"returnPageFrom": "newShelf"});
+        args: {"newReturnPageFrom": "newShelf"});
   }
 }

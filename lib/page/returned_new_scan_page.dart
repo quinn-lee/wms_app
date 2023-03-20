@@ -15,7 +15,8 @@ import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
 class ReturnedNewScanPage extends StatefulWidget {
-  const ReturnedNewScanPage({Key? key}) : super(key: key);
+  final String pageFrom;
+  const ReturnedNewScanPage(this.pageFrom, {Key? key}) : super(key: key);
 
   @override
   State<ReturnedNewScanPage> createState() => _ReturnedNewScanPageState();
@@ -42,6 +43,7 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
   @override
   void initState() {
     super.initState();
+    print("from: ${widget.pageFrom}");
     loadDepotData();
     setState(() {
       clear();
@@ -496,7 +498,8 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
           showToast("Submit Successful");
           // print(result["data"]);
           ReturnedParcel rp = ReturnedParcel.fromJson(result["data"]);
-          String photoFrom = "newScan";
+          String photoFrom =
+              (widget.pageFrom == "receive" ? widget.pageFrom : "scan");
           HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,
               args: {"needPhotoParce": rp, "photoFrom": photoFrom});
         } else {

@@ -313,10 +313,8 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
     if (widget.photoFrom == "list") {
       HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNeedPhoto);
     } else if (widget.photoFrom == "scan") {
-      HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan,
-          args: {"returnPageFrom": "photo"});
-    } else if (widget.photoFrom == "newScan") {
-      HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewScan);
+      HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewScan,
+          args: {"newReturnPageFrom": "photo"});
     } else if (widget.photoFrom == "receive") {
       HiNavigator.getInstance().onJumpTo(RouteStatus.inboundReceive);
     }

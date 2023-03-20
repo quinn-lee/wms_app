@@ -44,13 +44,23 @@ class _ReturnedPageState extends HiState<ReturnedPage>
             children: [
               ListTile(
                 leading: const Icon(Icons.scanner),
-                title: const Text("Register Returned Parcels"),
+                title: const Text("Register Returned Parcels(NEW!)"),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan,
-                      args: {"returnPageFrom": "menu"});
+                  HiNavigator.getInstance().onJumpTo(
+                      RouteStatus.returnedNewScan,
+                      args: {"newReturnPageFrom": "menu"});
                 },
               ),
+              //ListTile(
+              //  leading: const Icon(Icons.scanner),
+              //  title: const Text("Register Returned Parcels"),
+              //  trailing: const Icon(Icons.keyboard_arrow_right),
+              //  onTap: () {
+              //    HiNavigator.getInstance().onJumpTo(RouteStatus.returnedScan,
+              //        args: {"returnPageFrom": "menu"});
+              //  },
+              //),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
                 title: const Text("Need To Be Photograghed Parcels"),
@@ -67,15 +77,6 @@ class _ReturnedPageState extends HiState<ReturnedPage>
                 onTap: () {
                   HiNavigator.getInstance()
                       .onJumpTo(RouteStatus.returnedNeedProcess);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.scanner),
-                title: const Text("Register Returned Parcels(NEW!)"),
-                trailing: const Icon(Icons.keyboard_arrow_right),
-                onTap: () {
-                  HiNavigator.getInstance()
-                      .onJumpTo(RouteStatus.returnedNewScan);
                 },
               ),
             ],
