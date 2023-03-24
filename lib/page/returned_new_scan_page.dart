@@ -120,13 +120,14 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
       // },
     ));
     if (batchNum != "") {
+      String newNum = matchShipmentNum(num!);
       if (description != "") {
         widgets.add(ListTile(
-          title: Text("$num, $batchNum"),
+          title: Text("$newNum, $batchNum"),
           subtitle: Text(description),
         ));
       } else {
-        widgets.add(ListTile(title: Text("$num, $batchNum")));
+        widgets.add(ListTile(title: Text("$newNum, $batchNum")));
       }
     }
     if (returnSt != "") {
@@ -382,9 +383,10 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     try {
       if (num != null && num != "") {
         clear();
+        String newShipmentNum = matchShipmentNum(num!);
         HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewShelf, args: {
           "returnedNewShelfBatchNum": batchNum1,
-          "returnedNewShelfShpmtNum": num,
+          "returnedNewShelfShpmtNum": newShipmentNum,
           "returnedNewShelfDepotCode": depotCode
         });
       }
@@ -410,10 +412,11 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     try {
       if (num != null && num != "") {
         clear();
+        String newShipmentNum = matchShipmentNum(num!);
         HiNavigator.getInstance()
             .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
           "returnedBrokenPackageBatchNum": batchNum1,
-          "returnedBrokenPackageShpmtNum": num,
+          "returnedBrokenPackageShpmtNum": newShipmentNum,
           "returnedBrokenPackageDepotCode": depotCode,
           "returnedBrokenPackageDefaultDisposal": "reshelf_as_spare",
           "returnedBrokenPackageSkuList": skuList1
@@ -441,10 +444,11 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     try {
       if (num != null && num != "") {
         clear();
+        String newShipmentNum = matchShipmentNum(num!);
         HiNavigator.getInstance()
             .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
           "returnedBrokenPackageBatchNum": batchNum1,
-          "returnedBrokenPackageShpmtNum": num,
+          "returnedBrokenPackageShpmtNum": newShipmentNum,
           "returnedBrokenPackageDepotCode": depotCode,
           "returnedBrokenPackageDefaultDisposal": "abandon",
           "returnedBrokenPackageSkuList": skuList1
