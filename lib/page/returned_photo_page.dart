@@ -30,7 +30,8 @@ class ReturnedPhotoPage extends StatefulWidget {
 
 class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
   List<File> _images = [];
-  bool submitEnable = false;
+  // bool submitEnable = false;
+  bool submitEnable = true; // 20230606 没有照片也能提交
   bool isBoken = false;
   bool isOpen = false;
   AudioCache player = AudioCache();
@@ -161,7 +162,8 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
             setState(() {
               isBoken = val;
               if (_images.isEmpty) {
-                submitEnable = false;
+                // submitEnable = false;
+                submitEnable = true; // 20230606 没有照片也能提交
               } else {
                 submitEnable = true;
               }
@@ -177,7 +179,8 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
             setState(() {
               isOpen = val;
               if (_images.isEmpty) {
-                submitEnable = false;
+                // submitEnable = false;
+                submitEnable = true; // 20230606 没有照片也能提交
               } else {
                 submitEnable = true;
               }
@@ -249,7 +252,8 @@ class _ReturnedPhotoPageState extends HiState<ReturnedPhotoPage> {
                   setState(() {
                     _images.remove(file);
                     if (_images.isEmpty) {
-                      submitEnable = false;
+                      // submitEnable = false;
+                      submitEnable = true; // 20230606 没有照片也能提交
                     }
                   });
                 },
