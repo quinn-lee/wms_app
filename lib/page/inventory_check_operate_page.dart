@@ -58,7 +58,7 @@ class _InventoryCheckOperatePageState
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Sku Scan($widget.shelfNum)'),
+          title: Text('Sku Scan(${widget.shelfNum})'),
           leading: GestureDetector(
             onTap: () {
               Navigator.pop(context);
