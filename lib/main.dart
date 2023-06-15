@@ -16,6 +16,9 @@ import 'package:wms_app/page/fba_detach_scan_sku_page.dart';
 import 'package:wms_app/page/home_page.dart';
 import 'package:wms_app/page/inbound_page.dart';
 import 'package:wms_app/page/inbound_receive_page.dart';
+import 'package:wms_app/page/inventory_check_operate_page.dart';
+import 'package:wms_app/page/inventory_check_scan_page.dart';
+import 'package:wms_app/page/inventory_page.dart';
 import 'package:wms_app/page/login_page.dart';
 import 'package:wms_app/page/outbound_check_multiple_page.dart';
 import 'package:wms_app/page/outbound_check_page.dart';
@@ -135,6 +138,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
   String? returnedBrokenPackageDepotCode;
   String? returnedBrokenPackageDefaultDisposal;
   List<ReturnedSku>? returnedBrokenPackageSkuList;
+  String? checkShelfNum;
+  List? checkSkus;
 
   //为Navigator设置一个key，必要的时候可以通过navigatorKey.currentState来获取到NavigatorState对象
   EtRouteDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
@@ -168,6 +173,9 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
         returnedBrokenPackageDefaultDisposal =
             args['returnedBrokenPackageDefaultDisposal'];
         returnedBrokenPackageSkuList = args['returnedBrokenPackageSkuList'];
+      } else if (routeStatus == RouteStatus.inventoryCheckOperate) {
+        checkShelfNum = args!['checkShelfNum'];
+        checkSkus = args['checkSkus'];
       }
       notifyListeners();
     });
@@ -245,6 +253,12 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(const FbaDetachCurrentPage());
     } else if (routeStatus == RouteStatus.fbaDetachScanSku) {
       page = pageWrap(FbaDetachScanSkuPage(fbaDetachParcel!));
+    } else if (routeStatus == RouteStatus.inventoryPage) {
+      page = pageWrap(const InventoryPage());
+    } else if (routeStatus == RouteStatus.inventoryCheckOperate) {
+      page = pageWrap(InventoryCheckOperatePage(checkShelfNum!, checkSkus!));
+    } else if (routeStatus == RouteStatus.inventoryCheckScan) {
+      page = pageWrap(const InventoryCheckScanPage());
     }
     //重新创建一个数组，否则pages因引用没有改变路由不会生效
     tempPages = [...tempPages, page];

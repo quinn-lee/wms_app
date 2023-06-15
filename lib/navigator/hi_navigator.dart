@@ -6,6 +6,9 @@ import 'package:wms_app/page/fba_detach_scan_sku_page.dart';
 import 'package:wms_app/page/home_page.dart';
 import 'package:wms_app/page/inbound_page.dart';
 import 'package:wms_app/page/inbound_receive_page.dart';
+import 'package:wms_app/page/inventory_check_operate_page.dart';
+import 'package:wms_app/page/inventory_check_scan_page.dart';
+import 'package:wms_app/page/inventory_page.dart';
 // import 'package:wms_app/page/home_page.dart';
 
 import 'package:wms_app/page/login_page.dart';
@@ -65,7 +68,10 @@ enum RouteStatus {
   outboundOosRegistration,
   fbaDetachScan,
   fbaDetachScanSku,
-  fbaDetachCurrent
+  fbaDetachCurrent,
+  inventoryPage,
+  inventoryCheckScan,
+  inventoryCheckOperate
 }
 
 // 获取page 对应的RouteStatus
@@ -114,6 +120,12 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.fbaDetachScanSku;
   } else if (page.child is FbaDetachCurrentPage) {
     return RouteStatus.fbaDetachCurrent;
+  } else if (page.child is InventoryPage) {
+    return RouteStatus.inventoryPage;
+  } else if (page.child is InventoryCheckScanPage) {
+    return RouteStatus.inventoryCheckScan;
+  } else if (page.child is InventoryCheckOperatePage) {
+    return RouteStatus.inventoryCheckOperate;
   } else {
     return RouteStatus.unknown;
   }
