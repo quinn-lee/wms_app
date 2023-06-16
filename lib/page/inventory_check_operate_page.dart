@@ -33,6 +33,7 @@ class _InventoryCheckOperatePageState
   List? skus;
   AudioCache player = AudioCache();
   bool _isLoading = false;
+  List<DataRow> dataRows = [];
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _InventoryCheckOperatePageState
     setState(() {
       skus = widget.skus;
       currentAmount = "";
+      setDataRow(skus!);
     });
 
     textEditingController1.text = "";
@@ -140,6 +142,15 @@ class _InventoryCheckOperatePageState
         color: Colors.white,
       ));
     }
+    widgets.add(DataTable(columns: const [
+      DataColumn(label: Text('Sku Code')),
+      DataColumn(
+        label: Text('Name'),
+      ),
+      DataColumn(
+        label: Text('Quantity'),
+      ),
+    ], rows: dataRows));
     return widgets;
   }
 
@@ -158,6 +169,20 @@ class _InventoryCheckOperatePageState
     if (mounted) {
       textEditingController1.text = "";
       FocusScope.of(context).requestFocus(focusNode1);
+    }
+  }
+
+  // 构建表格数据
+  void setDataRow(List<dynamic> data) {
+    dataRows.clear();
+    for (int i = 0; i < data.length; i++) {
+      dataRows.add(DataRow(
+        cells: [
+          DataCell(Text('${data[i]['sku_code']}')),
+          DataCell(Text('${data[i]['name_en']}')),
+          DataCell(Text('${data[i]['quantity']}')),
+        ],
+      ));
     }
   }
 
@@ -192,6 +217,7 @@ class _InventoryCheckOperatePageState
           setState(() {
             _isLoading = false;
             skus = result['data']['skus'];
+            setDataRow(skus!);
             resultShow.add({
               "status": true,
               "show":
