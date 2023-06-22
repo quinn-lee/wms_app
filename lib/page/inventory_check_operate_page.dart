@@ -23,11 +23,14 @@ class _InventoryCheckOperatePageState
     extends HiState<InventoryCheckOperatePage> {
   String? num;
   int quantity = 0;
+  int countingQuantity = 0;
   String? currentAmount;
   final TextEditingController textEditingController = TextEditingController();
   FocusNode focusNode = FocusNode();
   final TextEditingController textEditingController1 = TextEditingController();
   FocusNode focusNode1 = FocusNode();
+  final TextEditingController textEditingController2 = TextEditingController();
+  FocusNode focusNode2 = FocusNode();
   bool submitEnable = false;
   List<Map> resultShow = [];
   List? skus;
@@ -97,10 +100,35 @@ class _InventoryCheckOperatePageState
       color: Color(0XFFEEEEEE),
       height: 30,
     ));
-    widgets.add(ListTile(title: Text("Current Amount: ${currentAmount!}")));
+    widgets.add(ListTile(title: Text("Current Quantity: ${currentAmount!}")));
     widgets.add(ScanInput(
-      "Total Amount",
-      "",
+      "Counting Quantity",
+      "Counting Quantity",
+      focusNode2,
+      textEditingController2,
+      onChanged: (text) {
+        try {
+          if (isNotEmpty(text) && text != "") {
+            countingQuantity = int.parse(text);
+            quantity = int.parse(currentAmount!) + countingQuantity;
+            textEditingController1.text = quantity.toString();
+          } else {
+            countingQuantity = 0;
+            quantity = 0;
+            textEditingController1.clear();
+          }
+        } catch (e) {
+          countingQuantity = 0;
+          quantity = 0;
+          textEditingController1.clear();
+        }
+
+        checkInput();
+      },
+    ));
+    widgets.add(ScanInput(
+      "Change Total Quantity",
+      "Total Counting Quantity",
       focusNode1,
       textEditingController1,
       onChanged: (text) {
@@ -144,11 +172,11 @@ class _InventoryCheckOperatePageState
     }
     widgets.add(DataTable(columns: const [
       DataColumn(label: Text('Sku Code')),
+      // DataColumn(
+      //   label: Text('Name'),
+      // ),
       DataColumn(
-        label: Text('Name'),
-      ),
-      DataColumn(
-        label: Text('Quantity'),
+        label: Text('Total Quantity'),
       ),
     ], rows: dataRows));
     return widgets;
@@ -167,8 +195,9 @@ class _InventoryCheckOperatePageState
       }
     }
     if (mounted) {
-      textEditingController1.text = "";
-      FocusScope.of(context).requestFocus(focusNode1);
+      textEditingController1.clear();
+      textEditingController2.clear();
+      FocusScope.of(context).requestFocus(focusNode2);
     }
   }
 
@@ -178,8 +207,8 @@ class _InventoryCheckOperatePageState
     for (int i = 0; i < data.length; i++) {
       dataRows.add(DataRow(
         cells: [
-          DataCell(Text('${data[i]['sku_code']}')),
-          DataCell(Text('${data[i]['name_en']}')),
+          DataCell(SelectableText('${data[i]['sku_code']}')),
+          // DataCell(Text('${data[i]['name_en']}')),
           DataCell(Text('${data[i]['quantity']}')),
         ],
       ));
@@ -250,7 +279,8 @@ class _InventoryCheckOperatePageState
     }
     if (mounted) {
       textEditingController.clear();
-      textEditingController1.text = "";
+      textEditingController1.clear();
+      textEditingController2.clear();
       FocusScope.of(context).requestFocus(focusNode);
     }
     setState(() {
