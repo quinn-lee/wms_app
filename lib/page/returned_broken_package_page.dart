@@ -306,11 +306,13 @@ class _ReturnedBrokenPackagePageState
         }
       }
     } else {
-      if (_images.isNotEmpty) {
-        enable = true;
-      } else {
-        enable = false;
-      }
+      // if (_images.isNotEmpty) {
+      //   enable = true;
+      // } else {
+      //   enable = false;
+      // }
+      // 选择销毁时，可以不用拍照
+      enable = true;
     }
     setState(() {
       submitEnable = enable;
