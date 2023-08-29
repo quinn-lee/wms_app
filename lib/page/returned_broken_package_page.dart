@@ -214,7 +214,9 @@ class _ReturnedBrokenPackagePageState
       child: LoginButton(
         "Submit",
         1,
-        enable: submitEnable,
+        enable: (widget.defaultDisposal != "reshelf_as_spare"
+            ? true
+            : submitEnable),
         onPressed: upload,
       ),
     ));
