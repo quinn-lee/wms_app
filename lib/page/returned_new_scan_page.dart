@@ -6,6 +6,7 @@ import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/model/returned_parcel.dart';
 import 'package:wms_app/model/returned_sku.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
+import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
@@ -380,23 +381,29 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     setState(() {
       canSubmit = false; // 防止重复提交
     });
-    try {
-      if (num != null && num != "") {
-        clear();
-        String newShipmentNum = matchShipmentNum(num!);
-        HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewShelf, args: {
-          "returnedNewShelfBatchNum": batchNum1,
-          "returnedNewShelfShpmtNum": newShipmentNum,
-          "returnedNewShelfDepotCode": depotCode
+    if (returnSt == "wrong_packing" || returnSt == "wrong_consignor") {
+      _alertDialog("Reshelf", returnSt);
+      clear();
+    } else {
+      try {
+        if (num != null && num != "") {
+          clear();
+          String newShipmentNum = matchShipmentNum(num!);
+          HiNavigator.getInstance()
+              .onJumpTo(RouteStatus.returnedNewShelf, args: {
+            "returnedNewShelfBatchNum": batchNum1,
+            "returnedNewShelfShpmtNum": newShipmentNum,
+            "returnedNewShelfDepotCode": depotCode
+          });
+        }
+      } catch (e) {
+        setState(() {
+          resultShow.add({"status": false, "show": e.toString()});
+          clear();
         });
+        player.play('sounds/alert.mp3');
+        showWarnToast(e.toString());
       }
-    } catch (e) {
-      setState(() {
-        resultShow.add({"status": false, "show": e.toString()});
-        clear();
-      });
-      player.play('sounds/alert.mp3');
-      showWarnToast(e.toString());
     }
     if (mounted) {
       textEditingController.clear();
@@ -409,26 +416,31 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     setState(() {
       canSubmit = false; // 防止重复提交
     });
-    try {
-      if (num != null && num != "") {
-        clear();
-        String newShipmentNum = matchShipmentNum(num!);
-        HiNavigator.getInstance()
-            .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
-          "returnedBrokenPackageBatchNum": batchNum1,
-          "returnedBrokenPackageShpmtNum": newShipmentNum,
-          "returnedBrokenPackageDepotCode": depotCode,
-          "returnedBrokenPackageDefaultDisposal": "reshelf_as_spare",
-          "returnedBrokenPackageSkuList": skuList1
+    if (returnSt == "wrong_packing" || returnSt == "wrong_consignor") {
+      _alertDialog("New Packing", returnSt);
+      clear();
+    } else {
+      try {
+        if (num != null && num != "") {
+          clear();
+          String newShipmentNum = matchShipmentNum(num!);
+          HiNavigator.getInstance()
+              .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
+            "returnedBrokenPackageBatchNum": batchNum1,
+            "returnedBrokenPackageShpmtNum": newShipmentNum,
+            "returnedBrokenPackageDepotCode": depotCode,
+            "returnedBrokenPackageDefaultDisposal": "reshelf_as_spare",
+            "returnedBrokenPackageSkuList": skuList1
+          });
+        }
+      } catch (e) {
+        setState(() {
+          resultShow.add({"status": false, "show": e.toString()});
+          clear();
         });
+        player.play('sounds/alert.mp3');
+        showWarnToast(e.toString());
       }
-    } catch (e) {
-      setState(() {
-        resultShow.add({"status": false, "show": e.toString()});
-        clear();
-      });
-      player.play('sounds/alert.mp3');
-      showWarnToast(e.toString());
     }
     if (mounted) {
       textEditingController.clear();
@@ -441,26 +453,31 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     setState(() {
       canSubmit = false; // 防止重复提交
     });
-    try {
-      if (num != null && num != "") {
-        clear();
-        String newShipmentNum = matchShipmentNum(num!);
-        HiNavigator.getInstance()
-            .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
-          "returnedBrokenPackageBatchNum": batchNum1,
-          "returnedBrokenPackageShpmtNum": newShipmentNum,
-          "returnedBrokenPackageDepotCode": depotCode,
-          "returnedBrokenPackageDefaultDisposal": "abandon",
-          "returnedBrokenPackageSkuList": skuList1
+    if (returnSt == "wrong_packing" || returnSt == "wrong_consignor") {
+      _alertDialog("Abandon", returnSt);
+      clear();
+    } else {
+      try {
+        if (num != null && num != "") {
+          clear();
+          String newShipmentNum = matchShipmentNum(num!);
+          HiNavigator.getInstance()
+              .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
+            "returnedBrokenPackageBatchNum": batchNum1,
+            "returnedBrokenPackageShpmtNum": newShipmentNum,
+            "returnedBrokenPackageDepotCode": depotCode,
+            "returnedBrokenPackageDefaultDisposal": "abandon",
+            "returnedBrokenPackageSkuList": skuList1
+          });
+        }
+      } catch (e) {
+        setState(() {
+          resultShow.add({"status": false, "show": e.toString()});
+          clear();
         });
+        player.play('sounds/alert.mp3');
+        showWarnToast(e.toString());
       }
-    } catch (e) {
-      setState(() {
-        resultShow.add({"status": false, "show": e.toString()});
-        clear();
-      });
-      player.play('sounds/alert.mp3');
-      showWarnToast(e.toString());
     }
     if (mounted) {
       textEditingController.clear();
@@ -484,49 +501,73 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
       canSubmit = false; // 防止重复提交
       _isLoading = true;
     });
-    try {
-      if (num != null && num != "") {
-        String newShipmentNum = matchShipmentNum(num!);
-        result = await ReturnedDao.scan(newShipmentNum, depotCode!);
-        if (result["status"] == "succ") {
-          setState(() {
-            var now = DateTime.now();
-            resultShow.add({
-              "status": true,
-              "show":
-                  "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$newShipmentNum"
+    if (returnSt == "wrong_packing" || returnSt == "wrong_consignor") {
+      _alertDialog("Submit With Photos", returnSt);
+      clear();
+    } else {
+      try {
+        if (num != null && num != "") {
+          String newShipmentNum = matchShipmentNum(num!);
+          result = await ReturnedDao.scan(newShipmentNum, depotCode!);
+          if (result["status"] == "succ") {
+            setState(() {
+              var now = DateTime.now();
+              resultShow.add({
+                "status": true,
+                "show":
+                    "${now.hour}:${now.minute}:${now.second}-Succeeded! Num:$newShipmentNum"
+              });
+              clear();
             });
-            clear();
-          });
-          player.play('sounds/success01.mp3');
-          showToast("Submit Successful");
-          // print(result["data"]);
-          ReturnedParcel rp = ReturnedParcel.fromJson(result["data"]);
-          String photoFrom =
-              (widget.pageFrom == "receive" ? widget.pageFrom : "scan");
-          HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,
-              args: {"needPhotoParce": rp, "photoFrom": photoFrom});
-        } else {
-          setState(() {
-            resultShow
-                .add({"status": false, "show": result['reason'].join(",")});
-            clear();
-          });
-          player.play('sounds/alert.mp3');
-          showWarnToast(result['reason'].join(","));
+            player.play('sounds/success01.mp3');
+            showToast("Submit Successful");
+            // print(result["data"]);
+            ReturnedParcel rp = ReturnedParcel.fromJson(result["data"]);
+            String photoFrom =
+                (widget.pageFrom == "receive" ? widget.pageFrom : "scan");
+            HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPhoto,
+                args: {"needPhotoParce": rp, "photoFrom": photoFrom});
+          } else {
+            setState(() {
+              resultShow
+                  .add({"status": false, "show": result['reason'].join(",")});
+              clear();
+            });
+            player.play('sounds/alert.mp3');
+            showWarnToast(result['reason'].join(","));
+          }
         }
+      } catch (e) {
+        setState(() {
+          resultShow.add({"status": false, "show": e.toString()});
+          clear();
+        });
+        player.play('sounds/alert.mp3');
+        showWarnToast(e.toString());
       }
-    } catch (e) {
-      setState(() {
-        resultShow.add({"status": false, "show": e.toString()});
-        clear();
-      });
-      player.play('sounds/alert.mp3');
-      showWarnToast(e.toString());
     }
     if (mounted) {
       textEditingController.clear();
       FocusScope.of(context).requestFocus(focusNode);
     }
+  }
+
+  _alertDialog(String choice, String rs) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Error"),
+            content: Text("This package is $rs, can not <$choice>"),
+            actions: [
+              MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context, "cancel");
+                  },
+                  child:
+                      const Text("Cancel", style: TextStyle(color: primary))),
+            ],
+          );
+        });
   }
 }
