@@ -77,15 +77,15 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
           // });
         } else {
           showWarnToast("No Depots Found");
-          HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
+          HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPage);
         }
       } else {
         showWarnToast(result['reason'].join(","));
-        HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
+        HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPage);
       }
     } catch (e) {
       showWarnToast(e.toString());
-      HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
+      HiNavigator.getInstance().onJumpTo(RouteStatus.returnedPage);
     }
   }
 

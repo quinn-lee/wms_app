@@ -33,6 +33,7 @@ import 'package:wms_app/page/returned_page.dart';
 import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 import 'package:wms_app/page/returned_shelf_page.dart';
+import 'package:wms_app/page/returned_unknown_handle_page.dart';
 import 'package:wms_app/page/unknown_packs_page.dart';
 import 'package:wms_app/util/authority.dart';
 import 'package:wms_app/util/color.dart';
@@ -259,6 +260,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       page = pageWrap(InventoryCheckOperatePage(checkShelfNum!, checkSkus!));
     } else if (routeStatus == RouteStatus.inventoryCheckScan) {
       page = pageWrap(const InventoryCheckScanPage());
+    } else if (routeStatus == RouteStatus.returnedUnknownHandle) {
+      page = pageWrap(const ReturnedUnknownHandlePage());
     }
     //重新创建一个数组，否则pages因引用没有改变路由不会生效
     tempPages = [...tempPages, page];
