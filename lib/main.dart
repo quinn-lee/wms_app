@@ -133,6 +133,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
   List<MaterialPage> pages = [];
   String? returnedNewShelfBatchNum;
   String? returnedNewShelfShpmtNum;
+  String? returnedShpmtNum;
   String? returnedNewShelfDepotCode;
   String? returnedBrokenPackageBatchNum;
   String? returnedBrokenPackageShpmtNum;
@@ -177,6 +178,8 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
       } else if (routeStatus == RouteStatus.inventoryCheckOperate) {
         checkShelfNum = args!['checkShelfNum'];
         checkSkus = args['checkSkus'];
+      } else if (routeStatus == RouteStatus.returnedUnknownHandle) {
+        returnedShpmtNum = args!['returnedShpmtNum'];
       }
       notifyListeners();
     });
@@ -261,7 +264,7 @@ class EtRouteDelegate extends RouterDelegate<EtRoutePath>
     } else if (routeStatus == RouteStatus.inventoryCheckScan) {
       page = pageWrap(const InventoryCheckScanPage());
     } else if (routeStatus == RouteStatus.returnedUnknownHandle) {
-      page = pageWrap(const ReturnedUnknownHandlePage());
+      page = pageWrap(ReturnedUnknownHandlePage(returnedShpmtNum!));
     }
     //重新创建一个数组，否则pages因引用没有改变路由不会生效
     tempPages = [...tempPages, page];

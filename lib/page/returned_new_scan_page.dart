@@ -244,19 +244,57 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
       }
     }
     for (var element in resultShow.reversed) {
-      widgets.add(ListTile(
-        title: Text(
-          element['show'],
-          style: const TextStyle(color: Colors.white),
-        ),
-        tileColor: element['status']
-            ? const Color(0xFF4e72b8)
-            : const Color(0xFFf15b6c),
-      ));
-      widgets.add(const Divider(
-        height: 1,
-        color: Colors.white,
-      ));
+      if (element['status']) {
+        widgets.add(ListTile(
+          title: Text(
+            element['show'],
+            style: const TextStyle(color: Colors.white),
+          ),
+          tileColor: element['status']
+              ? const Color(0xFF4e72b8)
+              : const Color(0xFFf15b6c),
+        ));
+        widgets.add(const Divider(
+          height: 1,
+          color: Colors.white,
+        ));
+      } else {
+        if (element['num'] != null && element['show'].contains('not found')) {
+          widgets.add(ListTile(
+            title: Text(
+              "${element['show']}, create a new return parcel manually?",
+              style: const TextStyle(color: Colors.white),
+            ),
+            tileColor: element['status']
+                ? const Color(0xFF4e72b8)
+                : const Color(0xFFf15b6c),
+            trailing: const Icon(Icons.navigate_next),
+            onTap: () {
+              HiNavigator.getInstance().onJumpTo(
+                  RouteStatus.returnedUnknownHandle,
+                  args: {"returnedShpmtNum": element['num']});
+            },
+          ));
+          widgets.add(const Divider(
+            height: 1,
+            color: Colors.white,
+          ));
+        } else {
+          widgets.add(ListTile(
+            title: Text(
+              element['show'],
+              style: const TextStyle(color: Colors.white),
+            ),
+            tileColor: element['status']
+                ? const Color(0xFF4e72b8)
+                : const Color(0xFFf15b6c),
+          ));
+          widgets.add(const Divider(
+            height: 1,
+            color: Colors.white,
+          ));
+        }
+      }
     }
     return widgets;
   }
@@ -345,8 +383,11 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
           // print(result['reason']);
           showWarnToast(result['reason'].join(","));
           setState(() {
-            resultShow
-                .add({"status": false, "show": result['reason'].join(",")});
+            resultShow.add({
+              "status": false,
+              "show": result['reason'].join(","),
+              "num": newShipmentNum
+            });
             clear();
           });
           player.play('sounds/alert.mp3');

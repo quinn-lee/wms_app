@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wms_app/core/hi_state.dart';
+import 'package:wms_app/http/dao/account_dao.dart';
 import 'package:wms_app/http/dao/depot_dao.dart';
 import 'package:wms_app/http/dao/returned_dao.dart';
 import 'package:wms_app/navigator/hi_navigator.dart';
@@ -15,7 +16,9 @@ import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
 class ReturnedUnknownHandlePage extends StatefulWidget {
-  const ReturnedUnknownHandlePage({Key? key}) : super(key: key);
+  final String returnedShpmtNum;
+  const ReturnedUnknownHandlePage(this.returnedShpmtNum, {Key? key})
+      : super(key: key);
 
   @override
   State<ReturnedUnknownHandlePage> createState() =>
@@ -25,8 +28,9 @@ class ReturnedUnknownHandlePage extends StatefulWidget {
 class _ReturnedUnknownHandlePageState
     extends HiState<ReturnedUnknownHandlePage> {
   List<DropdownMenuItem<String>> depots = [];
+  List<DropdownMenuItem<String>> accounts = [];
   String? depotCode;
-  String? abbrCode;
+  String? accountId;
   String? disposalMemo;
   String? shelfNum;
   String? skuNum;
@@ -55,6 +59,7 @@ class _ReturnedUnknownHandlePageState
       _isLoading = true;
     });
     loadDepotData();
+    loadConsignorData();
     setState(() {
       _isLoading = false;
     });
@@ -103,6 +108,32 @@ class _ReturnedUnknownHandlePageState
     }
   }
 
+  void loadConsignorData() async {
+    try {
+      var result = await AccountDao.getConsignorList();
+      if (result['status'] == "succ") {
+        if (result['data'].length > 0) {
+          for (var account in result['data']) {
+            setState(() {
+              accounts.add(DropdownMenuItem(
+                  value: account['id'].toString(),
+                  child: Text(account['abbr_code'] ?? '')));
+            });
+          }
+        } else {
+          showWarnToast("No Consignors Found");
+          HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
+        }
+      } else {
+        showWarnToast(result['reason'].join(","));
+        HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
+      }
+    } catch (e) {
+      showWarnToast(e.toString());
+      HiNavigator.getInstance().onJumpTo(RouteStatus.inboundPage);
+    }
+  }
+
   Future getImage(bool isTakePhoto) async {
     Navigator.pop(context);
     var image = await ImagePicker().pickImage(
@@ -119,7 +150,7 @@ class _ReturnedUnknownHandlePageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Returned Unknown Parcels'),
+        title: Text('${widget.returnedShpmtNum} Unknown Parcels'),
         leading: GestureDetector(
           onTap: () {
             Navigator.pop(context);
@@ -238,19 +269,7 @@ class _ReturnedUnknownHandlePageState
         checkInput();
       },
     ));
-    widgets.add(ScanInput(
-      "AbbrCode",
-      "Customer Code",
-      focusNode2,
-      textEditingController2,
-      onChanged: (text) {
-        checkInput();
-        abbrCode = text;
-      },
-      onSubmitted: (text) {
-        checkInput();
-      },
-    ));
+    widgets.add(_selectConsignor());
     widgets.add(const Divider(
       thickness: 32,
       color: Color(0XFFEEEEEE),
@@ -372,6 +391,48 @@ class _ReturnedUnknownHandlePageState
     );
   }
 
+  // 账号选项
+  Widget _selectConsignor() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(left: 15),
+              width: 120,
+              child: const Text(
+                "Account",
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            Expanded(
+                child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                        value: accountId,
+                        elevation: 12,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.black),
+                        iconEnabledColor: Colors.green,
+                        onChanged: (newValue) {
+                          setState(() {
+                            accountId = newValue!;
+                          });
+                        },
+                        items: accounts)))
+          ],
+        ),
+        const Padding(
+            padding: EdgeInsets.only(left: 15),
+            child: Divider(
+              height: 1,
+              thickness: 0.5,
+            ))
+      ],
+    );
+  }
+
   // 结果选项
   Widget _selectCategory() {
     return Column(
@@ -424,7 +485,7 @@ class _ReturnedUnknownHandlePageState
     if (isNotEmpty(depotCode) &&
         isNotEmpty(skuNum) &&
         (quantity > 0) &&
-        isNotEmpty(abbrCode) &&
+        isNotEmpty(accountId) &&
         isNotEmpty(category)) {
       if (category == "reshelf") {
         if (isNotEmpty(shelfNum)) {
@@ -464,7 +525,7 @@ class _ReturnedUnknownHandlePageState
       }
       result = await ReturnedDao.unknownReceiveAndFinish([
         {"sku_code": skuNum, "quantity": quantity}
-      ], depotCode!, category!, abbrCode!,
+      ], depotCode!, category!, accountId!, widget.returnedShpmtNum,
           disposalMemo: disposalMemo,
           shelfNum: shelfNum,
           attachment: attachments);
@@ -494,24 +555,26 @@ class _ReturnedUnknownHandlePageState
       player.play('sounds/alert.mp3');
       showWarnToast(e.toString());
     }
-    setState(() {
-      _isLoading = false;
-      abbrCode = "";
-      textEditingController.clear();
-      textEditingController1.clear();
-      skuNum = "";
-      textEditingController2.clear();
-      category = null;
-      quantity = 1;
-      disposalMemo = "";
-      shelfNum = "";
-      textEditingController3.text = quantity.toString();
-      textEditingController4.clear();
-      _images.clear();
-    });
-    if (mounted) {
-      textEditingController.clear();
-      FocusScope.of(context).requestFocus(focusNode);
-    }
+    HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewScan,
+        args: {"newReturnPageFrom": "unknown"});
+    // setState(() {
+    //   _isLoading = false;
+    //   abbrCode = "";
+    //   textEditingController.clear();
+    //   textEditingController1.clear();
+    //   skuNum = "";
+    //   textEditingController2.clear();
+    //   category = null;
+    //   quantity = 1;
+    //   disposalMemo = "";
+    //   shelfNum = "";
+    //   textEditingController3.text = quantity.toString();
+    //   textEditingController4.clear();
+    //   _images.clear();
+    // });
+    // if (mounted) {
+    //   textEditingController.clear();
+    //   FocusScope.of(context).requestFocus(focusNode);
+    // }
   }
 }
