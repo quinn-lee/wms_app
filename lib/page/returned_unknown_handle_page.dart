@@ -29,7 +29,7 @@ class _ReturnedUnknownHandlePageState
     extends HiState<ReturnedUnknownHandlePage> {
   List<DropdownMenuItem<String>> depots = [];
   List<DropdownMenuItem<String>> accounts = [];
-  String? depotCode;
+  String depotCode = "DUI-E9";
   String? accountId;
   String? disposalMemo;
   String? shelfNum;
@@ -40,8 +40,6 @@ class _ReturnedUnknownHandlePageState
   FocusNode focusNode = FocusNode();
   final TextEditingController textEditingController1 = TextEditingController();
   FocusNode focusNode1 = FocusNode();
-  final TextEditingController textEditingController2 = TextEditingController();
-  FocusNode focusNode2 = FocusNode();
   final TextEditingController textEditingController3 = TextEditingController();
   FocusNode focusNode3 = FocusNode();
   final TextEditingController textEditingController4 = TextEditingController();
@@ -72,8 +70,6 @@ class _ReturnedUnknownHandlePageState
     textEditingController.dispose();
     focusNode1.dispose();
     textEditingController1.dispose();
-    focusNode2.dispose();
-    textEditingController2.dispose();
     focusNode3.dispose();
     textEditingController3.dispose();
     focusNode4.dispose();
@@ -240,8 +236,8 @@ class _ReturnedUnknownHandlePageState
     List<Widget> widgets = [];
 
     widgets.add(ScanInput(
-      "SKU Num",
-      "Scan SKU Num",
+      "SKU *",
+      "Scan SKU Num Or ShortCode",
       focusNode,
       textEditingController,
       onChanged: (text) {
@@ -253,7 +249,7 @@ class _ReturnedUnknownHandlePageState
       },
     ));
     widgets.add(ScanInput(
-      "Quantity",
+      "Quantity *",
       "",
       focusNode3,
       textEditingController3,
@@ -275,20 +271,6 @@ class _ReturnedUnknownHandlePageState
       color: Color(0XFFEEEEEE),
       height: 30,
     ));
-    widgets.add(_selectDepot());
-    widgets.add(ScanInput(
-      "Shelf Num",
-      "Shelf Num",
-      focusNode1,
-      textEditingController1,
-      onChanged: (text) {
-        shelfNum = text;
-        checkInput();
-      },
-      onSubmitted: (text) {
-        checkInput();
-      },
-    ));
     widgets.add(_selectCategory());
     widgets.add(ScanInput(
       "Disposal Memo",
@@ -303,6 +285,21 @@ class _ReturnedUnknownHandlePageState
         checkInput();
       },
     ));
+    widgets.add(_selectDepot());
+    widgets.add(ScanInput(
+      "Shelf Num",
+      "Shelf Num",
+      focusNode1,
+      textEditingController1,
+      onChanged: (text) {
+        shelfNum = text;
+        checkInput();
+      },
+      onSubmitted: (text) {
+        checkInput();
+      },
+    ));
+
     widgets.add(const Divider(
       thickness: 32,
       color: Color(0XFFEEEEEE),
@@ -358,7 +355,7 @@ class _ReturnedUnknownHandlePageState
               padding: const EdgeInsets.only(left: 15),
               width: 120,
               child: const Text(
-                "Depot",
+                "Depot *",
                 style: TextStyle(fontSize: 16),
               ),
             ),
@@ -401,7 +398,7 @@ class _ReturnedUnknownHandlePageState
               padding: const EdgeInsets.only(left: 15),
               width: 120,
               child: const Text(
-                "Account",
+                "Account *",
                 style: TextStyle(fontSize: 16),
               ),
             ),
@@ -443,7 +440,7 @@ class _ReturnedUnknownHandlePageState
               padding: const EdgeInsets.only(left: 15),
               width: 120,
               child: const Text(
-                "Disposal Result",
+                "Disposal Result *",
                 style: TextStyle(fontSize: 16),
               ),
             ),
@@ -482,8 +479,7 @@ class _ReturnedUnknownHandlePageState
   // 验证输入是否可以提交
   void checkInput() {
     bool enable;
-    if (isNotEmpty(depotCode) &&
-        isNotEmpty(skuNum) &&
+    if (isNotEmpty(skuNum) &&
         (quantity > 0) &&
         isNotEmpty(accountId) &&
         isNotEmpty(category)) {
@@ -525,7 +521,7 @@ class _ReturnedUnknownHandlePageState
       }
       result = await ReturnedDao.unknownReceiveAndFinish([
         {"sku_code": skuNum, "quantity": quantity}
-      ], depotCode!, category!, accountId!, widget.returnedShpmtNum,
+      ], depotCode, category!, accountId!, widget.returnedShpmtNum,
           disposalMemo: disposalMemo,
           shelfNum: shelfNum,
           attachment: attachments);
@@ -539,6 +535,8 @@ class _ReturnedUnknownHandlePageState
           });
         });
         player.play('sounds/success01.mp3');
+        HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewScan,
+            args: {"newReturnPageFrom": "unknown"});
       } else {
         showWarnToast(result['reason'].join(","));
         setState(() {
@@ -555,8 +553,7 @@ class _ReturnedUnknownHandlePageState
       player.play('sounds/alert.mp3');
       showWarnToast(e.toString());
     }
-    HiNavigator.getInstance().onJumpTo(RouteStatus.returnedNewScan,
-        args: {"newReturnPageFrom": "unknown"});
+
     // setState(() {
     //   _isLoading = false;
     //   abbrCode = "";

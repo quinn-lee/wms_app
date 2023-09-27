@@ -38,7 +38,7 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
   String description = "";
   String returnSt = "";
   String defaultDisposal = "";
-  String? depotCode;
+  String depotCode = "DUI-E9"; // 默认E9仓库
   bool _isLoading = false;
 
   @override
@@ -366,7 +366,7 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
               skuList.add(ReturnedSku.fromJson(item));
               skuList1.add(ReturnedSku.fromJson(item));
             }
-            if (depotCode != null) canSubmit = true;
+            canSubmit = true;
           });
           // if (result['data']['skus'].length == 0) {
           //   setState(() {
@@ -528,7 +528,6 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     description = "";
     returnSt = "";
     canSubmit = false;
-    // depotCode = null;
   }
 
   void _sendAndPhoto() async {
@@ -540,7 +539,7 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     try {
       if (num != null && num != "") {
         String newShipmentNum = matchShipmentNum(num!);
-        result = await ReturnedDao.scan(newShipmentNum, depotCode!);
+        result = await ReturnedDao.scan(newShipmentNum, depotCode);
         if (result["status"] == "succ") {
           setState(() {
             var now = DateTime.now();
