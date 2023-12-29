@@ -143,9 +143,9 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
         child: Column(
           children: [
             ListTile(
-              title: Text("${element.skuCode}, ${element.barcode}"),
+              title: Text("${element.skuCode}, ${element.shortCode}"),
               subtitle: Text(
-                  "name: ${element.foreignName}, quantity: ${element.quantity}"),
+                  "Stock: ${element.inventoryQuantity}, Shelf: ${element.currentShelf}"),
             )
           ],
         ),
