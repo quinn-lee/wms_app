@@ -137,6 +137,13 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
         "WARNING INFO: $returnSt",
         style: const TextStyle(fontSize: 20, color: Color(0xffDC143C)),
       )));
+      if (returnSt == "wrong_shipment") {
+        widgets.add(const ListTile(
+            title: Text(
+          "Wrong shipment returned, please DO NOT Abandon. DO NOT Abandon",
+          style: TextStyle(fontSize: 20, color: Color(0xffDC143C)),
+        )));
+      }
     }
     for (var element in skuList) {
       widgets.add(Card(
@@ -494,26 +501,31 @@ class _ReturnedNewScanPageState extends HiState<ReturnedNewScanPage> {
     setState(() {
       canSubmit = false; // 防止重复提交
     });
-    try {
-      if (num != null && num != "") {
-        clear();
-        String newShipmentNum = matchShipmentNum(num!);
-        HiNavigator.getInstance()
-            .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
-          "returnedBrokenPackageBatchNum": batchNum1,
-          "returnedBrokenPackageShpmtNum": newShipmentNum,
-          "returnedBrokenPackageDepotCode": depotCode,
-          "returnedBrokenPackageDefaultDisposal": "abandon",
-          "returnedBrokenPackageSkuList": skuList1
+    if (returnSt == "wrong_shipment") {
+      _alertDialog("Abandon", returnSt);
+      clear();
+    } else {
+      try {
+        if (num != null && num != "") {
+          clear();
+          String newShipmentNum = matchShipmentNum(num!);
+          HiNavigator.getInstance()
+              .onJumpTo(RouteStatus.returnedBrokenPackage, args: {
+            "returnedBrokenPackageBatchNum": batchNum1,
+            "returnedBrokenPackageShpmtNum": newShipmentNum,
+            "returnedBrokenPackageDepotCode": depotCode,
+            "returnedBrokenPackageDefaultDisposal": "abandon",
+            "returnedBrokenPackageSkuList": skuList1
+          });
+        }
+      } catch (e) {
+        setState(() {
+          resultShow.add({"status": false, "show": e.toString()});
+          clear();
         });
+        player.play('sounds/alert.mp3');
+        showWarnToast(e.toString());
       }
-    } catch (e) {
-      setState(() {
-        resultShow.add({"status": false, "show": e.toString()});
-        clear();
-      });
-      player.play('sounds/alert.mp3');
-      showWarnToast(e.toString());
     }
     if (mounted) {
       textEditingController.clear();
