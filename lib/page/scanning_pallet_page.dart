@@ -256,7 +256,41 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
     }
   }
 
-  void _scanningPalletNum() {
+  void _scanningPalletNum() async {
+    setState(() {
+      _isLoading = true;
+    });
+    dynamic result;
+    try {
+      if (palletNum != null && palletNum != "") {
+        result = await PalletDao.getPalletInfo(palletNum!);
+        if (result["status"] == "succ") {
+          setState(() {
+            _isLoading = false;
+            quantity = result["data"]['quantity'];
+            parcelNums = result["data"]['parcel_nums'];
+          });
+        } else {
+          setState(() {
+            _isLoading = false;
+            resultShow
+                .add({"category": "fail", "show": result['reason'].join(",")});
+          });
+          player.play('sounds/alert.mp3');
+          showWarnToast(result['reason'].join(","));
+        }
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        resultShow.add({"category": "fail", "show": e.toString()});
+      });
+      player.play('sounds/alert.mp3');
+      showWarnToast(e.toString());
+    }
     if (mounted) {
       FocusScope.of(context).requestFocus(focusNode1);
     }
