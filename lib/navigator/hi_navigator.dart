@@ -26,6 +26,7 @@ import 'package:wms_app/page/returned_photo_page.dart';
 import 'package:wms_app/page/returned_scan_page.dart';
 import 'package:wms_app/page/returned_shelf_page.dart';
 import 'package:wms_app/page/returned_unknown_handle_page.dart';
+import 'package:wms_app/page/scanning_pallet_page.dart';
 import 'package:wms_app/page/unknown_packs_page.dart';
 
 typedef RouteChangeListener(RouteStatusInfo current, RouteStatusInfo? pre);
@@ -73,7 +74,8 @@ enum RouteStatus {
   inventoryPage,
   inventoryCheckScan,
   inventoryCheckOperate,
-  returnedUnknownHandle
+  returnedUnknownHandle,
+  scanningPalletPage
 }
 
 // 获取page 对应的RouteStatus
@@ -130,6 +132,8 @@ RouteStatus getStatus(MaterialPage page) {
     return RouteStatus.inventoryCheckOperate;
   } else if (page.child is ReturnedUnknownHandlePage) {
     return RouteStatus.returnedUnknownHandle;
+  } else if (page.child is ScanningPalletPage) {
+    return RouteStatus.scanningPalletPage;
   } else {
     return RouteStatus.unknown;
   }

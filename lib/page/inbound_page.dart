@@ -50,6 +50,15 @@ class _InboundPageState extends HiState<InboundPage> {
               HiNavigator.getInstance().onJumpTo(RouteStatus.fbaDetachCurrent);
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.photo_camera),
+            title: const Text("Pallet Scanning"),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              HiNavigator.getInstance()
+                  .onJumpTo(RouteStatus.scanningPalletPage);
+            },
+          ),
         ],
       ),
     );
