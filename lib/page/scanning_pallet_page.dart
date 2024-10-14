@@ -6,6 +6,7 @@ import 'package:wms_app/util/color.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/loading_container.dart';
+import 'package:wms_app/widget/login_button.dart';
 import 'package:wms_app/widget/scan_input.dart';
 
 class ScanningPalletPage extends StatefulWidget {
@@ -23,6 +24,8 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
   FocusNode focusNode1 = FocusNode();
   String? palletNum;
   String? parcelNum;
+  int quantity = 0;
+  List parcelNums = [];
   List<Map> resultShow = [];
   bool _isLoading = false;
   @override
@@ -54,6 +57,25 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
 
   List<Widget> _buildWidget() {
     List<Widget> widgets = [];
+    widgets.add(Padding(
+        padding: const EdgeInsets.all(10),
+        child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          children: [
+            FractionallySizedBox(
+                widthFactor: 0.45,
+                child: ListTile(
+                  title: Text("Added Parcel's QTY: $quantity"),
+                  subtitle: const Text(""),
+                )),
+            LoginButton(
+              'Parcels Info',
+              0.45,
+              enable: true,
+              onPressed: _showParcelInfo,
+            ),
+          ],
+        )));
     widgets.add(ScanInput(
       "Pallet No",
       "Scan Pallet No",
@@ -110,6 +132,50 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
     return widgets;
   }
 
+  // 展示汇总信息
+  _showParcelInfo() async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Parcels Summary"),
+            content: _buildTable(),
+            actions: [
+              MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context, "close");
+                  },
+                  child: const Text("Close", style: TextStyle(color: primary))),
+            ],
+          );
+        });
+  }
+
+  Widget _buildTable() {
+    List<DataRow> rows = [];
+    for (final value in parcelNums) {
+      rows.add(DataRow(cells: [
+        DataCell(SizedBox(
+            width: 160,
+            child: Text(
+              value.toString(),
+              style: const TextStyle(fontSize: 12),
+            )))
+      ]));
+    }
+    return SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(columns: const [
+              DataColumn(
+                  label: SizedBox(
+                width: 160,
+                child: Text("Parcel Num"),
+              ))
+            ], rows: rows)));
+  }
+
   _alertDelete(deleteNum) async {
     await showDialog(
         context: context,
@@ -153,6 +219,8 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
         if (result["status"] == "succ") {
           setState(() {
             _isLoading = false;
+            quantity = result["data"]['quantity'];
+            parcelNums = result["data"]['parcel_nums'];
             var now = DateTime.now();
             String show = "";
             show =
@@ -209,6 +277,8 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
           setState(() {
             _isLoading = false;
             var now = DateTime.now();
+            quantity = result["data"]['quantity'];
+            parcelNums = result["data"]['parcel_nums'];
             String show = "";
             show =
                 "${now.hour}:${now.minute}:${now.second}-Successed! Num:$parcelNum, , Click to Delete This Parcel";
