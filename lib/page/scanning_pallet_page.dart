@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wms_app/core/hi_state.dart';
 import 'package:wms_app/http/dao/pallet_dao.dart';
 import 'package:wms_app/util/color.dart';
+import 'package:wms_app/util/string_util.dart';
 import 'package:wms_app/util/toast.dart';
 import 'package:wms_app/widget/appbar.dart';
 import 'package:wms_app/widget/loading_container.dart';
@@ -22,12 +23,16 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
   FocusNode focusNode = FocusNode();
   final TextEditingController textEditingController1 = TextEditingController();
   FocusNode focusNode1 = FocusNode();
+  final TextEditingController textEditingController2 = TextEditingController();
+  FocusNode focusNode2 = FocusNode();
   String? palletNum;
-  String? parcelNum;
+  String? parcelNum1;
+  String parcelNum2 = "";
   int quantity = 0;
   List parcelNums = [];
   List<Map> resultShow = [];
   bool _isLoading = false;
+  bool canSubmit = false;
   @override
   void initState() {
     super.initState();
@@ -39,6 +44,8 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
     textEditingController.dispose();
     focusNode1.dispose();
     textEditingController1.dispose();
+    focusNode2.dispose();
+    textEditingController2.dispose();
     super.dispose();
   }
 
@@ -77,13 +84,13 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
           ],
         )));
     widgets.add(ScanInput(
-      "Pallet No",
-      "Scan Pallet No",
+      "Truck No",
+      "Scan Truck No",
       focusNode,
       textEditingController,
       onChanged: (text) {
         palletNum = text;
-        // print("num: $num");
+        checkInput();
       },
       onSubmitted: (text) {
         _scanningPalletNum();
@@ -94,23 +101,39 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
       color: Colors.white,
     ));
     widgets.add(ScanInput(
-      "Parcel No",
-      "Scan Parcel No",
+      "Barcode No1",
+      "Scan Barcode No1",
       focusNode1,
       textEditingController1,
       onChanged: (text) {
-        parcelNum = text;
+        parcelNum1 = text;
+        checkInput();
       },
       onSubmitted: (text) {
-        _scanned();
+        _scanningParcelNum1();
       },
+    ));
+    widgets.add(ScanInput(
+        "Barcode No2", "Scan Barcode No2", focusNode2, textEditingController2,
+        onChanged: (text) {
+      parcelNum2 = text;
+      checkInput();
+    }));
+    widgets.add(Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: LoginButton(
+        'Submit',
+        1,
+        enable: canSubmit,
+        onPressed: _scanned,
+      ),
     ));
 
     for (var element in resultShow.reversed) {
       widgets.add(InkWell(
           onTap: () {
             if (element['category'] == "success") {
-              _alertDelete(element['parcelNum']);
+              _alertDelete(element['parcelNum1'], element['parcelNum2']);
             }
           },
           child: ListTile(
@@ -130,6 +153,18 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
       ));
     }
     return widgets;
+  }
+
+  void checkInput() {
+    bool enable;
+    if (isNotEmpty(palletNum) && isNotEmpty(parcelNum1)) {
+      enable = true;
+    } else {
+      enable = false;
+    }
+    setState(() {
+      canSubmit = enable;
+    });
   }
 
   // 展示汇总信息
@@ -176,7 +211,7 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
             ], rows: rows)));
   }
 
-  _alertDelete(deleteNum) async {
+  _alertDelete(deleteNum1, deleteNum2) async {
     await showDialog(
         context: context,
         builder: (context) {
@@ -192,7 +227,7 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
                       const Text("Cancel", style: TextStyle(color: primary))),
               MaterialButton(
                   onPressed: () {
-                    _deleteParcel(deleteNum);
+                    _deleteParcel(deleteNum1, deleteNum2);
                     Navigator.pop(context, "ok");
                   },
                   color: primary,
@@ -205,7 +240,7 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
         });
   }
 
-  void _deleteParcel(deleteNum) async {
+  void _deleteParcel(deleteNum1, deleteNum2) async {
     setState(() {
       _isLoading = true;
     });
@@ -213,9 +248,13 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
     try {
       if (palletNum != null &&
           palletNum != "" &&
-          deleteNum != null &&
-          deleteNum != "") {
-        result = await PalletDao.deleteParcel(palletNum!, deleteNum!);
+          deleteNum1 != null &&
+          deleteNum1 != "") {
+        if (deleteNum2 == "") {
+          deleteNum2 = "null";
+        }
+        result =
+            await PalletDao.deleteParcel(palletNum!, deleteNum1!, deleteNum2);
         if (result["status"] == "succ") {
           setState(() {
             _isLoading = false;
@@ -224,7 +263,7 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
             var now = DateTime.now();
             String show = "";
             show =
-                "${now.hour}:${now.minute}:${now.second}-Delete Successed! Num:$deleteNum";
+                "${now.hour}:${now.minute}:${now.second}-Delete Successed! Num:$deleteNum1,$deleteNum2";
 
             resultShow.add({"category": "success1", "show": show});
             player.play('sounds/success01.mp3');
@@ -252,6 +291,7 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
     }
     if (mounted) {
       textEditingController1.clear();
+      textEditingController2.clear();
       FocusScope.of(context).requestFocus(focusNode1);
     }
   }
@@ -273,11 +313,9 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
         } else {
           setState(() {
             _isLoading = false;
-            resultShow
-                .add({"category": "fail", "show": result['reason'].join(",")});
+            quantity = 0;
+            parcelNums = [];
           });
-          player.play('sounds/alert.mp3');
-          showWarnToast(result['reason'].join(","));
         }
       }
       setState(() {
@@ -296,6 +334,12 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
     }
   }
 
+  void _scanningParcelNum1() async {
+    if (mounted) {
+      FocusScope.of(context).requestFocus(focusNode2);
+    }
+  }
+
   void _scanned() async {
     setState(() {
       _isLoading = true;
@@ -304,9 +348,9 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
     try {
       if (palletNum != null &&
           palletNum != "" &&
-          parcelNum != null &&
-          parcelNum != "") {
-        result = await PalletDao.scanning(palletNum!, parcelNum!);
+          parcelNum1 != null &&
+          parcelNum1 != "") {
+        result = await PalletDao.scanning(palletNum!, parcelNum1!, parcelNum2);
         if (result["status"] == "succ") {
           setState(() {
             _isLoading = false;
@@ -315,11 +359,16 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
             parcelNums = result["data"]['parcel_nums'];
             String show = "";
             show =
-                "${now.hour}:${now.minute}:${now.second}-Successed! Num:$parcelNum, , Click to Delete This Parcel";
+                "${now.hour}:${now.minute}:${now.second}-Successed! Num:$parcelNum1,$parcelNum2 , Click to Delete This Parcel";
 
-            resultShow.add(
-                {"category": "success", "show": show, "parcelNum": parcelNum});
-            parcelNum = null;
+            resultShow.add({
+              "category": "success",
+              "show": show,
+              "parcelNum1": parcelNum1,
+              "parcelNum2": parcelNum2
+            });
+            parcelNum1 = null;
+            parcelNum2 = "";
             player.play('sounds/success01.mp3');
           });
         } else {
@@ -329,7 +378,8 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
                 .add({"category": "fail", "show": result['reason'].join(",")});
           });
           player.play('sounds/alert.mp3');
-          parcelNum = null;
+          parcelNum1 = null;
+          parcelNum2 = "";
           showWarnToast(result['reason'].join(","));
         }
       } else {
@@ -341,11 +391,13 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
           });
         });
         player.play('sounds/alert.mp3');
-        parcelNum = null;
+        parcelNum1 = null;
+        parcelNum2 = "";
         showWarnToast("Please Scan Pallet Num And Parcel Num");
       }
       setState(() {
-        parcelNum = null;
+        parcelNum1 = null;
+        parcelNum2 = "";
         _isLoading = false;
       });
     } catch (e) {
@@ -354,11 +406,13 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
         resultShow.add({"category": "fail", "show": e.toString()});
       });
       player.play('sounds/alert.mp3');
-      parcelNum = null;
+      parcelNum1 = null;
+      parcelNum2 = "";
       showWarnToast(e.toString());
     }
     if (mounted) {
       textEditingController1.clear();
+      textEditingController2.clear();
       FocusScope.of(context).requestFocus(focusNode1);
     }
   }

@@ -6,19 +6,23 @@ import 'package:wms_app/http/request/scanning_pallet_request.dart';
 
 class PalletDao {
   // 扫描
-  static Future<Map> scanning(String palletNum, String parcelNum) async {
+  static Future<Map> scanning(
+      String palletNum, String parcelNum1, String parcelNum2) async {
     BaseRequest request = ScanningPalletRequest();
     request.add("pallet_num", palletNum);
-    request.add("parcel_num", parcelNum);
+    request.add("parcel_num1", parcelNum1);
+    request.add("parcel_num2", parcelNum2);
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;
   }
 
   // 删除包裹
-  static deleteParcel(String palletNum, String parcelNum) async {
+  static deleteParcel(
+      String palletNum, String parcelNum1, String parcelNum2) async {
     BaseRequest request = DeleteParcelPalletsRequest();
-    request.pathParams = "$palletNum/delete_parcel_by_num/$parcelNum";
+    request.pathParams =
+        "$palletNum/delete_parcel_by_num/$parcelNum1/$parcelNum2";
     var result = await HiNet.getInstance().fire(request);
     print(result);
     return result;
