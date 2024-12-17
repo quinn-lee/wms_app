@@ -52,7 +52,7 @@ class _InboundPageState extends HiState<InboundPage> {
           ),
           ListTile(
             leading: const Icon(Icons.photo_camera),
-            title: const Text("Pallet Scanning"),
+            title: const Text("Truck Scanning"),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               HiNavigator.getInstance()
