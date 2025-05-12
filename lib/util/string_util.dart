@@ -14,6 +14,10 @@ String matchShipmentNum(String shipmentNum) {
       return num.substring(8, 22);
     }
   }
+  if (num.length == 34) {
+    // fedex 退运
+    return num.substring(22, 34);
+  }
   if (num.length == 12) {
     int sum = 0;
     for (var i in [0, 2, 4, 6, 8, 10]) {

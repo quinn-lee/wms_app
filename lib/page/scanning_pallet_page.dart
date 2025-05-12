@@ -52,7 +52,7 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBar("Pallet Scanning", "", () {}),
+        appBar: appBar("Truck Scanning", "", () {}),
         body: LoadingContainer(
           cover: true,
           isLoading: _isLoading,
@@ -125,7 +125,7 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
         'Submit',
         1,
         enable: canSubmit,
-        onPressed: _scanned,
+        onPressed: _scanning,
       ),
     ));
 
@@ -240,6 +240,64 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
         });
   }
 
+  _alertOne() async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Only one Barcode, confirm?"),
+            content: const Text(""),
+            actions: [
+              MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context, "cancel");
+                  },
+                  child:
+                      const Text("Cancel", style: TextStyle(color: primary))),
+              MaterialButton(
+                  onPressed: () {
+                    _scanned();
+                    Navigator.pop(context, "Confirm");
+                  },
+                  color: primary,
+                  child: const Text(
+                    "Confirm",
+                    style: TextStyle(color: Colors.white),
+                  ))
+            ],
+          );
+        });
+  }
+
+  _alertLength() async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Barcode length is not 25, confirm?"),
+            content: const Text(""),
+            actions: [
+              MaterialButton(
+                  onPressed: () {
+                    Navigator.pop(context, "cancel");
+                  },
+                  child:
+                      const Text("Cancel", style: TextStyle(color: primary))),
+              MaterialButton(
+                  onPressed: () {
+                    _scanned();
+                    Navigator.pop(context, "Confirm");
+                  },
+                  color: primary,
+                  child: const Text(
+                    "Confirm",
+                    style: TextStyle(color: Colors.white),
+                  ))
+            ],
+          );
+        });
+  }
+
   void _deleteParcel(deleteNum1, deleteNum2) async {
     setState(() {
       _isLoading = true;
@@ -340,6 +398,34 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
     }
   }
 
+  void _scanning() async {
+    if (palletNum != null &&
+        palletNum != "" &&
+        parcelNum1 != null &&
+        parcelNum1 != "") {
+      if (parcelNum1!.length != 25 || parcelNum2.length != 25) {
+        _alertLength();
+        setState(() {
+          _isLoading = false;
+        });
+      } else {
+        _scanned();
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+        resultShow.add({
+          "category": "fail",
+          "show": "Please Scan Truck Num And Barcode Num"
+        });
+      });
+      player.play('sounds/alert.mp3');
+      parcelNum1 = null;
+      parcelNum2 = "";
+      showWarnToast("Please Scan Truck Num And Barcode Num");
+    }
+  }
+
   void _scanned() async {
     setState(() {
       _isLoading = true;
@@ -387,13 +473,13 @@ class _ScanningPalletPageState extends HiState<ScanningPalletPage> {
           _isLoading = false;
           resultShow.add({
             "category": "fail",
-            "show": "Please Scan Pallet Num And Parcel Num"
+            "show": "Please Scan Truck Num And Barcode Num"
           });
         });
         player.play('sounds/alert.mp3');
         parcelNum1 = null;
         parcelNum2 = "";
-        showWarnToast("Please Scan Pallet Num And Parcel Num");
+        showWarnToast("Please Scan Truck Num And Barcode Num");
       }
       setState(() {
         parcelNum1 = null;
